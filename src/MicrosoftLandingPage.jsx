@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import ScrollFAQAccordion from "./components/ui/scroll-faqaccordion";
 import createGlobe from "cobe";
 import { motion, animate, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle } from "lucide-react";
@@ -1766,18 +1767,32 @@ p {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+/* fade cue at bottom of sidebar */
+.cert-sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: 72px; /* just above the bottom action bar */
+  left: 0; right: 0;
+  height: 48px;
+  background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.96));
+  pointer-events: none;
+  z-index: 2;
 }
 /* scrollable tech list */
 .cert-sidebar-scroll {
   flex: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
-  padding: 8px 0 4px;
+  padding: 8px 0 24px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(6,148,209,0.3) transparent;
+  scrollbar-color: rgba(6,148,209,0.4) rgba(6,148,209,0.06);
 }
-.cert-sidebar-scroll::-webkit-scrollbar { width: 4px; }
-.cert-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(6,148,209,0.3); border-radius: 4px; }
+.cert-sidebar-scroll::-webkit-scrollbar { width: 5px; }
+.cert-sidebar-scroll::-webkit-scrollbar-track { background: rgba(6,148,209,0.05); border-radius: 4px; }
+.cert-sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(6,148,209,0.35); border-radius: 4px; }
+.cert-sidebar-scroll::-webkit-scrollbar-thumb:hover { background: rgba(6,148,209,0.6); }
 /* sticky bottom */
 .cert-sidebar-bottom {
   flex-shrink: 0;
@@ -3394,12 +3409,15 @@ p {
   .features-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 900px) {
-  .certs-layout { grid-template-columns: 1fr; }
-  .cert-sidebar { flex-direction: row; flex-wrap: wrap; padding: 12px; gap: 6px; border-right: none; border-bottom: 1px solid var(--light-border); }
+  .certs-layout { grid-template-columns: 1fr; height: auto; }
+  .cert-sidebar { flex-direction: row; flex-wrap: nowrap; padding: 10px 12px; gap: 6px; border-right: none; border-bottom: 1px solid var(--light-border); overflow-x: auto; overflow-y: visible; scrollbar-width: thin; scrollbar-color: rgba(6,148,209,0.3) transparent; }
+  .cert-sidebar::after { display: none; }
+  .cert-sidebar-scroll { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 6px; padding: 0; overflow: visible; flex: unset; width: 100%; }
   .cert-sidebar-label { display: none; }
   .cert-sidebar-divider { display: none; }
   .cert-sidebar-item { width: auto; flex: 0 0 auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 8px; padding: 8px 14px; }
   .cert-sidebar-item.active { border-bottom-color: var(--blue); border-left-color: transparent; }
+  .cert-sidebar-bottom { display: none; }
   .csi-sublabel { display: none; }
   .cert-grid { grid-template-columns: 1fr 1fr; }
 }
@@ -4429,6 +4447,80 @@ function svgAvatar(initials, bg, textColor = '#fff') {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect width="48" height="48" rx="24" fill="${bg}"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="${textColor}">${initials}</text></svg>`;
   return `data:image/svg+xml;base64,${btoa(svg)}`;
 }
+
+// ── FAQ DATA (SEO-optimised for Microsoft certification training) ──
+const FAQ_DATA = [
+  {
+    id: 1,
+    question: "Is Koenig Solutions a Microsoft Authorized Learning Partner (ALP)?",
+    answer: "Yes. Koenig Solutions is an official Microsoft Authorized Learning Partner (ALP) and Enterprise Skills Initiative (ESI) partner since 2010. All courses use official Microsoft Official Courseware (MOC) — the same curriculum Microsoft uses internally.",
+    icon: "🏅",
+    iconPosition: "left",
+  },
+  {
+    id: 2,
+    question: "Which Microsoft certifications can I get through Koenig?",
+    answer: "Koenig offers 100+ Microsoft certification courses including AZ-104 (Azure Administrator), AI-102 (Azure AI Engineer), SC-300 (Identity & Access), AZ-305 (Azure Infrastructure), PL-300 (Power BI), AZ-900, SC-200, AZ-500, AZ-400, and all Microsoft 365, Dynamics 365, Power Platform and GitHub certifications across Fundamentals, Associate and Expert levels.",
+    icon: "🎓",
+    iconPosition: "right",
+  },
+  {
+    id: 3,
+    question: "What is the Microsoft exam pass rate at Koenig?",
+    answer: "Koenig achieves a 95% Microsoft certification exam pass rate — significantly above the industry average of 60–70%. This is driven by MCT-certified trainers, official labs, and structured exam prep sessions tailored to each certification track.",
+    icon: "📊",
+    iconPosition: "left",
+  },
+  {
+    id: 4,
+    question: "What learning formats does Koenig offer for Microsoft training?",
+    answer: "Koenig offers Live Online Training (instructor-led virtual classrooms), 1-on-1 Training (dedicated MCT, your schedule), Classroom Training (on-site or at a Koenig centre), Fly-Me-A-Trainer (trainer travels to your office), and Flexi Training (start any day). All formats use official Microsoft courseware.",
+    icon: "🖥️",
+    iconPosition: "right",
+  },
+  {
+    id: 5,
+    question: "How long does it take to complete a Microsoft certification course?",
+    answer: "Duration varies by level: Fundamentals (e.g. AZ-900) takes 1–2 days, Associate (e.g. AZ-104, SC-300) takes 3–5 days, and Expert-level courses take 5+ days. With Koenig's Flexi schedule you can start any day and pace the training to your availability.",
+    icon: "⏱️",
+    iconPosition: "left",
+  },
+  {
+    id: 6,
+    question: "How much does Microsoft certification training cost at Koenig?",
+    answer: "Training fees vary by course level and format. Indicative prices start from ~$597 for Fundamentals, ~$747 for Associate, and ~$897 for Expert-level courses. Contact Koenig for exact pricing — enterprise packages, EA credits and group discounts are available.",
+    icon: "💰",
+    iconPosition: "right",
+  },
+  {
+    id: 7,
+    question: "What is the cost of a Microsoft certification exam?",
+    answer: "All Microsoft certification exams are priced at $165 USD globally. The passing score is 700 out of 1000. Associate and Expert certifications are valid for 1 year with free annual renewal via Microsoft Learn. Fundamentals certifications do not expire.",
+    icon: "🎯",
+    iconPosition: "left",
+  },
+  {
+    id: 8,
+    question: "Can enterprises use Microsoft EA or TSPv credits for Koenig training?",
+    answer: "Yes. As a Microsoft Enterprise Skills Initiative (ESI) partner, Koenig accepts Training Service Provider (TSPv) credits and Microsoft Enterprise Agreement funding. This allows enterprise teams to upskill on Azure, AI, Security and Microsoft 365 using pre-allocated Microsoft budgets.",
+    icon: "🏢",
+    iconPosition: "right",
+  },
+  {
+    id: 9,
+    question: "Does Koenig offer Microsoft Azure AI and Copilot certification training?",
+    answer: "Yes. Koenig offers AI-102 (Azure AI Engineer Associate), AI-900 (Azure AI Fundamentals), MS-4023 (Microsoft 365 Copilot Chat), GH-300 (GitHub Copilot Fundamentals) and more. These are among Koenig's fastest-growing tracks with 735+ AI batches delivered in the last 3 months.",
+    icon: "🤖",
+    iconPosition: "left",
+  },
+  {
+    id: 10,
+    question: "What if I fail my Microsoft certification exam after training with Koenig?",
+    answer: "Microsoft allows a 24-hour wait before a retake attempt, then a 14-day waiting period for subsequent retakes. Koenig's 95% pass rate means most learners pass first time, but Koenig trainers provide additional support and exam-prep guidance at no extra cost if you need it.",
+    icon: "🔄",
+    iconPosition: "right",
+  },
+];
 
 const TESTIMONIALS = [
   { quote: "Passed AZ-104 on first attempt. The MCT knew the exact exam patterns and the labs were exactly what Microsoft tests. Worth every penny.", name: "Rahul M.", role: "Azure Administrator", cert: "AZ-104 Certified", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face&auto=format" },
@@ -7918,6 +8010,11 @@ export default function App() {
             <TestimonialsColumn testimonials={TESTIMONIALS.slice(6, 9)} duration={17} className="test-col-lg" />
           </div>
         </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ background: "#ffffff", borderTop: "1px solid rgba(6,148,209,0.1)", padding: "0 48px" }}>
+        <ScrollFAQAccordion data={FAQ_DATA} />
       </section>
 
       {/* AWARDS */}
