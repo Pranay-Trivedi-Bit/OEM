@@ -4097,12 +4097,12 @@ const FeatureIcons = {
 };
 
 const FEATURES = [
-  { icon: FeatureIcons.alp,        title: "Authorized Partner",  desc: "Official Microsoft Authorized Learning Partner with access to exclusive MOC courseware — the same training Microsoft uses internally.", stat: "Only 3% of global training providers hold ALP status" },
-  { icon: FeatureIcons.mct,        title: "MCT-Only Trainers",   desc: "Every instructor holds active Microsoft Certified Trainer status. No freelancers. No subcontractors. Verified expertise on every session.", stat: "Average trainer experience: 14+ years" },
-  { icon: FeatureIcons.oneOnOne,   title: "1-on-1 Training",     desc: "Set your own schedule. Your dedicated MCT, 100% focused on you. Available worldwide with flexible time zones — exclusive to Koenig.", stat: "Available in 50+ countries, 24/7 scheduling" },
-  { icon: FeatureIcons.flyTrainer, title: "Fly-Me-A-Trainer",    desc: "We send a certified Microsoft trainer to your office. Ideal for large enterprise teams requiring on-site immersive training.", stat: "Deployed in 40+ countries" },
-  { icon: FeatureIcons.esi,        title: "ESI Program Partner", desc: "Koenig is an Enterprise Skills Initiative partner, enabling Microsoft Enterprise customers to use TSPv for workforce training.", stat: "Accept Enterprise Agreements & EA credits" },
-  { icon: FeatureIcons.passRate,   title: "95% Pass Rate",       desc: "Our structured exam prep, real-world labs, and MCT mentoring result in industry-leading certification pass rates across all Microsoft tracks.", stat: "vs. 60-70% industry average" },
+  { icon: FeatureIcons.alp,        title: "Microsoft Authorized Learning Partner",  desc: "Koenig is an official Microsoft Authorized Learning Partner (ALP) delivering Microsoft Official Courseware (MOC) — the same curriculum Microsoft uses to train its own engineers.", stat: "Only 3% of global training providers hold ALP status" },
+  { icon: FeatureIcons.mct,        title: "MCT-Certified Instructors Only",   desc: "Every Microsoft course is taught by an active Microsoft Certified Trainer (MCT). No freelancers, no subcontractors — guaranteed certified expertise on every session.", stat: "Avg. trainer experience: 14+ years in Microsoft technologies" },
+  { icon: FeatureIcons.oneOnOne,   title: "1-on-1 Microsoft Training",     desc: "Exclusive to Koenig: your dedicated MCT trains only you, on your schedule. Perfect for busy IT professionals pursuing AZ-104, AI-102, SC-300 or any Microsoft cert.", stat: "Available in 50+ countries — 24/7 scheduling" },
+  { icon: FeatureIcons.flyTrainer, title: "Fly-Me-A-Trainer",    desc: "Koenig sends a Microsoft-certified trainer directly to your office. Ideal for enterprise IT teams needing on-site Azure, Security or Microsoft 365 training.", stat: "On-site Microsoft training deployed in 40+ countries" },
+  { icon: FeatureIcons.esi,        title: "ESI & Enterprise Skills Partner", desc: "As a Microsoft Enterprise Skills Initiative (ESI) partner, Koenig enables enterprise customers to use Training Service Provider (TSPv) credits for workforce certification.", stat: "Accepts Microsoft Enterprise Agreements & EA credits" },
+  { icon: FeatureIcons.passRate,   title: "95% Microsoft Exam Pass Rate",       desc: "Structured exam prep, hands-on Azure labs, and dedicated MCT mentoring drive an industry-leading 95% pass rate across all Microsoft certification tracks.", stat: "vs. 60–70% industry average — verified on AZ-104, AI-102, SC-300" },
 ];
 
 const CERT_TABS = ["Azure", "AI & Copilot", "Power Platform", "Security", "Microsoft 365", "Dynamics 365", "Data & Analytics", "DevOps & Dev", "GitHub", "Windows Server"];
@@ -5506,9 +5506,9 @@ function CertExamDetails({ onEnroll }) {
             <span className="ced-eyebrow-dot" />
             Source: learn.microsoft.com · koenig-solutions.com
           </div>
-          <h2 className="sec-title">Exam <em>Deep Dive</em></h2>
+          <h2 className="sec-title">Microsoft Exam <em>Guide & Details</em></h2>
           <p className="certs-header-sub">
-            Explore exam format, skills measured, passing criteria and indicative training fees for every Microsoft certification.
+            Exam format, skills measured, passing score, cost, duration and indicative training fees for every Microsoft certification — AZ-104, AI-102, SC-300, AZ-305 and more.
           </p>
         </div>
 
@@ -6267,7 +6267,7 @@ function AwardsSlider() {
         <div className="awards-header reveal">
           <div className="sec-title">Recognised as a<br/><TextShimmer as="em" duration={3} spread={2}>Microsoft Partner of the Year</TextShimmer></div>
           <div className="sec-sub" style={{margin:'14px auto 0',textAlign:'center'}}>
-            30+ years of excellence recognised by Microsoft globally
+            33+ years of Microsoft training excellence recognised globally — Microsoft Partner of the Year, FY24 Award winner
           </div>
         </div>
 
@@ -6712,10 +6712,10 @@ function HowItWorksSection() {
       {/* Header */}
       <div className="hiw-header hiw-reveal">
         <div className="sec-title">
-          <TextShimmer as="span" duration={2.5} spread={2} style={{display:"block"}}>How It Works</TextShimmer>
+          <TextShimmer as="span" duration={2.5} spread={2} style={{display:"block"}}>How to Get Microsoft Certified</TextShimmer>
         </div>
         <div className="sec-sub" style={{margin:"12px auto 0", textAlign:"center", maxWidth:520}}>
-          From browsing courses to earning your certification — four straightforward steps at your own pace.
+          From choosing a Microsoft certification track to passing your exam — four guided steps with your MCT every stage of the way.
         </div>
       </div>
 
@@ -6992,23 +6992,22 @@ export default function App() {
           {/* Animated border badge */}
           {/* Headline */}
           <h1 className="hero-h1">
-            <span className="h1-plain">Advance Your Career with</span>
-            <TextShimmer as="span" className="h1-grad" duration={2.5} spread={3} baseColor="#0694D1" gradColor="#ffffff">Microsoft Certifications</TextShimmer>
+            <span className="h1-plain">Get Microsoft Certified with</span>
+            <TextShimmer as="span" className="h1-grad" duration={2.5} spread={3} baseColor="#0694D1" gradColor="#ffffff">Authorized Training</TextShimmer>
           </h1>
 
           {/* Subtitle */}
           <p className="hero-sub">
-            MCT-certified instructors · Official Microsoft courseware · 95% exam pass rate.
-            Train live online, 1-on-1 or on-site across 50+ countries.
+            Official Microsoft Authorized Learning Partner (ALP). MCT-certified instructors, official MOC courseware, and a 95% exam pass rate across AZ-104, AI-102, SC-300, AZ-305 and 100+ Microsoft certification courses. Train live online, 1-on-1, or on-site in 50+ countries.
           </p>
 
           {/* Feature rows */}
           <div className="hero-features">
             {[
-              ["Gold ALP + ESI Partner since 2010", <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["MCT-certified trainers only — no contractors", <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["500,000+ professionals trained in 50+ countries", <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["Flexi schedule — start any day, any time", <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              ["Microsoft Gold ALP + ESI Partner — official MOC courseware", <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              ["MCT-certified Microsoft trainers only — no contractors", <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              ["500,000+ IT professionals certified across 50+ countries", <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              ["Flexi schedule — start any day, Azure to Copilot tracks", <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
             ].map(([text, svgPath],i) => (
               <div key={i} className="hero-feat-row">
                 <div className="hero-feat-icon">
@@ -7041,7 +7040,7 @@ export default function App() {
                   "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&h=80&fit=crop&crop=face&auto=format",
                   "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face&auto=format",
                 ].map((src,i)=>(
-                  <img key={i} className="sp-avatar" src={src} alt="learner"/>
+                  <img key={i} className="sp-avatar" src={src} alt={`Koenig Solutions Microsoft certified professional ${i+1}`}/>
                 ))}
               </div>
               <div className="sp-text">
@@ -7151,11 +7150,11 @@ export default function App() {
       <section className="stats-strip circuit-bg reveal">
         <div className="stats-inner">
           {[
-            {n:30,    suf:"+",  label:"Years of Excellence",        src:"Since 1993"},
-            {n:30000, suf:"+",  label:"Students Trained Every Month",src:"Koenig internal data"},
-            {n:99.1,  suf:"%",  label:"On-Time Batch",              src:"Delivery commitment"},
-            {n:300,   suf:"+",  label:"Certified Trainers",         src:"MCT & vendor-certified"},
-            {n:5000,  suf:"+",  label:"Courses to Choose From",     src:"Across all technologies"},
+            {n:33,    suf:"+",  label:"Years of Excellence",        src:"In operation since 1993"},
+            {n:500000,suf:"+",  label:"IT Professionals Certified",  src:"Across 50+ countries"},
+            {n:95,    suf:"%",  label:"Microsoft Exam Pass Rate",   src:"vs. 60–70% industry avg"},
+            {n:300,   suf:"+",  label:"MCT-Certified Trainers",     src:"No contractors, ever"},
+            {n:100,   suf:"+",  label:"Microsoft Courses",          src:"Azure · AI · Security · M365"},
           ].map((s,i)=>(
             <div key={i} className="stat-item reveal-scale" style={{transitionDelay:`${i*0.1}s`}}>
               <div className="stat-number">
@@ -7178,8 +7177,8 @@ export default function App() {
       <section className="certs-sec" id="cert">
         <div className="certs-inner">
           <div className="certs-header reveal">
-            <h2 className="sec-title">Choose Your <em>Microsoft</em> Path</h2>
-            <p className="certs-header-sub">Select a technology track to explore all Microsoft certifications — Fundamentals, Associate, and Expert levels.</p>
+            <h2 className="sec-title">Microsoft Certification <em>Training Courses</em></h2>
+            <p className="certs-header-sub">Browse 100+ official Microsoft courses across Azure, AI, Security, Power Platform, M365 and more. Every course is instructor-led by an MCT-certified trainer with official Microsoft courseware.</p>
             <div className="certs-search-wrap">
               <svg className="certs-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
               <input
@@ -7411,9 +7410,9 @@ export default function App() {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             style={{ textAlign: "center", marginBottom: 0 }}
           >
-            <div className="sec-title" style={{ marginBottom: 10 }}>What Our <TextShimmer as="em" duration={2.5} spread={2}>Learners Say</TextShimmer></div>
+            <div className="sec-title" style={{ marginBottom: 10 }}>Microsoft Certification <TextShimmer as="em" duration={2.5} spread={2}>Student Reviews</TextShimmer></div>
             <p style={{ textAlign: "center", maxWidth: 480, margin: "0 auto", color: "var(--light-sub)" }}>
-              Real results from professionals who passed Microsoft certifications with Koenig.
+              Real results from IT professionals who passed AZ-104, AI-102, SC-300 and other Microsoft exams with Koenig — rated 4.7/5 from 500+ verified reviews.
             </p>
           </motion.div>
           <div className="test-cols-outer">
