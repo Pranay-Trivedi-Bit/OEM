@@ -1672,7 +1672,16 @@ p {
 .certs-header { margin-bottom: 40px; }
 .certs-header .sec-label { color: var(--blue); }
 .certs-header .sec-title { color: var(--light-text); }
-.certs-header-sub { font-size: 15px; color: var(--light-sub); margin-top: 10px; max-width: 560px; line-height: 1.6; }
+.certs-header-sub { font-size: 15px; color: var(--light-sub); margin-top: 10px; max-width: 620px; line-height: 1.6; }
+
+/* ── Mode Toggle Row ── */
+.cert-section-top-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.cert-mode-toggle { display: inline-flex; align-items: center; background: rgba(6,148,209,0.06); border: 1.5px solid rgba(6,148,209,0.18); border-radius: 50px; padding: 4px; gap: 2px; flex-shrink: 0; margin-top: 8px; }
+.cert-mode-btn { position: relative; border: none; background: transparent; padding: 10px 22px; border-radius: 50px; font-size: 13px; font-weight: 700; color: var(--light-sub); cursor: pointer; transition: color 0.25s; white-space: nowrap; overflow: hidden; font-family: var(--body); }
+.cert-mode-btn.active { color: var(--white); }
+.cert-mode-btn:not(.active):hover { color: var(--light-text); }
+.cert-mode-active-bg { position: absolute; inset: 0; background: linear-gradient(135deg, var(--blue) 0%, #057ab5 100%); border-radius: 50px; box-shadow: 0 4px 18px rgba(6,148,209,0.45); z-index: 0; }
+.cert-mode-btn-content { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 7px; }
 
 /* ── Cert Search Bar ── */
 .certs-search-wrap {
@@ -5465,6 +5474,498 @@ function ScoreRing({ score = 700, max = 1000, color = "#0694D1", size = 72 }) {
   );
 }
 
+function UnifiedCertSection({ onEnroll, onBrochure }) {
+  const [viewMode, setViewMode]       = useState("courses"); // "courses" | "exams"
+  const [activeTab, setActiveTab]     = useState(CERT_TABS[0]);
+  const [activeLevel, setActiveLevel] = useState("all");
+  const [certSearch, setCertSearch]   = useState("");
+  const [selectedCert, setSelectedCert] = useState(null);
+
+  useEffect(() => { setSelectedCert(null); }, [activeTab, viewMode]);
+
+  const allCerts = CERTS[activeTab] || [];
+  const counts = {
+    all:    allCerts.length,
+    fund:   allCerts.filter(c => c.level === "fund").length,
+    assoc:  allCerts.filter(c => c.level === "assoc").length,
+    expert: allCerts.filter(c => c.level === "expert").length,
+  };
+  const levels = [
+    { key: "all",    label: "All",          count: counts.all },
+    { key: "fund",   label: "Fundamentals", count: counts.fund },
+    { key: "assoc",  label: "Associate",    count: counts.assoc },
+    { key: "expert", label: "Expert",       count: counts.expert },
+  ].filter(lv => lv.count > 0 || lv.key === "all");
+
+  // Courses mode
+  const q = certSearch.trim().toLowerCase();
+  const searchActive = q.length > 0;
+  const courseDisplay = searchActive
+    ? CERT_TABS.flatMap(tab => CERTS[tab].map(c => ({ ...c, tab }))).filter(c =>
+        c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.tab.toLowerCase().includes(q) ||
+        (c.level==="fund"&&"fundamentals".includes(q)) || (c.level==="assoc"&&"associate".includes(q)) || (c.level==="expert"&&"expert".includes(q))
+      )
+    : allCerts.filter(c => activeLevel==="all" ? true : c.level===activeLevel).map(c => ({ ...c, tab: activeTab }));
+
+  // Exams mode
+  const skills       = EXAM_SKILLS[activeTab] || [];
+  const examDisplay  = allCerts.filter(c => activeLevel==="all" ? true : c.level===activeLevel);
+  const lc           = activeLevel==="fund"?"#059669":activeLevel==="assoc"?"#0578b3":activeLevel==="expert"?"#d97706":"var(--blue)";
+  const ll           = activeLevel==="all"?"All":activeLevel==="fund"?"Fundamentals":activeLevel==="assoc"?"Associate":"Expert";
+  const detail       = selectedCert ? (CERT_DETAIL[selectedCert.level] || CERT_DETAIL.assoc) : null;
+  const meta         = selectedCert ? (EXAM_META[selectedCert.level]   || EXAM_META.assoc)   : null;
+  const pathSteps    = selectedCert ? buildCertPath(selectedCert, allCerts) : [];
+  const LEVEL_LABEL  = { fund:"Fundamentals", assoc:"Associate", expert:"Expert" };
+
+  return (
+    <section className="certs-sec" id="cert">
+      <div className="certs-inner">
+
+        {/* ── HEADER ── */}
+        <div className="certs-header reveal">
+          <div className="cert-section-top-row">
+            <div>
+              <h2 className="sec-title">Microsoft <em>Certification Explorer</em></h2>
+              <p className="certs-header-sub">
+                Browse 100+ official Microsoft courses across Azure, AI, Security, Power Platform, M365 and more — or dive into exam details, skills breakdown and certification paths.
+              </p>
+            </div>
+            {/* ── INNOVATIVE MODE TOGGLE ── */}
+            <div className="cert-mode-toggle">
+              {[
+                { id:"courses", icon:"📚", label:"Courses & Pricing" },
+                { id:"exams",   icon:"🎯", label:"Exam Guide"        },
+              ].map(m => (
+                <button
+                  key={m.id}
+                  className={`cert-mode-btn${viewMode===m.id?" active":""}`}
+                  onClick={() => setViewMode(m.id)}
+                >
+                  {viewMode===m.id && (
+                    <motion.span
+                      className="cert-mode-active-bg"
+                      layoutId="cert-mode-pill"
+                      transition={{ type:"spring", stiffness:420, damping:32 }}
+                    />
+                  )}
+                  <span className="cert-mode-btn-content">
+                    <span>{m.icon}</span>
+                    <span>{m.label}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Search — courses mode only */}
+          <AnimatePresence>
+            {viewMode==="courses" && (
+              <motion.div
+                className="certs-search-wrap"
+                initial={{ opacity:0, y:-8 }}
+                animate={{ opacity:1, y:0 }}
+                exit={{ opacity:0, y:-8 }}
+                transition={{ duration:0.22 }}
+              >
+                <svg className="certs-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input
+                  className="certs-search-input"
+                  type="text"
+                  placeholder="Search certifications or exam codes… e.g. AZ-900, Copilot, Security"
+                  value={certSearch}
+                  onChange={e => setCertSearch(e.target.value)}
+                  onKeyDown={e => e.key==="Escape" && setCertSearch("")}
+                />
+                {certSearch ? (
+                  <button className="certs-search-clear" onClick={() => setCertSearch("")} title="Clear">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                ) : (
+                  <span className="certs-search-kbd">Esc to clear</span>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* ── LAYOUT ── */}
+        <div className="certs-layout reveal">
+
+          {/* SIDEBAR */}
+          <div className="cert-sidebar">
+            <div className="cert-sidebar-scroll">
+              <div className="cert-sidebar-label">Technologies</div>
+              {CERT_TABS.map(t => (
+                <button
+                  key={t}
+                  className={`cert-sidebar-item${activeTab===t?" active":""}`}
+                  onClick={() => { setActiveTab(t); setActiveLevel("all"); }}
+                >
+                  <span className="csi-icon" style={t==="GitHub"?{background:"#fff",borderRadius:10,padding:4}:{}}>
+                    {TECH_LOGOS[t]({ size: t==="GitHub"?22:28 })}
+                  </span>
+                  <div className="csi-body">
+                    <span className="csi-label">{t}</span>
+                    <span className="csi-sublabel">{CERT_META[t].sublabel}</span>
+                  </div>
+                  <span className="csi-count">{CERTS[t].length}</span>
+                </button>
+              ))}
+            </div>
+            <div className="cert-sidebar-bottom">
+              <div className="cert-sidebar-actions">
+                <button className="csa-brochure" onClick={onBrochure}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Brochure
+                </button>
+                <button className="csa-enquire" onClick={onEnroll}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Enquire Now
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT PANEL */}
+          <div className="cert-right">
+
+            {/* INFO PANEL — shared, adapts per mode */}
+            <div className="cert-info-panel">
+              <div className="cert-info-row1">
+                <div className="cert-info-logo" style={activeTab==="GitHub"?{background:"#fff",borderRadius:12,padding:6,display:"inline-flex"}:{}}>
+                  {TECH_LOGOS[activeTab]({ size: activeTab==="GitHub"?30:38 })}
+                </div>
+                <div className="cert-info-identity">
+                  <div className="cert-info-name">{activeTab}</div>
+                  <div className="cert-info-desc">{CERT_META[activeTab].desc}</div>
+                </div>
+                {viewMode==="exams" && (
+                  <div className="ced-meta-block">
+                    <ScoreRing score={700} color="var(--blue)" size={56}/>
+                    <div className="ced-meta-block-label">Pass Score</div>
+                  </div>
+                )}
+                <button className="cert-info-enroll" onClick={onEnroll}>Enquire Now →</button>
+              </div>
+              <div className="cert-info-row2">
+                <div className="cert-info-pills">
+                  {viewMode==="courses" ? (
+                    CERT_META[activeTab].pills.map(p => (
+                      <span key={p} className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{p}</span>
+                    ))
+                  ) : (
+                    <>
+                      <span className="cert-info-pill"><span className="cert-info-pill-dot">🎯</span>Pass: 700/1000</span>
+                      <span className="cert-info-pill"><span className="cert-info-pill-dot">🔄</span>Free Renewal</span>
+                      <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[activeTab].pills[0]}</span>
+                      <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[activeTab].pills[1]}</span>
+                    </>
+                  )}
+                </div>
+                <div className="cert-level-tabs">
+                  {levels.map(lv => (
+                    <button
+                      key={lv.key}
+                      className={`cert-level-tab${activeLevel===lv.key?" active":""}`}
+                      data-lv={lv.key}
+                      onClick={() => { setActiveLevel(lv.key); setSelectedCert(null); }}
+                    >
+                      {lv.label}
+                      <span className="cert-level-tab-count">{lv.count}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* ── ANIMATED CONTENT AREA ── */}
+            <AnimatePresence mode="wait">
+
+              {/* ══ COURSES MODE ══ */}
+              {viewMode==="courses" && (
+                <motion.div
+                  key="courses-view"
+                  initial={{ opacity:0, x:30 }}
+                  animate={{ opacity:1, x:0 }}
+                  exit={{ opacity:0, x:-30 }}
+                  transition={{ duration:0.28, ease:[0.16,1,0.3,1] }}
+                >
+                  <div className="cert-panel">
+                    {/* sticky label */}
+                    {searchActive ? (
+                      <div className="cert-panel-sticky">
+                        <span style={{fontSize:12,fontWeight:800,color:"var(--blue)",background:"rgba(6,148,209,0.1)",padding:"4px 12px",borderRadius:20,border:"1.5px solid rgba(6,148,209,0.3)"}}>
+                          {courseDisplay.length} result{courseDisplay.length!==1?"s":""}
+                        </span>
+                        <span style={{fontSize:13,fontWeight:600,color:"var(--light-sub)"}}>for "<strong style={{color:"var(--light-text)"}}>{certSearch.trim()}</strong>"</span>
+                        <button onClick={() => setCertSearch("")} style={{marginLeft:"auto",fontSize:12,color:"var(--blue)",background:"none",border:"none",cursor:"pointer",fontWeight:700}}>Clear ×</button>
+                      </div>
+                    ) : (
+                      <div className="cert-panel-sticky">
+                        <span style={{fontSize:12,fontWeight:800,color:lc,background:`color-mix(in srgb, ${lc} 10%, transparent)`,padding:"4px 12px",borderRadius:20,border:`1.5px solid ${lc}`}}>
+                          {courseDisplay.length} {ll==="All"?"All Courses":ll}
+                        </span>
+                        <span style={{fontSize:13,fontWeight:700,color:"var(--light-text)"}}>{activeTab}</span>
+                        <span style={{fontSize:12,color:"var(--light-sub)",marginLeft:"auto"}}>Scroll to browse all courses</span>
+                      </div>
+                    )}
+                    <div className="cert-panel-scroll">
+                      {courseDisplay.length===0 ? (
+                        <div className="certs-no-results">
+                          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{opacity:0.25,marginBottom:12}}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                          <div style={{fontWeight:700,fontSize:15,color:"var(--light-text)",marginBottom:4}}>No courses found</div>
+                          <div style={{fontSize:13,color:"var(--light-sub)"}}>Try a different keyword or exam code</div>
+                          <button style={{marginTop:16,fontSize:12,fontWeight:700,color:"var(--blue)",background:"rgba(6,148,209,0.08)",border:"1px solid rgba(6,148,209,0.25)",borderRadius:8,padding:"7px 16px",cursor:"pointer"}} onClick={() => setCertSearch("")}>Clear search</button>
+                        </div>
+                      ) : (
+                        <div className="cert-grid">
+                          {courseDisplay.map((c,i) => (
+                            <div key={`c-${i}`} className={`cert-card ${c.level}-card`}>
+                              {searchActive && <span className="cert-track-tag">{c.tab}</span>}
+                              <span className={`cert-badge ${c.level}`}>
+                                {c.level==="fund"?"Fundamentals":c.level==="assoc"?"Associate":"Expert"}
+                              </span>
+                              <div className="cert-name">{c.name}</div>
+                              <div className="cert-code">{c.code}</div>
+                              <div className="cert-footer">
+                                <div className="cert-price-row">
+                                  <span className="cert-price">
+                                    <span className="cert-price-curr">$</span>
+                                    <span className="cert-price-amount">{getCertPrice(c).toLocaleString()}</span>
+                                  </span>
+                                  <span className="cert-price-label">per person · USD</span>
+                                </div>
+                                <span className="cert-dur">⏱ {c.dur}</span>
+                                <div className="cert-actions">
+                                  <button className="cert-btn-brochure" onClick={onBrochure}>Brochure</button>
+                                  <button className="cert-btn-details" onClick={onEnroll}>Enroll Now</button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ══ EXAM GUIDE MODE ══ */}
+              {viewMode==="exams" && (
+                <motion.div
+                  key="exams-view"
+                  initial={{ opacity:0, x:-30 }}
+                  animate={{ opacity:1, x:0 }}
+                  exit={{ opacity:0, x:30 }}
+                  transition={{ duration:0.28, ease:[0.16,1,0.3,1] }}
+                >
+                  <div className="cert-panel">
+                    <div className="cert-panel-sticky">
+                      <span style={{fontSize:12,fontWeight:800,color:lc,background:`color-mix(in srgb, ${lc} 10%, transparent)`,padding:"4px 12px",borderRadius:20,border:`1.5px solid ${lc}`}}>
+                        {examDisplay.length} {ll} Exam{examDisplay.length!==1?"s":""}
+                      </span>
+                      <span style={{fontSize:13,fontWeight:700,color:"var(--light-text)"}}>{activeTab}</span>
+                      <span style={{fontSize:12,color:"var(--light-sub)",marginLeft:"auto"}}>Click any exam to see full details</span>
+                    </div>
+                    <div className="cert-panel-scroll">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={`${activeTab}-${activeLevel}`}
+                          className="cert-grid"
+                          initial={{ opacity:0 }}
+                          animate={{ opacity:1 }}
+                          exit={{ opacity:0 }}
+                          transition={{ duration:0.18 }}
+                        >
+                          {examDisplay.map(cert => {
+                            const cm = EXAM_META[cert.level] || EXAM_META.assoc;
+                            const isSelected = selectedCert?.code===cert.code;
+                            return (
+                              <div
+                                key={cert.code}
+                                className={`cert-card ${cert.level}-card${isSelected?" exam-card-selected":""}`}
+                                onClick={() => setSelectedCert(isSelected ? null : cert)}
+                                style={{ cursor:"pointer" }}
+                              >
+                                <span className={`cert-badge ${cert.level}`}>
+                                  {cert.level==="fund"?"Fundamentals":cert.level==="assoc"?"Associate":"Expert"}
+                                </span>
+                                <div className="cert-name">{cert.name}</div>
+                                <div className="cert-code">{cert.code}</div>
+                                <div className="exam-stat-chips">
+                                  <span className="exam-chip">⏱ {cm.examDur}</span>
+                                  <span className="exam-chip">❓ {cm.questions}</span>
+                                  <span className="exam-chip">🎯 700/1000</span>
+                                </div>
+                                <div className="exam-skills-mini">
+                                  {skills.slice(0,2).map(sk => (
+                                    <div key={sk.l} className="exam-skill-mini-row">
+                                      <div className="exam-skill-mini-meta">
+                                        <span className="exam-skill-mini-label">{sk.l}</span>
+                                        <span className="exam-skill-mini-pct">{sk.pct}%</span>
+                                      </div>
+                                      <div className="exam-skill-mini-track">
+                                        <div className="exam-skill-mini-fill" style={{width:`${sk.pct}%`,background:`linear-gradient(90deg, ${cm.color} 0%, #50e6ff 100%)`}}/>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="cert-footer">
+                                  <div className="cert-price-row">
+                                    <span className="cert-price">
+                                      <span className="cert-price-curr">$</span>
+                                      <span className="cert-price-amount">{getCertPrice(cert).toLocaleString()}</span>
+                                    </span>
+                                    <span className="cert-price-label">indicative · USD</span>
+                                  </div>
+                                  <span className="cert-dur">📅 {cert.dur} · {cm.validity}</span>
+                                  <div className="cert-actions">
+                                    <button className="cert-btn-details" onClick={e=>{e.stopPropagation();onEnroll();}}>Enroll Now</button>
+                                  </div>
+                                </div>
+                                {isSelected && (
+                                  <div className="exam-card-selected-hint">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                    View Details Below
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+            </AnimatePresence>
+          </div>{/* end cert-right */}
+        </div>{/* end certs-layout */}
+
+        {/* ── EXAM DETAIL PANEL (exam mode only) ── */}
+        <AnimatePresence>
+          {viewMode==="exams" && selectedCert && detail && (
+            <motion.div
+              className="ced-detail-panel"
+              initial={{ opacity:0, y:-16, scale:0.99 }}
+              animate={{ opacity:1, y:0, scale:1 }}
+              exit={{ opacity:0, y:-16, scale:0.99 }}
+              transition={{ duration:0.38, ease:[0.16,1,0.3,1] }}
+            >
+              <div className="ced-dp-header">
+                <div className="ced-dp-header-left">
+                  <div className="ced-dp-eyebrow">
+                    <span className={`cert-badge ${selectedCert.level}`} style={{marginBottom:0}}>{LEVEL_LABEL[selectedCert.level]}</span>
+                    <span className="ced-dp-code">{selectedCert.code}</span>
+                  </div>
+                  <h3 className="ced-dp-title">Certification Details</h3>
+                  <p className="ced-dp-sub">Everything you need to know about the <strong>{selectedCert.code} {selectedCert.name}</strong> exam</p>
+                </div>
+                <div className="ced-dp-header-right">
+                  <ScoreRing score={700} color={meta.color} size={80}/>
+                  <button className="ced-dp-close" onClick={() => setSelectedCert(null)} title="Close">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div className="ced-dp-body">
+                <div className="ced-dp-info">
+                  <div className="ced-dp-section-label">Exam Information</div>
+                  <div className="ced-info-grid">
+                    {[
+                      { icon:"📋", label:"Exam Name",     value:selectedCert.code },
+                      { icon:"💰", label:"Exam Cost",     value:detail.cost },
+                      { icon:"📝", label:"Format",        value:detail.format },
+                      { icon:"❓", label:"Questions",     value:detail.questions },
+                      { icon:"⏱", label:"Duration",      value:detail.duration },
+                      { icon:"🎯", label:"Passing Score", value:detail.passing },
+                      { icon:"📅", label:"Validity",      value:detail.validity },
+                      { icon:"🔄", label:"Retake Policy", value:detail.retake },
+                    ].map((item,idx) => (
+                      <motion.div key={item.label} className="ced-info-card" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:idx*0.04,duration:0.3}}>
+                        <span className="ced-info-icon">{item.icon}</span>
+                        <span className="ced-info-label">{item.label}</span>
+                        <span className="ced-info-value">{item.value}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                  <div className="ced-dp-section-label" style={{marginTop:20}}>Skills Measured ({activeTab})</div>
+                  <div className="ced-dp-skills">
+                    {skills.map((sk,si) => (
+                      <motion.div key={sk.l} className="ced-dp-skill-row" initial={{opacity:0,x:-10}} animate={{opacity:1,x:0}} transition={{delay:0.32+si*0.06,duration:0.3}}>
+                        <div className="ced-dp-skill-meta">
+                          <span className="ced-dp-skill-label">{sk.l}</span>
+                          <span className="ced-dp-skill-pct">{sk.pct}%</span>
+                        </div>
+                        <div className="ced-dp-skill-track">
+                          <div className="ced-dp-skill-fill" style={{width:`${sk.pct}%`,background:`linear-gradient(90deg, ${meta.color} 0%, #50e6ff 100%)`}}/>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+                <div className="ced-dp-path">
+                  <div className="ced-dp-section-label">Certification Path</div>
+                  <p className="ced-dp-path-sub">Where {selectedCert.code} fits in the {activeTab} journey</p>
+                  <div className="ced-path-steps">
+                    {pathSteps.map((step,idx) => (
+                      <motion.div key={step.code} className={`ced-path-step${step.current?" current":""}`} initial={{opacity:0,x:16}} animate={{opacity:1,x:0}} transition={{delay:idx*0.1,duration:0.35}}>
+                        <div className="ced-path-step-left">
+                          <div className="ced-path-num" style={{background:step.current?meta.color:"var(--light-bg)",color:step.current?"#fff":"var(--light-sub)",border:`2px solid ${step.current?meta.color:"var(--light-border)"}`}}>{idx+1}</div>
+                          {idx<pathSteps.length-1 && <div className="ced-path-line" style={{background:step.current?`linear-gradient(to bottom, ${meta.color}, var(--light-border))`:"var(--light-border)"}}/>}
+                        </div>
+                        <div className={`ced-path-step-body${step.current?" current":""}`} style={step.current?{borderColor:meta.color+"50",background:meta.bg}:{}}>
+                          <div className="ced-path-step-top">
+                            <span className="ced-path-step-code" style={step.current?{color:meta.color}:{}}>{step.code}</span>
+                            <span className={`cert-badge ${step.level}`} style={{marginBottom:0,fontSize:9}}>{LEVEL_LABEL[step.level]}</span>
+                          </div>
+                          <div className="ced-path-step-name">{step.name}</div>
+                          {step.current && <div className="ced-path-here" style={{color:meta.color}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>You are here</div>}
+                          <div className="ced-path-step-price">${getCertPrice(step).toLocaleString()} <span>indicative</span></div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="ced-dp-footer">
+                <div className="ced-dp-footer-info">
+                  <span className="ced-dp-footer-fee"><span>Indicative Training Fee</span><strong>${getCertPrice(selectedCert).toLocaleString()} USD</strong></span>
+                  <span className="ced-dp-footer-note">📋 {detail.bundle}</span>
+                </div>
+                <div className="ced-dp-footer-actions">
+                  <button className="cert-btn-brochure" onClick={onBrochure}>Download Brochure</button>
+                  <button className="cert-btn-details" onClick={onEnroll}>
+                    Enroll in {selectedCert.code}
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer info bar — exam mode only */}
+        <AnimatePresence>
+          {viewMode==="exams" && (
+            <motion.div className="ced-footer-bar reveal" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}>
+              <div className="ced-footer-item"><span className="ced-footer-icon">🎯</span><div className="ced-footer-text"><strong>Passing Score</strong>700 out of 1000 — all Microsoft exams</div></div>
+              <div className="ced-footer-divider"/>
+              <div className="ced-footer-item"><span className="ced-footer-icon">🔄</span><div className="ced-footer-text"><strong>Free Renewal</strong>Annual online assessment via Microsoft Learn</div></div>
+              <div className="ced-footer-divider"/>
+              <div className="ced-footer-item"><span className="ced-footer-icon">🌐</span><div className="ced-footer-text"><strong>Exam Data</strong>learn.microsoft.com official exam pages</div></div>
+              <div className="ced-footer-divider"/>
+              <div className="ced-footer-item"><span className="ced-footer-icon">💰</span><div className="ced-footer-text"><strong>Indicative Pricing</strong>Contact Koenig for exact training fees</div></div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </div>
+    </section>
+  );
+}
+
 function CertExamDetails({ onEnroll }) {
   const [examTab, setExamTab]         = useState(CERT_TABS[0]);
   const [examLevel, setExamLevel]     = useState("all");
@@ -6762,9 +7263,6 @@ function HowItWorksSection() {
 // ── MAIN ──
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
-  const [certTab, setCertTab] = useState("Azure");
-  const [certLevel, setCertLevel] = useState("all");
-  const [certSearch, setCertSearch] = useState("");
   const [modal, setModal] = useState(false);
   const [brochureModal, setBrochureModal] = useState(false);
   const [videoMuted, setVideoMuted] = useState(true);
@@ -7173,8 +7671,10 @@ export default function App() {
       {/* KOENIG EDGE */}
       <EdgeSection onCTA={() => setModal(true)} />
 
-      {/* CERT PATHS — Sidebar Layout */}
-      <section className="certs-sec" id="cert">
+      {/* UNIFIED CERT EXPLORER */}
+      <UnifiedCertSection onEnroll={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
+
+      {false && <section className="certs-sec" id="cert-old">
         <div className="certs-inner">
           <div className="certs-header reveal">
             <h2 className="sec-title">Microsoft Certification <em>Training Courses</em></h2>
@@ -7385,16 +7885,13 @@ export default function App() {
 
           </div>
         </div>
-      </section>
+      </section>}
 
       {/* ENROLLMENT INSIGHTS */}
       <EnrollmentInsights />
 
       {/* CERT SHOWCASE */}
       <CertShowcase onUnlock={() => setModal(true)} />
-
-      {/* CERT EXAM DETAILS */}
-      <CertExamDetails onEnroll={() => setModal(true)} />
 
       {/* HOW IT WORKS */}
       <HowItWorksSection />
