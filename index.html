@@ -1,0 +1,2203 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Koenig Solutions — Microsoft Training</title><style>body{margin:0;background:#093148;}</style></head><body><div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
+import { useState, useEffect, useRef } from "react";
+
+/* ─────────────────────────────────────────────
+   KOENIG × MICROSOFT — HIGH-CONVERTING LANDING PAGE
+   Aesthetic: Refined dark-luxury B2B with electric accents
+   Font: DM Sans + Bebas Neue display
+   Conversion focus: urgency, social proof, progressive lead form
+───────────────────────────────────────────── */
+
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+/* GT Walsheim Pro Variable is Koenig's brand font. Plus Jakarta Sans is the closest web-safe equivalent. */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── Koenig Brand Primary Palette ── */
+  --ink: #093148;        /* brand navy — page bg */
+  --ink2: #071e2e;       /* deeper navy for sections */
+  --navy: #093148;       /* Koenig primary dark */
+  --blue: #0694D1;       /* Koenig primary blue */
+  --blue-dark: #076D9D;  /* hover state */
+  --charcoal: #465058;   /* logo/heading text colour */
+  --sky: #45B0E1;        /* lighter blue accent */
+  --teal: #0F9ED5;       /* brand secondary blue */
+  --amber: #f59e0b;      /* stars */
+  --red: #ef4444;
+  --white: #ffffff;
+  --off: #F0FAFF;        /* brand light bg tint */
+  --sl: rgba(255,255,255,0.5);
+  --sl2: rgba(255,255,255,0.12);
+  --sl3: rgba(255,255,255,0.06);
+  /* ── Brand Font: GT Walsheim Pro Variable (web fallback: Plus Jakarta Sans) ── */
+  --display: 'Plus Jakarta Sans', 'GT Walsheim Pro', sans-serif;
+  --body: 'Plus Jakarta Sans', 'GT Walsheim Pro', sans-serif;
+  --r8: 8px; --r12: 12px; --r16: 16px; --r24: 24px;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--body); background: var(--ink); color: var(--white); overflow-x: hidden; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--ink2); }
+::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 2px; }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 48px; height: 64px;
+  background: rgba(9,49,72,0.92); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--sl2);
+  transition: all 0.3s;
+}
+.nav.scrolled { background: rgba(9,49,72,0.99); }
+.nav-logo { display: flex; align-items: center; gap: 16px; text-decoration: none; }
+.nav-logo-img { height: 40px; width: auto; display: block; object-fit: contain; }
+.nav-logo-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); flex-shrink: 0; }
+.nav-logo-text { font-family: var(--body); font-size: 22px; font-weight: 800; letter-spacing: 1px; line-height: 1; color: var(--white); }
+.nav-logo-text span { color: var(--blue); }
+/* Right side — just CTA now */
+.nav-right { display: flex; align-items: center; gap: 24px; }
+.nav-ms-badge { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.ms-flag { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 16px; height: 16px; flex-shrink: 0; }
+.ms-sq { border-radius: 1px; }
+.nav-badge-text { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); letter-spacing: 0.3px; }
+.nav-cta { background: var(--blue); color: var(--white); font-family: var(--body); font-weight: 700; font-size: 13px; padding: 10px 22px; border-radius: var(--r8); border: none; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.nav-cta:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
+
+/* urgency bar removed */
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.7)} }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; position: relative; overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 52px;
+  padding: 96px 56px 80px;
+  background: var(--ink);
+}
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 900px 600px at -5% 50%, rgba(6,148,209,0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 700px 500px at 105% 30%, rgba(7,109,157,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 500px 400px at 55% 105%, rgba(16,217,168,0.07) 0%, transparent 60%);
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image: linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 80% at 25% 50%, black 10%, transparent 100%);
+}
+.hero-sep {
+  position: absolute; top: 14%; bottom: 8%; width: 1px;
+  right: calc(440px + 52px / 2);
+  background: linear-gradient(to bottom, transparent, rgba(6,148,209,0.18) 20%, rgba(6,148,209,0.18) 80%, transparent);
+  pointer-events: none; z-index: 2;
+}
+
+/* LEFT column — all text content stacked */
+.hero-left {
+  flex: 1;
+  min-width: 0;
+  position: relative; z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+/* these are now just children of hero-left, no grid-area needed */
+.hero-heading { }
+.hero-details  { }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(6,148,209,0.1); border: 1px solid rgba(6,148,209,0.3);
+  color: var(--blue); font-size: 12px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; padding: 6px 16px; border-radius: 20px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.7s ease both;
+}
+.dot-live { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: pulse 1.5s infinite; }
+.hero h1 {
+  font-family: var(--display); font-size: clamp(44px, 5vw, 72px);
+  font-weight: 800; line-height: 1.05; letter-spacing: -0.5px; color: var(--white);
+  margin-bottom: 22px;
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+.hero h1 .accent {
+  color: var(--blue);
+  -webkit-text-fill-color: #0694D1;
+}
+.hero-desc {
+  font-size: 17px; line-height: 1.7; color: rgba(255,255,255,0.6);
+  max-width: 520px; margin-bottom: 28px;
+  animation: fadeUp 0.7s 0.2s ease both;
+}
+.trust-row {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px;
+  animation: fadeUp 0.7s 0.3s ease both;
+}
+.trust-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--sl3); border: 1px solid var(--sl2);
+  color: rgba(255,255,255,0.75); font-size: 13px; font-weight: 500;
+  padding: 7px 14px; border-radius: 20px;
+}
+.trust-pill .check { color: var(--blue); font-size: 14px; }
+
+/* Social proof mini strip */
+.social-proof {
+  display: flex; align-items: center; gap: 16px;
+  animation: fadeUp 0.7s 0.35s ease both;
+}
+.sp-avatars { display: flex; }
+.sp-avatar {
+  width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--ink);
+  object-fit: cover; background: var(--navy);
+  margin-left: -8px;
+}
+.sp-avatar:first-child { margin-left: 0; }
+.sp-text { font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.4; }
+.sp-text strong { color: var(--white); }
+.stars { color: var(--amber); font-size: 13px; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+
+/* ── LEAD FORM ── */
+.lead-form-wrap {
+  flex-shrink: 0;
+  width: 440px;
+  position: relative; z-index: 1;
+  animation: fadeUp 0.8s 0.15s ease both;
+}
+.form-glow {
+  position: absolute; width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,148,209,0.18), transparent 65%);
+  top: -80px; left: -80px; pointer-events: none; filter: blur(50px);
+}
+.lead-form {
+  background: rgba(9,49,72,0.55);
+  border: 1px solid rgba(6,148,209,0.25);
+  border-radius: 20px; padding: 32px 30px;
+  backdrop-filter: blur(28px);
+  position: relative; overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07);
+}
+.lead-form::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #0694D1, #45B0E1);
+}
+.lead-form::after {
+  content: ''; position: absolute; top: 3px; left: 0; right: 0; height: 60px;
+  background: linear-gradient(to bottom, rgba(6,148,209,0.06), transparent);
+  pointer-events: none;
+}
+.form-header { margin-bottom: 24px; }
+.form-tag { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--blue); margin-bottom: 6px; }
+.form-title { font-family: var(--display); font-size: 28px; letter-spacing: 0.5px; color: var(--white); line-height: 1.1; }
+.form-sub { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; line-height: 1.5; }
+
+/* Progress steps */
+.form-steps { display: flex; align-items: center; gap: 0; margin-bottom: 24px; }
+.step-item { display: flex; align-items: center; flex: 1; }
+.step-circle {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); flex-shrink: 0;
+  transition: all 0.3s;
+}
+.step-circle.active { border-color: var(--blue); color: var(--blue); background: rgba(6,148,209,0.1); }
+.step-circle.done { border-color: var(--blue); background: var(--blue); color: var(--ink); }
+.step-line { flex: 1; height: 2px; background: rgba(255,255,255,0.1); margin: 0 6px; transition: all 0.3s; }
+.step-line.done { background: var(--blue); }
+.step-label { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 4px; text-align: center; }
+
+/* Form fields */
+.field-group { margin-bottom: 12px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.field-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); margin-bottom: 6px; display: block; }
+.field-input {
+  width: 100%; padding: 13px 16px;
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: var(--r8); color: var(--white); font-family: var(--body); font-size: 14px;
+  outline: none; transition: all 0.2s;
+}
+.field-input::placeholder { color: rgba(255,255,255,0.25); }
+.field-input:focus { border-color: var(--blue); background: rgba(6,148,209,0.08); box-shadow: 0 0 0 3px rgba(6,148,209,0.12); }
+.field-input.error { border-color: var(--red); }
+.field-error { font-size: 11px; color: #fca5a5; margin-top: 4px; }
+.field-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+.field-select option { background: var(--ink2); }
+
+/* Course interest chips */
+.chip-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.5); margin-bottom: 10px; display: block; }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+.chip {
+  padding: 6px 13px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1.5px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.55);
+  cursor: pointer; transition: all 0.2s; background: transparent; font-family: var(--body);
+}
+.chip:hover { border-color: rgba(6,148,209,0.4); color: rgba(255,255,255,0.8); }
+.chip.selected { border-color: var(--blue); color: var(--blue); background: rgba(6,148,209,0.1); }
+
+/* Submit button */
+.submit-btn {
+  width: 100%; padding: 15px; border-radius: var(--r8); border: none; cursor: pointer;
+  font-family: var(--body); font-size: 15px; font-weight: 700;
+  background: linear-gradient(135deg, var(--blue), #076d9d);
+  color: var(--white); display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.25s; position: relative; overflow: hidden;
+}
+.submit-btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  opacity: 0; transition: opacity 0.2s;
+}
+.submit-btn:hover::after { opacity: 1; }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 20px 48px rgba(6,148,209,0.45); }
+.submit-btn:active { transform: none; }
+.submit-btn.loading { opacity: 0.8; pointer-events: none; }
+.btn-arrow { transition: transform 0.2s; }
+.submit-btn:hover .btn-arrow { transform: translateX(4px); }
+
+.form-trust { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 12px; font-size: 12px; color: rgba(255,255,255,0.35); }
+.form-trust-icon { font-size: 13px; }
+
+/* Next/Back buttons */
+.form-nav { display: flex; gap: 10px; margin-top: 4px; }
+.btn-back { flex: 1; padding: 13px; border-radius: var(--r8); border: 1.5px solid rgba(255,255,255,0.12); background: transparent; color: rgba(255,255,255,0.6); font-family: var(--body); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.btn-back:hover { border-color: rgba(255,255,255,0.25); color: var(--white); }
+.btn-next { flex: 2; padding: 13px; border-radius: var(--r8); border: none; background: var(--blue); color: var(--white); font-family: var(--body); font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-next:hover { background: #057ab5; transform: translateY(-1px); }
+
+/* Success state */
+.form-success {
+  text-align: center; padding: 20px 10px;
+  animation: fadeUp 0.5s ease both;
+}
+.success-icon { font-size: 52px; margin-bottom: 16px; }
+.success-title { font-family: var(--display); font-size: 32px; color: var(--blue); margin-bottom: 10px; }
+.success-msg { font-size: 15px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+.success-next { margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.5); }
+.success-next strong { color: var(--blue); }
+
+/* ── TICKER ── */
+.ticker { background: var(--blue); padding: 11px 0; overflow: hidden; }
+.ticker-track { display: flex; width: max-content; animation: ticker 35s linear infinite; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.ticker-item { white-space: nowrap; padding: 0 40px; color: var(--white); font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 12px; }
+.ticker-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+
+/* ── STATS STRIP ── */
+.stats-strip { background: var(--ink2); border-top: 1px solid var(--sl2); border-bottom: 1px solid var(--sl2); }
+.stats-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4,1fr); }
+.stat-item { padding: 36px 40px; border-right: 1px solid var(--sl2); text-align: center; }
+.stat-item:last-child { border-right: none; }
+.stat-number { font-family: var(--display); font-size: 52px; letter-spacing: 1px; color: var(--white); line-height: 1; }
+.stat-number .unit { font-size: 32px; color: var(--blue); }
+.stat-label { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 6px; font-weight: 500; }
+.stat-source { font-size: 10px; color: rgba(255,255,255,0.2); margin-top: 4px; }
+
+/* ── WHY KOENIG (Features) ── */
+.features-sec { background: var(--ink); padding: 100px 48px; }
+.sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); margin-bottom: 14px; }
+.sec-title { font-family: var(--display); font-weight: 800; font-size: clamp(34px, 4vw, 52px); color: var(--white); letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 16px; }
+.sec-title em { font-style: normal; color: var(--blue); }
+.sec-sub { font-size: 17px; color: rgba(255,255,255,0.5); max-width: 560px; line-height: 1.7; }
+.features-header { max-width: 1200px; margin: 0 auto 60px; }
+.features-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--sl2); border: 1px solid var(--sl2); border-radius: var(--r16); overflow: hidden; }
+.feat-card { background: var(--ink2); padding: 36px; transition: all 0.3s; position: relative; overflow: hidden; }
+.feat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, var(--blue), var(--sky)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+.feat-card:hover { background: rgba(6,148,209,0.05); }
+.feat-card:hover::before { transform: scaleX(1); }
+.feat-icon { width: 44px; height: 44px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; background: rgba(6,148,209,0.08); border: 1px solid rgba(6,148,209,0.15); border-radius: 12px; padding: 6px; }
+.feat-title { font-family: var(--display); font-size: 22px; letter-spacing: 0.5px; color: var(--white); margin-bottom: 10px; }
+.feat-desc { font-size: 14px; color: rgba(255,255,255,0.5); line-height: 1.7; }
+.feat-stat { margin-top: 16px; font-size: 13px; font-weight: 700; color: var(--blue); }
+
+/* ── CERT PATHS (Sidebar Layout) ── */
+.certs-sec { background: var(--ink2); padding: 100px 48px; }
+.certs-inner { max-width: 1280px; margin: 0 auto; }
+.certs-header { margin-bottom: 48px; }
+
+/* Sidebar + content panel */
+.certs-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 0;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  overflow: hidden;
+  min-height: 560px;
+}
+
+/* LEFT SIDEBAR */
+.cert-sidebar {
+  background: rgba(4,14,24,0.7);
+  border-right: 1px solid rgba(255,255,255,0.07);
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+}
+.cert-sidebar-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.25);
+  padding: 14px 20px 10px;
+}
+.cert-sidebar-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 20px; cursor: pointer;
+  transition: all 0.2s; border: none; background: transparent;
+  text-align: left; width: 100%; position: relative;
+  border-left: 3px solid transparent;
+}
+.cert-sidebar-item:hover { background: rgba(255,255,255,0.04); }
+.cert-sidebar-item.active {
+  background: rgba(6,148,209,0.1);
+  border-left-color: var(--blue);
+}
+.cert-sidebar-item.active .csi-label { color: var(--white); }
+.cert-sidebar-item.active .csi-count { background: rgba(6,148,209,0.2); color: var(--blue); border-color: rgba(6,148,209,0.3); }
+.csi-icon { width: 24px; height: 24px; flex-shrink: 0; opacity: 0.7; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; }
+.cert-sidebar-item.active .csi-icon { opacity: 1; }
+.csi-body { flex: 1; min-width: 0; }
+.csi-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.55); line-height: 1.3; transition: color 0.2s; display: block; }
+.csi-sublabel { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 1px; display: block; }
+.csi-count {
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.cert-sidebar-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 0; }
+
+/* RIGHT CONTENT PANEL */
+.cert-panel {
+  background: rgba(7,24,40,0.5);
+  padding: 32px 32px 32px;
+  display: flex; flex-direction: column; gap: 0;
+}
+.cert-panel-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px; padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 16px; flex-wrap: wrap;
+}
+.cert-panel-title-block {}
+.cert-panel-icon { width: 40px; height: 40px; margin-bottom: 10px; display: flex; align-items: center; }
+.cert-panel-name {
+  font-family: var(--display); font-size: 28px; letter-spacing: 0.5px;
+  color: var(--white); line-height: 1;
+}
+.cert-panel-desc { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 5px; line-height: 1.5; max-width: 460px; }
+.cert-panel-meta { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+.cert-meta-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.5);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  padding: 4px 11px; border-radius: 20px;
+}
+.cert-panel-cta { flex-shrink: 0; align-self: flex-start; }
+.cert-panel-enroll {
+  background: var(--blue); color: var(--white);
+  font-family: var(--body); font-weight: 700; font-size: 13px;
+  padding: 10px 22px; border-radius: 8px; border: none; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.cert-panel-enroll:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
+
+/* Course grid in panel */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.cert-card {
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px; padding: 18px; cursor: pointer;
+  transition: all 0.22s; text-decoration: none; display: block;
+  position: relative; overflow: hidden;
+}
+.cert-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--blue), var(--sky));
+  transform: scaleX(0); transform-origin: left; transition: transform 0.22s;
+}
+.cert-card:hover { border-color: rgba(6,148,209,0.25); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(0,0,0,0.4); background: rgba(6,148,209,0.04); }
+.cert-card:hover::before { transform: scaleX(1); }
+.cert-badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 9px; }
+.cert-badge.fund { background: rgba(6,148,209,0.1); color: var(--blue); border: 1px solid rgba(6,148,209,0.15); }
+.cert-badge.assoc { background: rgba(6,148,209,0.1); color: var(--blue); border: 1px solid rgba(6,148,209,0.2); }
+.cert-badge.expert { background: rgba(245,158,11,0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+.cert-name { font-size: 13px; font-weight: 600; color: var(--white); margin-bottom: 4px; line-height: 1.4; }
+.cert-code { font-size: 11px; color: rgba(255,255,255,0.28); margin-bottom: 10px; }
+.cert-footer { display: flex; justify-content: space-between; align-items: center; }
+.cert-dur { font-size: 11px; color: rgba(255,255,255,0.35); }
+.cert-enroll { font-size: 11px; font-weight: 700; color: var(--blue); }
+
+/* ── TESTIMONIALS ── */
+.test-sec { background: var(--ink); padding: 100px 48px; overflow: hidden; }
+.test-inner { max-width: 1200px; margin: 0 auto; }
+.test-track-wrap { overflow: hidden; margin: 0 -48px; padding: 0 48px; cursor: grab; }
+.test-track-wrap:active { cursor: grabbing; }
+.test-track { display: flex; gap: 20px; width: max-content; user-select: none; padding: 10px 0; }
+.test-card { width: 340px; background: var(--ink2); border: 1px solid var(--sl2); border-radius: var(--r16); padding: 28px; flex-shrink: 0; transition: all 0.3s; }
+.test-card:hover { border-color: rgba(6,148,209,0.2); transform: translateY(-4px); }
+.test-stars { color: var(--amber); font-size: 14px; margin-bottom: 14px; }
+.test-quote { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 18px; font-style: italic; }
+.test-author { display: flex; align-items: center; gap: 12px; }
+.test-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(6,148,209,0.35); flex-shrink: 0; background: var(--navy); }
+.test-name { font-size: 14px; font-weight: 600; color: var(--white); }
+.test-role { font-size: 12px; color: rgba(255,255,255,0.4); }
+.test-cert { display: inline-flex; font-size: 10px; font-weight: 700; color: var(--blue); background: rgba(6,148,209,0.08); border: 1px solid rgba(6,148,209,0.2); padding: 2px 8px; border-radius: 4px; margin-top: 4px; }
+
+/* ── COMPANIES SECTION ── */
+.companies-sec {
+  background: #071e2e;
+  padding: 72px 0 64px;
+  border-top: 1px solid var(--sl2);
+  border-bottom: 1px solid var(--sl2);
+  overflow: hidden;
+}
+.companies-inner { max-width: 1260px; margin: 0 auto; text-align: center; }
+.companies-headline-wrap { text-align: center; margin-bottom: 52px; padding: 0 24px; }
+.companies-headline {
+  font-family: var(--display); font-weight: 800; font-size: clamp(26px,3vw,42px);
+  color: var(--white); letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.15;
+}
+.companies-headline em { font-style: normal; color: var(--blue); }
+.companies-headline-sub { font-size: 15px; color: rgba(255,255,255,0.38); margin-bottom: 20px; font-weight: 400; }
+.companies-sub { font-size: 15px; color: rgba(255,255,255,0.4); margin-bottom: 52px; }
+.companies-underline {
+  width: 80px; height: 2px; margin: 0 auto;
+  background: linear-gradient(90deg, var(--blue), var(--sky));
+  border-radius: 2px;
+}
+
+
+/* Stats block row */
+.companies-cta-row { display: flex; justify-content: center; gap: 0; margin-top: 48px; border: 1px solid rgba(255,255,255,0.07); border-radius: var(--r16); overflow: hidden; max-width: 800px; margin-left: auto; margin-right: auto; }
+.companies-stat-block { flex: 1; padding: 28px 20px; text-align: center; border-right: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.02); }
+.companies-stat-block:last-child { border-right: none; }
+.companies-stat-num { font-family: var(--display); font-size: 36px; color: var(--blue); letter-spacing: 1px; line-height: 1; }
+.companies-stat-lbl { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 6px; font-weight: 500; }
+.companies-stat-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(16,217,168,0.08); border: 1px solid rgba(6,148,209,0.15); color: var(--blue); font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 20px; }
+
+.companies-cta-btn {
+  background: linear-gradient(135deg, var(--blue), #076d9d);
+  color: var(--white); font-family: var(--body); font-weight: 700; font-size: 15px;
+  padding: 15px 36px; border-radius: var(--r8); border: none; cursor: pointer;
+  transition: all 0.25s; box-shadow: 0 8px 32px rgba(6,148,209,0.3);
+}
+.companies-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 36px rgba(6,148,209,0.4); }
+
+/* Auto-scrolling logo track — white pill cards for full brand colour visibility */
+.companies-marquee-wrap {
+  position: relative; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, black 5%, black 95%, transparent 100%);
+  margin-bottom: 16px;
+  padding: 10px 0;
+}
+.companies-marquee {
+  display: flex; gap: 12px; width: max-content; align-items: center;
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+.companies-marquee-wrap:hover .companies-marquee { animation-play-state: paused; }
+.companies-marquee-2 { animation-direction: reverse; animation-duration: 46s; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* White pill card — makes every brand colour pop vividly against dark bg */
+.company-logo-item {
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px 26px; height: 60px; flex-shrink: 0; min-width: 110px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+.company-logo-item:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 28px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.15);
+}
+/* No fill override — let every SVG show its real brand colour */
+.company-logo-item svg { height: 28px; width: auto; display: block; }
+
+.companies-cta-row {
+  margin-top: 48px; display: flex; align-items: center;
+  justify-content: center; gap: 16px; flex-wrap: wrap;
+}
+.companies-stat-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(16,217,168,0.08); border: 1px solid rgba(6,148,209,0.15);
+  color: var(--blue); font-size: 14px; font-weight: 700;
+  padding: 10px 20px; border-radius: 24px;
+}
+.companies-cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--blue); color: var(--white);
+  font-family: var(--body); font-size: 14px; font-weight: 700;
+  padding: 12px 28px; border-radius: var(--r8); border: none; cursor: pointer;
+  transition: all 0.25s;
+}
+.companies-cta-btn:hover { background: #057ab5; transform: translateY(-2px); box-shadow: 0 16px 36px rgba(6,148,209,0.4); }
+
+/* ── CERT SHOWCASE ── */
+.cert-showcase-sec {
+  background: var(--ink); padding: 100px 48px;
+  overflow: hidden; position: relative;
+}
+.cert-showcase-sec::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background: radial-gradient(ellipse 800px 600px at 70% 50%, rgba(6,148,209,0.07), transparent 60%);
+}
+.cert-showcase-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 72px; }
+.cert-showcase-left { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.cert-showcase-right { flex-shrink: 0; width: 480px; position: relative; z-index: 1; }
+
+/* The certificate card preview */
+.cert-preview-wrap {
+  position: relative;
+  filter: drop-shadow(0 40px 80px rgba(0,0,0,0.6));
+}
+.cert-preview-wrap::before {
+  content:''; position:absolute; inset:-1px; border-radius:16px;
+  background: linear-gradient(135deg, rgba(6,148,209,0.5), rgba(16,217,168,0.3), rgba(6,148,209,0.1));
+  z-index:-1;
+}
+.cert-card-mock {
+  background: linear-gradient(135deg, #0a1628 0%, #0d2140 40%, #0a1e3a 100%);
+  border-radius: 14px; padding: 36px 40px; position: relative; overflow: hidden;
+  border: 1px solid rgba(6,148,209,0.2);
+}
+.cert-card-mock::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:4px;
+  background: linear-gradient(90deg, #0694D1, #45B0E1);
+}
+.cert-watermark {
+  position:absolute; bottom:-20px; right:-20px; width:180px; height:180px; opacity:0.04;
+  font-size:160px; line-height:1; pointer-events:none; user-select:none;
+}
+.cert-mock-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; }
+.cert-mock-org { display:flex; align-items:center; gap:8px; }
+.cert-mock-org-name { font-size:13px; font-weight:700; letter-spacing:1px; color:rgba(255,255,255,0.5); text-transform:uppercase; }
+.cert-mock-stamp { width:52px; height:52px; border-radius:50%; border:2px solid rgba(6,148,209,0.4); display:flex; align-items:center; justify-content:center; background:rgba(6,148,209,0.08); font-size:22px; }
+.cert-mock-presented { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:6px; }
+.cert-mock-recipient { font-family:var(--display); font-size:32px; letter-spacing:1px; color:var(--white); margin-bottom:4px; }
+.cert-mock-subtitle { font-size:12px; color:rgba(255,255,255,0.35); letter-spacing:0.5px; margin-bottom:20px; }
+.cert-mock-course-label { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.25); margin-bottom:4px; }
+.cert-mock-course { font-family:var(--display); font-size:18px; letter-spacing:0.5px; color:var(--sky); margin-bottom:20px; line-height:1.2; }
+.cert-mock-footer { display:flex; align-items:flex-end; justify-content:space-between; padding-top:20px; border-top:1px solid rgba(255,255,255,0.06); }
+.cert-mock-sig { }
+.cert-mock-sig-line { width:80px; height:1px; background:rgba(255,255,255,0.2); margin-bottom:4px; }
+.cert-mock-sig-name { font-size:10px; color:rgba(255,255,255,0.25); letter-spacing:0.5px; }
+.cert-mock-badge { text-align:right; }
+.cert-mock-badge-ring {
+  width:48px; height:48px; border-radius:50%;
+  background: conic-gradient(var(--blue) 0deg 270deg, rgba(255,255,255,0.06) 270deg 360deg);
+  display:flex; align-items:center; justify-content:center; margin-left:auto; margin-bottom:3px;
+}
+.cert-mock-badge-inner { width:38px; height:38px; border-radius:50%; background:var(--ink); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.cert-mock-badge-text { font-size:9px; color:rgba(255,255,255,0.25); letter-spacing:0.3px; }
+
+/* Blurred overlay with CTA */
+.cert-blur-overlay {
+  position:absolute; inset:0; border-radius:14px;
+  background:rgba(4,14,24,0.55); backdrop-filter:blur(4px);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+  transition: opacity 0.3s;
+}
+.cert-unlock-label { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); }
+.cert-unlock-btn {
+  display:inline-flex; align-items:center; gap:10px;
+  background: linear-gradient(135deg, var(--blue), #076d9d);
+  color:var(--white); font-family:var(--body); font-size:14px; font-weight:700;
+  padding:13px 28px; border-radius:var(--r8); border:none; cursor:pointer;
+  box-shadow:0 16px 40px rgba(6,148,209,0.4); transition:all 0.25s;
+}
+.cert-unlock-btn:hover { transform:translateY(-2px); box-shadow:0 24px 48px rgba(6,148,209,0.5); }
+.cert-unlock-note { font-size:11px; color:rgba(255,255,255,0.25); text-align:center; line-height:1.5; }
+
+/* Left text side */
+.cert-showcase-label { font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--blue); margin-bottom:14px; }
+.cert-showcase-title { font-family:var(--display); font-size:clamp(38px,4.5vw,58px); letter-spacing:1px; color:var(--white); line-height:1; margin-bottom:18px; }
+.cert-showcase-title em { font-style:normal; color:var(--sky); }
+.cert-showcase-desc { font-size:16px; color:rgba(255,255,255,0.5); line-height:1.7; margin-bottom:32px; max-width:460px; }
+.cert-value-list { display:flex; flex-direction:column; gap:12px; margin-bottom:36px; }
+.cert-value-item { display:flex; align-items:flex-start; gap:12px; }
+.cert-value-icon { width:32px; height:32px; border-radius:8px; background:rgba(6,148,209,0.1); border:1px solid rgba(6,148,209,0.18); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; margin-top:1px; }
+.cert-value-text { font-size:14px; color:rgba(255,255,255,0.6); line-height:1.5; }
+.cert-value-text strong { color:var(--white); display:block; font-size:14px; margin-bottom:2px; }
+
+/* Success download state */
+.success-download-wrap {
+  margin-top:20px; padding:16px; border-radius:var(--r12);
+  background:rgba(16,217,168,0.07); border:1px solid rgba(6,148,209,0.15);
+  display:flex; align-items:center; gap:14px;
+}
+.success-dl-icon { font-size:28px; flex-shrink:0; }
+.success-dl-text { flex:1; }
+.success-dl-title { font-size:13px; font-weight:700; color:var(--blue); margin-bottom:3px; }
+.success-dl-sub { font-size:12px; color:rgba(255,255,255,0.4); }
+.success-dl-btn {
+  background:var(--blue); color:var(--white); font-family:var(--body); font-size:12px; font-weight:800;
+  padding:8px 16px; border-radius:6px; border:none; cursor:pointer; white-space:nowrap;
+  transition:all 0.2s; letter-spacing:0.3px;
+}
+.success-dl-btn:hover { transform:translateY(-1px); box-shadow:0 8px 20px rgba(16,217,168,0.4); }
+
+/* ── AWARDS SLIDER ── */
+.awards-sec {
+  background: var(--ink2);
+  padding: 80px 48px;
+  overflow: hidden;
+  border-top: 1px solid var(--sl2);
+  border-bottom: 1px solid var(--sl2);
+}
+.awards-inner { max-width: 1200px; margin: 0 auto; }
+.awards-header { text-align: center; margin-bottom: 52px; }
+.awards-header .sec-label { justify-content: center; display: flex; }
+.awards-slider-wrap { position: relative; }
+.awards-track-outer {
+  overflow: hidden;
+  border-radius: var(--r16);
+  mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+.awards-track {
+  display: flex;
+  gap: 20px;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.award-card {
+  flex-shrink: 0;
+  width: calc((100% - 40px) / 3);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--r16);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+.award-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--sky));
+  transform: scaleX(0); transform-origin: left; transition: transform 0.3s;
+}
+.award-card:hover { border-color: rgba(6,148,209,0.25); background: rgba(6,148,209,0.04); transform: translateY(-3px); }
+.award-card:hover::before { transform: scaleX(1); }
+.award-card-glow {
+  position: absolute; width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,148,209,0.12), transparent 70%);
+  top: -60px; right: -60px; pointer-events: none;
+}
+.award-img-wrap {
+  width: 100%; height: 140px;
+  border-radius: 10px; overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; justify-content: center;
+}
+.award-img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center top;
+  transition: transform 0.4s ease;
+}
+.award-card:hover .award-img { transform: scale(1.04); }
+.award-year-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+  color: var(--amber); padding: 3px 10px; border-radius: 20px;
+  width: fit-content;
+}
+.award-org {
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--blue);
+}
+.award-title {
+  font-family: var(--display); font-size: 20px; letter-spacing: 0.5px;
+  color: var(--white); line-height: 1.2;
+}
+.award-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+/* Slider controls */
+.awards-controls {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin-top: 36px;
+}
+.awards-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.6); font-size: 16px;
+  cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.awards-btn:hover { background: rgba(6,148,209,0.15); border-color: var(--blue); color: var(--white); }
+.awards-dots { display: flex; gap: 8px; }
+.awards-dot {
+  width: 6px; height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,0.2); cursor: pointer;
+  transition: all 0.3s;
+}
+.awards-dot.active { width: 24px; background: var(--blue); }
+
+/* Trust logos strip below awards */
+.trust-logos-strip {
+  max-width: 1200px; margin: 52px auto 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 40px; flex-wrap: wrap;
+}
+.trust-logo-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+  color: rgba(255,255,255,0.3);
+}
+.trust-logo-item svg { opacity: 0.4; }
+
+/* ── BOTTOM CTA ── */
+.bottom-cta {
+  background: linear-gradient(135deg, var(--navy) 0%, #0a2a4e 50%, #076d9d 100%);
+  padding: 100px 48px; text-align: center; position: relative; overflow: hidden;
+}
+.bottom-cta::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 800px 400px at 50% 100%, rgba(6,148,209,0.12), transparent); }
+.cta-title { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 4.5vw, 64px); color: var(--white); letter-spacing: -0.5px; margin-bottom: 16px; position: relative; z-index:1; }
+.cta-title span { color: var(--blue); }
+.cta-sub { font-size: 18px; color: rgba(255,255,255,0.6); margin-bottom: 40px; position: relative; z-index:1; }
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; z-index:1; }
+.cta-primary { background: var(--blue); color: var(--white); font-family: var(--body); font-weight: 700; font-size: 15px; padding: 16px 36px; border-radius: var(--r8); border: none; cursor: pointer; transition: all 0.25s; }
+.cta-primary:hover { background: var(--blue-dark); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(6,148,209,0.35); }
+.cta-ghost { background: transparent; color: var(--white); font-family: var(--body); font-weight: 600; font-size: 15px; padding: 16px 36px; border-radius: var(--r8); border: 2px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.25s; }
+.cta-ghost:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.06); }
+
+/* ── FOOTER ── */
+.footer { background: var(--ink); border-top: 1px solid var(--sl2); padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; }
+.footer-left { font-size: 13px; color: rgba(255,255,255,0.3); }
+.footer-right { display: flex; gap: 20px; }
+.footer-link { font-size: 12px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+.footer-link:hover { color: var(--blue); }
+
+/* ── DOWNLOAD BROCHURE FAB ── */
+.dl-brochure-fab {
+  position: fixed; bottom: 28px; right: 28px; z-index: 300;
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(135deg, var(--blue) 0%, #076d9d 100%);
+  color: var(--white); font-family: var(--body); font-weight: 700; font-size: 14px;
+  padding: 14px 22px 14px 18px;
+  border-radius: 50px; border: none; cursor: pointer;
+  box-shadow: 0 8px 32px rgba(6,148,209,0.45), 0 2px 8px rgba(0,0,0,0.3);
+  animation: fabSlideIn 0.6s 1s cubic-bezier(0.175,0.885,0.32,1.275) both;
+  transition: all 0.25s;
+}
+.dl-brochure-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 20px 48px rgba(6,148,209,0.55), 0 4px 16px rgba(0,0,0,0.4);
+}
+.dl-brochure-fab:active { transform: translateY(-1px) scale(1.01); }
+.dl-brochure-icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.dl-brochure-text { letter-spacing: 0.3px; white-space: nowrap; }
+@keyframes fabSlideIn {
+  from { opacity:0; transform: translateY(60px) scale(0.8); }
+  to   { opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* ── MODAL ── */
+.modal-overlay { position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.modal-box { background: var(--ink2); border: 1px solid var(--sl2); border-radius: var(--r24); padding: 40px; max-width: 480px; width: 100%; position: relative; animation: scaleIn 0.25s ease; }
+@keyframes scaleIn { from{opacity:0;transform:scale(0.95)} to{opacity:1;transform:none} }
+.modal-close { position: absolute; top: 16px; right: 16px; background: var(--sl3); border: none; color: rgba(255,255,255,0.5); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.modal-close:hover { background: rgba(255,255,255,0.1); color: var(--white); }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .hero { flex-direction: column; padding: 96px 32px 72px; gap: 40px; }
+  .hero-sep { display: none; }
+  .lead-form-wrap { width: 100%; max-width: 500px; }
+  .certs-layout { grid-template-columns: 200px 1fr; }
+  .cert-grid { grid-template-columns: 1fr 1fr; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .certs-layout { grid-template-columns: 1fr; }
+  .cert-sidebar { flex-direction: row; flex-wrap: wrap; padding: 12px; gap: 6px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .cert-sidebar-label { display: none; }
+  .cert-sidebar-divider { display: none; }
+  .cert-sidebar-item { width: auto; flex: 0 0 auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 8px; padding: 8px 14px; }
+  .cert-sidebar-item.active { border-bottom-color: var(--blue); border-left-color: transparent; }
+  .csi-sublabel { display: none; }
+  .cert-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-ms-badge { display: none; }
+  .nav-right { gap: 10px; }
+  .hero { padding: 122px 20px 60px; }
+  .lead-form { padding: 24px 20px; }
+  .stats-inner { grid-template-columns: 1fr 1fr; }
+  .stat-item { border-right: none; border-bottom: 1px solid var(--sl2); }
+  .cert-grid { grid-template-columns: 1fr; }
+  .cert-panel { padding: 20px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .features-sec, .certs-sec, .test-sec, .bottom-cta { padding: 72px 20px; }
+  .cta-btns { flex-direction: column; align-items: center; }
+}
+`;
+
+// ── DATA ──
+const TICKER_ITEMS = ["Microsoft Authorized Learning Partner","Official MOC Courseware","500,000+ Alumni Worldwide","MCT Certified Trainers Only","ESI Enterprise Partner","50+ Countries Served","95% Exam Pass Rate","Google Rating 4.7★","1-on-1 Training Exclusive"];
+
+// Feature section SVG icons — official/recognisable brand marks inline
+const FeatureIcons = {
+  alp: () => (
+    // Microsoft logo (4-square Windows mark) — ALP = official MS partner
+    <svg width="36" height="36" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1"   y="1"   width="9" height="9" fill="#f25022"/>
+      <rect x="11"  y="1"   width="9" height="9" fill="#7fba00"/>
+      <rect x="1"   y="11"  width="9" height="9" fill="#00a4ef"/>
+      <rect x="11"  y="11"  width="9" height="9" fill="#ffb900"/>
+    </svg>
+  ),
+  mct: () => (
+    // Graduation cap — MCT (Microsoft Certified Trainer)
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z" fill="#0078d4"/>
+      <path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" fill="#0078d4" opacity="0.6"/>
+    </svg>
+  ),
+  oneOnOne: () => (
+    // Single person with focus ring — 1-on-1 exclusive
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="8" r="4" fill="#0078d4"/>
+      <path d="M4 20c0-4 3.58-7 8-7s8 3 8 7" fill="#0078d4" opacity="0.5"/>
+      <circle cx="12" cy="12" r="11" stroke="#0078d4" strokeWidth="1.5" fill="none" strokeDasharray="4 2"/>
+    </svg>
+  ),
+  flyTrainer: () => (
+    // Aeroplane — Fly-Me-A-Trainer
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M21 16v-2l-8-5V3.5A1.5 1.5 0 0 0 11.5 2 1.5 1.5 0 0 0 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" fill="#0078d4"/>
+    </svg>
+  ),
+  esi: () => (
+    // Microsoft Enterprise — shield with E monogram
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2L3 6v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V6L12 2z" fill="#0078d4" opacity="0.15"/>
+      <path d="M12 2L3 6v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V6L12 2z" stroke="#0078d4" strokeWidth="1.5" strokeLinejoin="round"/>
+      <text x="12" y="15" textAnchor="middle" fill="#0078d4" fontSize="8" fontWeight="bold" fontFamily="sans-serif">ESI</text>
+    </svg>
+  ),
+  passRate: () => (
+    // Trophy / medal — 95% pass rate
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2l2.4 4.8 5.3.8-3.8 3.7.9 5.2L12 14l-4.8 2.5.9-5.2L4.3 7.6l5.3-.8L12 2z" fill="#ffb900"/>
+      <rect x="9" y="18" width="6" height="2" rx="1" fill="#0078d4"/>
+      <rect x="7" y="20" width="10" height="2" rx="1" fill="#0078d4"/>
+    </svg>
+  ),
+};
+
+const FEATURES = [
+  { icon: FeatureIcons.alp,        title: "Authorized Partner",  desc: "Official Microsoft Authorized Learning Partner with access to exclusive MOC courseware — the same training Microsoft uses internally.", stat: "Only 3% of global training providers hold ALP status" },
+  { icon: FeatureIcons.mct,        title: "MCT-Only Trainers",   desc: "Every instructor holds active Microsoft Certified Trainer status. No freelancers. No subcontractors. Verified expertise on every session.", stat: "Average trainer experience: 14+ years" },
+  { icon: FeatureIcons.oneOnOne,   title: "1-on-1 Training",     desc: "Set your own schedule. Your dedicated MCT, 100% focused on you. Available worldwide with flexible time zones — exclusive to Koenig.", stat: "Available in 50+ countries, 24/7 scheduling" },
+  { icon: FeatureIcons.flyTrainer, title: "Fly-Me-A-Trainer",    desc: "We send a certified Microsoft trainer to your office. Ideal for large enterprise teams requiring on-site immersive training.", stat: "Deployed in 40+ countries" },
+  { icon: FeatureIcons.esi,        title: "ESI Program Partner", desc: "Koenig is an Enterprise Skills Initiative partner, enabling Microsoft Enterprise customers to use TSPv for workforce training.", stat: "Accept Enterprise Agreements & EA credits" },
+  { icon: FeatureIcons.passRate,   title: "95% Pass Rate",       desc: "Our structured exam prep, real-world labs, and MCT mentoring result in industry-leading certification pass rates across all Microsoft tracks.", stat: "vs. 60-70% industry average" },
+];
+
+const CERT_TABS = ["Azure", "Power Platform", "Security", "Microsoft 365", "Dynamics 365"];
+
+// Official Microsoft technology logos — fully inline SVG, no external deps
+const TECH_LOGOS = {
+  "Azure": ({ size = 22 }) => (
+    <svg width={size} height={size} viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lg-az1" x1="0%" y1="0%" x2="50%" y2="100%">
+          <stop offset="0%" stopColor="#114a8b"/>
+          <stop offset="100%" stopColor="#0669bc"/>
+        </linearGradient>
+        <linearGradient id="lg-az2" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#3ccbf4"/>
+          <stop offset="100%" stopColor="#2892df"/>
+        </linearGradient>
+      </defs>
+      <path fill="url(#lg-az1)" d="M33.34 6.54h26.03L33.4 89.46a4.15 4.15 0 0 1-3.93 2.8H8.15a4.15 4.15 0 0 1-3.93-5.49L27.4 9.35a4.15 4.15 0 0 1 3.94-2.81z"/>
+      <path fill="#0078d4" d="M71.17 60.89H29.01a1.91 1.91 0 0 0-1.3 3.31l27.1 25.27a4.17 4.17 0 0 0 2.84 1.13h23.86z"/>
+      <path fill="url(#lg-az2)" d="M68.6 9.35a4.15 4.15 0 0 0-3.93-2.81H33.63a4.15 4.15 0 0 1 3.93 2.81l23.18 77.42a4.15 4.15 0 0 1-3.93 5.49h31.04a4.15 4.15 0 0 0 3.93-5.49z"/>
+    </svg>
+  ),
+  "Power Platform": ({ size = 22 }) => (
+    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="13" height="13" rx="2" fill="#742774"/>
+      <rect x="18" y="1" width="13" height="13" rx="2" fill="#742774" opacity="0.75"/>
+      <rect x="1" y="18" width="13" height="13" rx="2" fill="#742774" opacity="0.5"/>
+      <rect x="18" y="18" width="13" height="13" rx="2" fill="#742774" opacity="0.3"/>
+      <path d="M7.5 7.5 L14 14 M18 7.5 L11.5 14" stroke="white" strokeWidth="1.5" strokeLinecap="round" opacity="0.6"/>
+    </svg>
+  ),
+  "Security": ({ size = 22 }) => (
+    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16 2L4 7v8c0 7.4 5.1 14.3 12 16 6.9-1.7 12-8.6 12-16V7z" fill="#0078d4" opacity="0.2"/>
+      <path d="M16 2L4 7v8c0 7.4 5.1 14.3 12 16 6.9-1.7 12-8.6 12-16V7z" fill="none" stroke="#0078d4" strokeWidth="2" strokeLinejoin="round"/>
+      <path d="M11 16l3.5 3.5L21 12" stroke="#0078d4" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  ),
+  "Microsoft 365": ({ size = 22 }) => (
+    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1"  y="1"  width="14" height="14" rx="2" fill="#f25022"/>
+      <rect x="17" y="1"  width="14" height="14" rx="2" fill="#7fba00"/>
+      <rect x="1"  y="17" width="14" height="14" rx="2" fill="#00a4ef"/>
+      <rect x="17" y="17" width="14" height="14" rx="2" fill="#ffb900"/>
+    </svg>
+  ),
+  "Dynamics 365": ({ size = 22 }) => (
+    <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="16" r="14" fill="#002050" opacity="0.1"/>
+      <circle cx="16" cy="16" r="14" fill="none" stroke="#0078d4" strokeWidth="2"/>
+      <path d="M8 11h16M8 16h16M8 21h10" stroke="#0078d4" strokeWidth="2.5" strokeLinecap="round"/>
+      <circle cx="22" cy="21" r="3" fill="#0078d4"/>
+      <path d="M20.5 21l1.5 1.5 2.5-2.5" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+    </svg>
+  ),
+};
+
+const CERT_META = {
+  "Azure": {
+    icon: "Azure",
+    sublabel: "Cloud Infrastructure",
+    desc: "Master Microsoft's cloud platform — from core IaaS/PaaS fundamentals to advanced architecture, security, and DevOps pipelines.",
+    pills: ["6 Courses", "AZ-900 to AZ-400", "Cloud Roles"],
+  },
+  "Power Platform": {
+    icon: "Power Platform",
+    sublabel: "Data & Low-Code",
+    desc: "Build data-driven apps, automate workflows, and create rich BI dashboards — no heavy coding required.",
+    pills: ["6 Courses", "PL-900 to PL-600", "Analyst & Developer"],
+  },
+  "Security": {
+    icon: "Security",
+    sublabel: "Cybersecurity & Compliance",
+    desc: "Defend Microsoft cloud environments, manage identity, information protection, and meet enterprise compliance standards.",
+    pills: ["6 Courses", "SC-900 to SC-100", "Security Roles"],
+  },
+  "Microsoft 365": {
+    icon: "Microsoft 365",
+    sublabel: "Productivity & Collaboration",
+    desc: "Administer M365 at scale — Teams, Exchange, Endpoint management, and the latest Copilot AI deployment.",
+    pills: ["6 Courses", "MS-900 to MS-102", "Admin & IT Pro"],
+  },
+  "Dynamics 365": {
+    icon: "Dynamics 365",
+    sublabel: "CRM, ERP & Business Apps",
+    desc: "Implement and configure Dynamics 365 modules for Sales, Customer Service, Finance, and Power Platform integration.",
+    pills: ["6 Courses", "MB-910 to PL-600", "Functional Consultant"],
+  },
+};
+
+const CERTS = {
+  "Azure": [
+    { name: "Microsoft Azure Fundamentals", code: "AZ-900", dur: "3 days", level: "fund" },
+    { name: "Microsoft Azure Administrator", code: "AZ-104", dur: "5 days", level: "assoc" },
+    { name: "Azure Developer Associate", code: "AZ-204", dur: "5 days", level: "assoc" },
+    { name: "Azure Security Technologies", code: "AZ-500", dur: "4 days", level: "assoc" },
+    { name: "Designing Azure Infrastructure Solutions", code: "AZ-305", dur: "4 days", level: "expert" },
+    { name: "Designing & Implementing Microsoft DevOps", code: "AZ-400", dur: "5 days", level: "expert" },
+  ],
+  "Power Platform": [
+    { name: "Power BI Data Analyst", code: "PL-300", dur: "3 days", level: "assoc" },
+    { name: "Power Platform Fundamentals", code: "PL-900", dur: "2 days", level: "fund" },
+    { name: "Power Automate RPA Developer", code: "PL-500", dur: "3 days", level: "assoc" },
+    { name: "Power Platform Solution Architect", code: "PL-600", dur: "4 days", level: "expert" },
+    { name: "Microsoft Fabric Analytics Engineer", code: "DP-600", dur: "4 days", level: "assoc" },
+    { name: "Dashboard in a Day", code: "Workshop", dur: "1 day", level: "fund" },
+  ],
+  "Security": [
+    { name: "Security Operations Analyst", code: "SC-200", dur: "4 days", level: "assoc" },
+    { name: "Identity & Access Administrator", code: "SC-300", dur: "4 days", level: "assoc" },
+    { name: "Information Protection Administrator", code: "SC-400", dur: "4 days", level: "assoc" },
+    { name: "Security, Compliance & Identity Fundamentals", code: "SC-900", dur: "2 days", level: "fund" },
+    { name: "Microsoft Cybersecurity Architect", code: "SC-100", dur: "4 days", level: "expert" },
+    { name: "Azure AI Fundamentals", code: "AI-900", dur: "2 days", level: "fund" },
+  ],
+  "Microsoft 365": [
+    { name: "Microsoft 365 Fundamentals", code: "MS-900", dur: "2 days", level: "fund" },
+    { name: "Microsoft 365 Messaging Administrator", code: "MS-203", dur: "4 days", level: "assoc" },
+    { name: "Endpoint Administrator Associate", code: "MD-102", dur: "5 days", level: "assoc" },
+    { name: "Copilot for M365 Deployment", code: "DW-101", dur: "2 days", level: "fund" },
+    { name: "Teams Administrator Associate", code: "MS-700", dur: "4 days", level: "assoc" },
+    { name: "Microsoft 365 Administrator Expert", code: "MS-102", dur: "5 days", level: "expert" },
+  ],
+  "Dynamics 365": [
+    { name: "Dynamics 365 Fundamentals (CRM)", code: "MB-910", dur: "2 days", level: "fund" },
+    { name: "Dynamics 365 Sales Functional Consultant", code: "MB-210", dur: "3 days", level: "assoc" },
+    { name: "Dynamics 365 Customer Service", code: "MB-230", dur: "3 days", level: "assoc" },
+    { name: "Dynamics 365 Finance Functional Consultant", code: "MB-310", dur: "4 days", level: "assoc" },
+    { name: "Dynamics 365 CRM Developer", code: "MB-400", dur: "4 days", level: "assoc" },
+    { name: "Power Platform + D365 Solution Architect", code: "PL-600", dur: "4 days", level: "expert" },
+  ],
+};
+
+// Generates a crisp SVG avatar data URI — works offline, zero CORS
+function svgAvatar(initials, bg, textColor = '#fff') {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><rect width="48" height="48" rx="24" fill="${bg}"/><text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="${textColor}">${initials}</text></svg>`;
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+}
+
+const TESTIMONIALS = [
+  { quote: "Passed AZ-104 on first attempt. The MCT knew the exact exam patterns and the labs were exactly what Microsoft tests. Worth every penny.", name: "Rahul M.", role: "Azure Administrator", cert: "AZ-104 Certified", photo: svgAvatar("RM","#1e40af") },
+  { quote: "I trained 15 of my team members for SC-200. Koenig's on-site delivery was seamless and all 15 passed within 3 months.", name: "Sarah K.", role: "CISO, Financial Services", cert: "Enterprise Client", photo: svgAvatar("SK","#7c3aed") },
+  { quote: "The 1-on-1 format was a game changer. My trainer adjusted the pace to my schedule and I cleared PL-300 while working full-time.", name: "Ahmed R.", role: "Business Intelligence Lead", cert: "PL-300 Certified", photo: svgAvatar("AR","#0e7490") },
+  { quote: "From AZ-900 to AZ-305 in 6 months. Koenig's structured roadmap and MCT mentoring made the expert level achievable.", name: "Priya S.", role: "Cloud Solutions Architect", cert: "AZ-305 Expert", photo: svgAvatar("PS","#0f766e") },
+  { quote: "As an L&D head I've used 5 training vendors. Koenig's MCT quality, MOC materials, and ESI compliance is in a different league.", name: "James T.", role: "Head of L&D, UK Enterprise", cert: "100+ Learners Trained", photo: svgAvatar("JT","#b45309") },
+];
+
+const COURSES = ["Azure (AZ series)", "Power BI / Power Platform", "Microsoft 365 / Copilot", "Security (SC series)", "Dynamics 365", "DevOps / Developer", "Not sure yet"];
+
+const AWARDS = [
+  {
+    svgIcon: (
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="16" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
+        <rect x="10" y="8" width="10" height="10" rx="1" fill="#f25022" opacity="0.9"/>
+        <rect x="22" y="8" width="10" height="10" rx="1" fill="#7fba00" opacity="0.9"/>
+        <rect x="10" y="20" width="10" height="10" rx="1" fill="#00a4ef" opacity="0.9"/>
+        <rect x="22" y="20" width="10" height="10" rx="1" fill="#ffb900" opacity="0.9"/>
+        <path d="M36 18l3.5 7 7.5 1-5.5 5.5 1.3 7.5L36 35.5 29.2 39l1.3-7.5L25 26l7.5-1z" fill="#f59e0b"/>
+        <rect x="30" y="44" width="12" height="3" rx="1.5" fill="rgba(245,158,11,0.4)"/>
+        <rect x="26" y="48" width="20" height="4" rx="2" fill="rgba(6,148,209,0.3)" stroke="rgba(6,148,209,0.4)" strokeWidth="1"/>
+        <text x="36" y="63" textAnchor="middle" fontFamily="Arial" fontWeight="800" fontSize="8" fill="rgba(255,255,255,0.6)" letterSpacing="1">MICROSOFT</text>
+      </svg>
+    ),
+    year: "2025", org: "Microsoft",
+    title: "Training Services Partner of the Year",
+    desc: "Recognised globally for delivering exceptional Microsoft training outcomes and learner success rates across enterprise clients.",
+  },
+  {
+    svgIcon: (
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="16" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.2)" strokeWidth="1"/>
+        <circle cx="36" cy="32" r="18" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.25)" strokeWidth="1.5"/>
+        <path d="M36 16l3.5 7.5 8 1.2-5.8 5.6 1.4 8L36 34l-7.1 4.3 1.4-8L24.3 24.7l8-1.2z" fill="#f59e0b"/>
+        <text x="36" y="54" textAnchor="middle" fontFamily="Arial" fontWeight="800" fontSize="7" fill="rgba(255,255,255,0.5)" letterSpacing="0.5">SUPERSTARS</text>
+        <text x="36" y="63" textAnchor="middle" fontFamily="Arial" fontWeight="700" fontSize="7" fill="rgba(245,158,11,0.7)" letterSpacing="0.5">ANZ FY24</text>
+      </svg>
+    ),
+    year: "FY24", org: "Microsoft ANZ",
+    title: "Superstars Award — ANZ Campaign",
+    desc: "Won Microsoft's ANZ Superstars recognition for outstanding performance in cloud training delivery across the Asia-Pacific region.",
+  },
+  {
+    svgIcon: (
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="16" fill="rgba(16,217,168,0.08)" stroke="rgba(6,148,209,0.15)" strokeWidth="1"/>
+        <circle cx="36" cy="30" r="14" fill="none" stroke="rgba(16,217,168,0.3)" strokeWidth="2"/>
+        <path d="M28 30l5 5 10-10" stroke="#10d9a8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <rect x="30" y="44" width="12" height="3" rx="1.5" fill="rgba(16,217,168,0.3)"/>
+        <rect x="24" y="48" width="24" height="4" rx="2" fill="rgba(16,217,168,0.15)" stroke="rgba(16,217,168,0.3)" strokeWidth="1"/>
+        <text x="36" y="62" textAnchor="middle" fontFamily="Arial" fontWeight="700" fontSize="7" fill="rgba(16,217,168,0.6)" letterSpacing="0.5">GOLD ALP</text>
+      </svg>
+    ),
+    year: "2024", org: "Microsoft",
+    title: "Gold Authorized Learning Partner",
+    desc: "Maintained Microsoft Gold ALP status for 10+ consecutive years with access to official MOC courseware and MCT-certified instructors.",
+  },
+  {
+    svgIcon: (
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="16" fill="rgba(99,102,241,0.08)" stroke="rgba(99,102,241,0.2)" strokeWidth="1"/>
+        <path d="M36 14l-14 6v12c0 9 6 17 14 20 8-3 14-11 14-20V20z" fill="rgba(99,102,241,0.15)" stroke="rgba(99,102,241,0.4)" strokeWidth="1.5"/>
+        <path d="M28 32l5 5 10-10" stroke="#818cf8" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <text x="36" y="60" textAnchor="middle" fontFamily="Arial" fontWeight="700" fontSize="7" fill="rgba(99,102,241,0.7)" letterSpacing="0.5">ESI PARTNER</text>
+      </svg>
+    ),
+    year: "2024", org: "Microsoft ESI",
+    title: "Enterprise Skills Initiative Partner",
+    desc: "Selected as a trusted ESI partner to deliver subsidised Microsoft cloud skills training to enterprise and government organisations.",
+  },
+  {
+    svgIcon: (
+      <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="72" height="72" rx="16" fill="rgba(6,148,209,0.08)" stroke="rgba(56,189,248,0.2)" strokeWidth="1"/>
+        <circle cx="36" cy="30" r="10" fill="none" stroke="rgba(56,189,248,0.4)" strokeWidth="1.5"/>
+        <path d="M20 30 Q36 10 52 30 Q36 50 20 30z" fill="none" stroke="rgba(56,189,248,0.3)" strokeWidth="1.5"/>
+        <line x1="36" y1="20" x2="36" y2="40" stroke="rgba(56,189,248,0.3)" strokeWidth="1"/>
+        <line x1="26" y1="30" x2="46" y2="30" stroke="rgba(56,189,248,0.3)" strokeWidth="1"/>
+        <circle cx="36" cy="30" r="2.5" fill="#38bdf8"/>
+        <text x="36" y="54" textAnchor="middle" fontFamily="Arial" fontWeight="700" fontSize="7" fill="rgba(56,189,248,0.7)" letterSpacing="0.5">APAC TOP</text>
+        <text x="36" y="63" textAnchor="middle" fontFamily="Arial" fontWeight="700" fontSize="7" fill="rgba(56,189,248,0.5)" letterSpacing="0.5">PARTNER</text>
+      </svg>
+    ),
+    year: "2023", org: "Microsoft APAC",
+    title: "Top Training Partner — Asia Pacific",
+    desc: "Ranked among Microsoft's top training partners in APAC for learner volume, pass rates, and enterprise client satisfaction scores.",
+  },
+];
+
+
+function Counter({ end, suffix = "", prefix = "" }) {
+  const [val, setVal] = useState(0);
+  const ref = useRef(null);
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      let start = 0; const dur = 1800; const step = 16;
+      const inc = end / (dur / step);
+      const t = setInterval(() => {
+        start += inc;
+        if (start >= end) { setVal(end); clearInterval(t); }
+        else setVal(Math.floor(start));
+      }, step);
+      obs.disconnect();
+    }, { threshold: 0.3 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, [end]);
+  return <span ref={ref}>{prefix}{val.toLocaleString()}{suffix}</span>;
+}
+
+// ── MULTI-STEP FORM ──
+function LeadForm({ onClose }) {
+  const [step, setStep] = useState(1);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [data, setData] = useState({
+    firstName: "", lastName: "", email: "", phone: "", company: "",
+    role: "", teamSize: "", course: [], message: ""
+  });
+
+  const set = (k, v) => setData(p => ({ ...p, [k]: v }));
+  const toggleCourse = (c) => set("course", data.course.includes(c) ? data.course.filter(x => x !== c) : [...data.course, c]);
+
+  const validate = (s) => {
+    const e = {};
+    if (s === 1) {
+      if (!data.firstName.trim()) e.firstName = "First name required";
+      if (!data.email.trim() || !/\S+@\S+\.\S+/.test(data.email)) e.email = "Valid work email required";
+      if (!data.phone.trim()) e.phone = "Phone/WhatsApp required";
+    }
+    if (s === 2) {
+      if (data.course.length === 0) e.course = "Select at least one area";
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  };
+
+  const next = () => { if (validate(step)) setStep(s => s + 1); };
+  const back = () => setStep(s => s - 1);
+
+  const submit = async () => {
+    if (!validate(3)) return;
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 1600));
+    setSubmitted(true);
+    setLoading(false);
+  };
+
+  const steps = [
+    { label: "You" },
+    { label: "Interests" },
+    { label: "Goals" },
+  ];
+
+  if (submitted) return (
+    <div className="form-success">
+      <div className="success-icon">🎉</div>
+      <div className="success-title">You're All Set!</div>
+      <div className="success-msg">
+        A Microsoft Training Advisor will contact you within <strong style={{color:"#0694D1"}}>2 business hours</strong>.<br/>
+        Check your email for a confirmation.
+      </div>
+      <div className="success-next">
+        <strong>What happens next:</strong> We'll schedule a free 30-min consultation to map the right certification path for {data.firstName || "you"}.
+      </div>
+      <div className="success-download-wrap">
+        <div className="success-dl-icon">📄</div>
+        <div className="success-dl-text">
+          <div className="success-dl-title">Your sample certificate is ready!</div>
+          <div className="success-dl-sub">Personalised with your name · PNG format</div>
+        </div>
+        <button className="success-dl-btn" onClick={() => generateCertPDF(data.firstName + (data.lastName ? ' ' + data.lastName : ''))}>
+          ⬇ Download
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <div className="form-header">
+        <div className="form-tag">✦ Free Microsoft Training Guide</div>
+        <div className="form-title">Talk to a Microsoft<br/>Training Expert</div>
+        <div className="form-sub">Response within 2 business hours · No obligation</div>
+      </div>
+
+      {/* Step indicators */}
+      <div className="form-steps">
+        {steps.map((s, i) => (
+          <div key={i} className="step-item" style={{flexDirection:"column",alignItems:"center",flex:1}}>
+            <div style={{display:"flex",alignItems:"center",width:"100%"}}>
+              <div className={`step-circle ${step > i+1 ? "done" : step === i+1 ? "active" : ""}`}>
+                {step > i+1 ? "✓" : i+1}
+              </div>
+              {i < steps.length - 1 && <div className={`step-line ${step > i+1 ? "done" : ""}`}/>}
+            </div>
+            <div className="step-label" style={{color: step===i+1?"rgba(255,255,255,0.6)":"rgba(255,255,255,0.2)"}}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Step 1: Contact info */}
+      {step === 1 && (
+        <div style={{animation:"fadeUp 0.35s ease"}}>
+          <div className="field-row">
+            <div>
+              <label className="field-label">First Name *</label>
+              <input className={`field-input ${errors.firstName ? "error" : ""}`} placeholder="Rahul" value={data.firstName} onChange={e => set("firstName", e.target.value)} />
+              {errors.firstName && <div className="field-error">{errors.firstName}</div>}
+            </div>
+            <div>
+              <label className="field-label">Last Name</label>
+              <input className="field-input" placeholder="Sharma" value={data.lastName} onChange={e => set("lastName", e.target.value)} />
+            </div>
+          </div>
+          <div className="field-group">
+            <label className="field-label">Work Email *</label>
+            <input className={`field-input full ${errors.email ? "error" : ""}`} placeholder="you@company.com" type="email" value={data.email} onChange={e => set("email", e.target.value)} />
+            {errors.email && <div className="field-error">{errors.email}</div>}
+          </div>
+          <div className="field-group">
+            <label className="field-label">Phone / WhatsApp *</label>
+            <input className={`field-input full ${errors.phone ? "error" : ""}`} placeholder="+91 98400 00000" value={data.phone} onChange={e => set("phone", e.target.value)} />
+            {errors.phone && <div className="field-error">{errors.phone}</div>}
+          </div>
+          <button className="btn-next" style={{width:"100%",marginTop:4}} onClick={next}>Continue →</button>
+        </div>
+      )}
+
+      {/* Step 2: Course interest */}
+      {step === 2 && (
+        <div style={{animation:"fadeUp 0.35s ease"}}>
+          <span className="chip-label">Which Microsoft track interests you? *</span>
+          <div className="chip-grid">
+            {COURSES.map(c => (
+              <button key={c} className={`chip ${data.course.includes(c) ? "selected" : ""}`} onClick={() => toggleCourse(c)}>{c}</button>
+            ))}
+          </div>
+          {errors.course && <div className="field-error" style={{marginBottom:10}}>{errors.course}</div>}
+          <div className="field-group">
+            <label className="field-label">Company (optional)</label>
+            <input className="field-input full" placeholder="Acme Corp" value={data.company} onChange={e => set("company", e.target.value)} />
+          </div>
+          <div className="field-row" style={{marginBottom:4}}>
+            <div>
+              <label className="field-label">Your Role</label>
+              <select className="field-input field-select" value={data.role} onChange={e => set("role", e.target.value)}>
+                <option value="">Select role</option>
+                <option>IT Professional</option>
+                <option>L&D / HR Manager</option>
+                <option>Developer</option>
+                <option>Manager / Team Lead</option>
+                <option>CTO / IT Director</option>
+                <option>Student / Career Changer</option>
+              </select>
+            </div>
+            <div>
+              <label className="field-label">Team Size</label>
+              <select className="field-input field-select" value={data.teamSize} onChange={e => set("teamSize", e.target.value)}>
+                <option value="">Just me</option>
+                <option>2–5 people</option>
+                <option>6–20 people</option>
+                <option>21–50 people</option>
+                <option>50+ people</option>
+              </select>
+            </div>
+          </div>
+          <div className="form-nav">
+            <button className="btn-back" onClick={back}>← Back</button>
+            <button className="btn-next" onClick={next}>Continue →</button>
+          </div>
+        </div>
+      )}
+
+      {/* Step 3: Message & submit */}
+      {step === 3 && (
+        <div style={{animation:"fadeUp 0.35s ease"}}>
+          <div className="field-group">
+            <label className="field-label">Anything specific to share? (optional)</label>
+            <textarea
+              className="field-input full" rows={3}
+              placeholder="e.g. I need AZ-104 in 4 weeks, 3 team members in Dubai…"
+              value={data.message} onChange={e => set("message", e.target.value)}
+              style={{resize:"vertical",minHeight:80}}
+            />
+          </div>
+          {/* Summary */}
+          <div style={{background:"rgba(6,148,209,0.06)",border:"1px solid rgba(6,148,209,0.15)",borderRadius:10,padding:"14px 16px",marginBottom:14,fontSize:13}}>
+            <div style={{color:"rgba(255,255,255,0.5)",marginBottom:6,fontSize:11,fontWeight:700,textTransform:"uppercase",letterSpacing:1}}>Your Request Summary</div>
+            <div style={{color:"rgba(255,255,255,0.7)",lineHeight:1.6}}>
+              <span style={{color:"#45B0E1",fontWeight:600}}>{data.firstName || "You"}</span> · {data.email}<br/>
+              <span style={{color:"#0694D1"}}>{data.course.join(", ") || "Not specified"}</span>
+              {data.company && <> · {data.company}</>}
+            </div>
+          </div>
+          <div className="form-nav" style={{flexDirection:"column",gap:8}}>
+            <button className={`submit-btn ${loading ? "loading" : ""}`} onClick={submit}>
+              {loading ? <><span style={{animation:"spin 1s linear infinite",display:"inline-block"}}>⟳</span> Submitting…</> : <>Enquire Now <span className="btn-arrow">→</span></>}
+            </button>
+            <button className="btn-back" onClick={back}>← Back</button>
+          </div>
+        </div>
+      )}
+
+      <div className="form-trust">
+        <span className="form-trust-icon">🔒</span>
+        Your details are safe. No spam, ever.
+      </div>
+    </>
+  );
+}
+
+// ── COMPANIES SECTION ──
+// Full-colour brand SVGs — authentic logos with official brand colours
+// ── COMPANIES SECTION ──
+// Brand-accurate inline SVGs — real icon marks + official brand colours
+const CompanyLogos = [
+  { name: "Microsoft", svg: (
+    <svg viewBox="0 0 130 26" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <rect x="0" y="1" width="11.5" height="11.5" fill="#F25022"/>
+      <rect x="13" y="1" width="11.5" height="11.5" fill="#7FBA00"/>
+      <rect x="0" y="13.5" width="11.5" height="11.5" fill="#00A4EF"/>
+      <rect x="13" y="13.5" width="11.5" height="11.5" fill="#FFB900"/>
+      <text x="30" y="18.5" fontFamily="Segoe UI,Arial,sans-serif" fontWeight="600" fontSize="15" fill="#737373" letterSpacing="-0.3">Microsoft</text>
+    </svg>
+  )},
+  { name: "Amazon", svg: (
+    <svg viewBox="0 0 100 32" fill="none" xmlns="http://www.w3.org/2000/svg" height="32">
+      <text x="2" y="21" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="21" fill="#232F3E" letterSpacing="-0.5">amazon</text>
+      <path d="M5 26.5 Q32 35 63 26.5" stroke="#FF9900" strokeWidth="2.8" fill="none" strokeLinecap="round"/>
+      <path d="M59 24 L65 27 L59 29.5" fill="none" stroke="#FF9900" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )},
+  { name: "Google", svg: (
+    <svg viewBox="0 0 85 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="28">
+      <text x="0" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#4285F4">G</text>
+      <text x="15" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#EA4335">o</text>
+      <text x="28" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#FBBC05">o</text>
+      <text x="41" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#4285F4">g</text>
+      <text x="54" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#34A853">l</text>
+      <text x="61" y="22" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="22" fill="#EA4335">e</text>
+    </svg>
+  )},
+  { name: "IBM", svg: (
+    <svg viewBox="0 0 68 26" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      {[0,1,2].map(col => {
+        const x = col * 9;
+        const w = col === 1 ? 8 : 6;
+        return [3,8,13,18].map((y,ri) => (
+          <rect key={col*10+ri} x={x} y={y} width={w} height={3.2} rx="0.5" fill="#1F70C1"/>
+        ));
+      })}
+    </svg>
+  )},
+  { name: "Accenture", svg: (
+    <svg viewBox="0 0 124 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <path d="M4 5 L13 14 L4 23" stroke="#A100FF" strokeWidth="4.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <text x="22" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="15" fill="#A100FF">Accenture</text>
+    </svg>
+  )},
+  { name: "Deloitte", svg: (
+    <svg viewBox="0 0 100 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <text x="0" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="18" fill="#000000">Deloitte</text>
+      <circle cx="96" cy="5.5" r="4.5" fill="#86BC25"/>
+    </svg>
+  )},
+  { name: "Cisco", svg: (
+    <svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="28">
+      <rect x="0" y="10" width="4" height="8" rx="2" fill="#049FD9"/>
+      <rect x="6" y="6" width="4" height="14" rx="2" fill="#049FD9"/>
+      <rect x="12" y="3" width="4" height="20" rx="2" fill="#049FD9"/>
+      <rect x="18" y="6" width="4" height="14" rx="2" fill="#049FD9"/>
+      <rect x="24" y="10" width="4" height="8" rx="2" fill="#049FD9"/>
+      <text x="33" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="17" fill="#049FD9">Cisco</text>
+    </svg>
+  )},
+  { name: "Oracle", svg: (
+    <svg viewBox="0 0 88 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <text x="0" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="18" fill="#C74634" letterSpacing="0.5">ORACLE</text>
+    </svg>
+  )},
+  { name: "SAP", svg: (
+    <svg viewBox="0 0 66 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="28">
+      <rect x="0" y="0" width="64" height="28" rx="5" fill="#0070F2"/>
+      <text x="8" y="20.5" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="18" letterSpacing="2" fill="white">SAP</text>
+    </svg>
+  )},
+  { name: "Infosys", svg: (
+    <svg viewBox="0 0 92 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <text x="0" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="17" fill="#007CC3">Infosys</text>
+      <circle cx="84" cy="6" r="3.5" fill="#F2921D"/>
+    </svg>
+  )},
+  { name: "Wipro", svg: (
+    <svg viewBox="0 0 82 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      {[0,45,90,135,180,225,270,315].map((deg, i) => {
+        const r = deg * Math.PI / 180;
+        return <circle key={i} cx={10 + Math.cos(r)*5.5} cy={13 + Math.sin(r)*5.5} r="2.2" fill={i%2===0 ? "#341F65" : "#E84F1C"}/>;
+      })}
+      <circle cx="10" cy="13" r="3" fill="#341F65"/>
+      <text x="24" y="19" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="17" fill="#341F65">Wipro</text>
+    </svg>
+  )},
+  { name: "HCL Tech", svg: (
+    <svg viewBox="0 0 90 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <text x="0" y="21" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="18" letterSpacing="1.5" fill="#0076C0">HCL</text>
+      <text x="46" y="20" fontFamily="Arial,sans-serif" fontWeight="400" fontSize="14" fill="#0076C0">Tech</text>
+    </svg>
+  )},
+  { name: "Dell", svg: (
+    <svg viewBox="0 0 52 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="28">
+      <circle cx="13" cy="14" r="12" fill="none" stroke="#007DB8" strokeWidth="2.5"/>
+      <text x="5" y="19" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="14" fill="#007DB8">dell</text>
+    </svg>
+  )},
+  { name: "ServiceNow", svg: (
+    <svg viewBox="0 0 130 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <path d="M3 17 Q7 7 15 13 Q19 16.5 23 9 Q27 2.5 31 9" stroke="#62D84E" strokeWidth="3.2" fill="none" strokeLinecap="round"/>
+      <text x="38" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="14" fill="#293E40">ServiceNow</text>
+    </svg>
+  )},
+  { name: "Salesforce", svg: (
+    <svg viewBox="0 0 126 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <path d="M8 20 Q2 20 2 14.5 Q2 9 7.5 9 Q9 5.5 13.5 5.5 Q15.5 2.5 20 3.5 Q23 0.5 27 2.5 Q31 0.5 34 3.5 Q38.5 3.5 38.5 9 Q42 9 42 13.5 Q42 20 37 20 Z" fill="#00A1E0"/>
+      <text x="46" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="14" fill="#00A1E0">salesforce</text>
+    </svg>
+  )},
+  { name: "Adobe", svg: (
+    <svg viewBox="0 0 84 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <polygon points="0,25 11.5,2 23,25" fill="#FA0F00"/>
+      <text x="28" y="20" fontFamily="Arial,sans-serif" fontWeight="800" fontSize="18" fill="#FA0F00">Adobe</text>
+    </svg>
+  )},
+  { name: "EY", svg: (
+    <svg viewBox="0 0 52 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="28">
+      <rect width="52" height="28" rx="3" fill="#FFE600"/>
+      <text x="9" y="21" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="19" letterSpacing="3" fill="#2E2E38">EY</text>
+    </svg>
+  )},
+  { name: "KPMG", svg: (
+    <svg viewBox="0 0 80 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <text x="0" y="21" fontFamily="Arial,sans-serif" fontWeight="900" fontSize="20" letterSpacing="2.5" fill="#00338D">KPMG</text>
+    </svg>
+  )},
+  { name: "Siemens", svg: (
+    <svg viewBox="0 0 102 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      {[0,1,2].map(row => [0,1,2].map(col => (
+        <rect key={row*3+col} x={col*6} y={row*6} width="4.5" height="4.5" rx="0.8" fill="#009999"/>
+      )))}
+      <text x="22" y="19" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="16" fill="#009999">Siemens</text>
+    </svg>
+  )},
+  { name: "Capgemini", svg: (
+    <svg viewBox="0 0 118 28" fill="none" xmlns="http://www.w3.org/2000/svg" height="26">
+      <path d="M15 21 A10 10 0 1 1 15 7" stroke="#0070AD" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+      <circle cx="15" cy="7" r="2.5" fill="#12ABDB"/>
+      <text x="29" y="20" fontFamily="Arial,sans-serif" fontWeight="700" fontSize="15" fill="#0070AD">Capgemini</text>
+    </svg>
+  )},
+];
+
+
+function CompaniesSection({ onCTA }) {
+  const row1 = [...CompanyLogos.slice(0, 10), ...CompanyLogos.slice(0, 10)];
+  const row2 = [...CompanyLogos.slice(10), ...CompanyLogos.slice(10)];
+
+  return (
+    <section className="companies-sec">
+      <div className="companies-inner reveal">
+
+        {/* Headline */}
+        <div className="companies-headline-wrap">
+          <div className="companies-headline">
+            Trusted by enterprise teams at <em>500+</em> global companies
+          </div>
+          <div className="companies-headline-sub">
+            From Fortune 500 enterprises to fast-growing tech firms — Koenig alumni are everywhere
+          </div>
+          <div className="companies-underline"/>
+        </div>
+
+        {/* Marquee row 1 — left to right */}
+        <div className="companies-marquee-wrap">
+          <div className="companies-marquee">
+            {row1.map((c, i) => (
+              <div key={i} className="company-logo-item" title={c.name}>{c.svg}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Marquee row 2 — right to left */}
+        <div className="companies-marquee-wrap">
+          <div className="companies-marquee companies-marquee-2">
+            {row2.map((c, i) => (
+              <div key={i} className="company-logo-item" title={c.name}>{c.svg}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Stats + CTA row */}
+        <div className="companies-cta-row">
+          {[
+            { n:"500K+", label:"Professionals Certified" },
+            { n:"60+",   label:"Countries Served" },
+            { n:"350+",  label:"In-House MCT Trainers" },
+            { n:"30",    label:"Years of Excellence" },
+          ].map((s,i) => (
+            <div key={i} className="companies-stat-block">
+              <div className="companies-stat-num">{s.n}</div>
+              <div className="companies-stat-lbl">{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{textAlign:"center", marginTop:32}}>
+          <button className="companies-cta-btn" onClick={onCTA}>
+            View All Courses
+          </button>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+// ── CERT GENERATOR ──
+function generateCertPDF(name) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1122; canvas.height = 794; // A4 landscape px at 96dpi
+  const ctx = canvas.getContext('2d');
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, 1122, 794);
+  bg.addColorStop(0, '#04111f'); bg.addColorStop(0.5, '#0a1e3a'); bg.addColorStop(1, '#04111f');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, 1122, 794);
+
+  // Top accent bar
+  const bar = ctx.createLinearGradient(0, 0, 1122, 0);
+  bar.addColorStop(0, '#0694d1'); bar.addColorStop(0.5, '#10d9a8'); bar.addColorStop(1, '#38bdf8');
+  ctx.fillStyle = bar; ctx.fillRect(0, 0, 1122, 6);
+
+  // Border frame
+  ctx.strokeStyle = 'rgba(6,148,209,0.2)'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(36, 36, 1050, 722);
+  ctx.strokeStyle = 'rgba(6,148,209,0.07)'; ctx.lineWidth = 1;
+  ctx.strokeRect(44, 44, 1034, 706);
+
+  // Corner ornaments
+  const corners = [[36,36],[1086,36],[36,758],[1086,758]];
+  corners.forEach(([x,y]) => {
+    ctx.strokeStyle = 'rgba(6,148,209,0.5)'; ctx.lineWidth = 2;
+    const sx = x < 100 ? 1 : -1, sy = y < 100 ? 1 : -1;
+    ctx.beginPath(); ctx.moveTo(x, y+sy*30); ctx.lineTo(x, y); ctx.lineTo(x+sx*30, y); ctx.stroke();
+  });
+
+  // Microsoft 4-square logo (top left)
+  const sq = 14, gap = 3, lx = 80, ly = 80;
+  [['#f25022',0,0],['#7fba00',1,0],['#00a4ef',0,1],['#ffb900',1,1]].forEach(([c,dx,dy]) => {
+    ctx.fillStyle = c; ctx.fillRect(lx+dx*(sq+gap), ly+dy*(sq+gap), sq, sq);
+  });
+  ctx.fillStyle = 'rgba(255,255,255,0.55)'; ctx.font = '700 11px Arial';
+  ctx.fillText('MICROSOFT AUTHORIZED LEARNING PARTNER', lx+sq*2+gap+10, ly+sq+2);
+
+  // Koenig logo text (top right)
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '700 13px Arial';
+  ctx.textAlign = 'right';
+  ctx.fillText('KOENIG SOLUTIONS', 1042, 92);
+  ctx.fillStyle = 'rgba(6,148,209,0.7)'; ctx.font = '500 10px Arial';
+  ctx.fillText('EST. 1993 · GLOBAL TRAINING LEADER', 1042, 108);
+  ctx.textAlign = 'left';
+
+  // "This is to certify that"
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '400 13px Georgia';
+  ctx.fillText('THIS IS TO CERTIFY THAT', 561, 220);
+
+  // Decorative line
+  ctx.strokeStyle = 'rgba(6,148,209,0.3)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(261, 232); ctx.lineTo(861, 232); ctx.stroke();
+
+  // Recipient name
+  ctx.fillStyle = '#ffffff'; ctx.font = 'bold 58px Georgia';
+  ctx.fillText(name || 'Your Name', 561, 310);
+
+  // Underline
+  const nm = ctx.measureText(name || 'Your Name');
+  ctx.strokeStyle = 'rgba(56,189,248,0.5)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(561-nm.width/2, 322); ctx.lineTo(561+nm.width/2, 322); ctx.stroke();
+
+  // "has successfully completed"
+  ctx.fillStyle = 'rgba(255,255,255,0.4)'; ctx.font = '400 14px Georgia';
+  ctx.fillText('HAS SUCCESSFULLY COMPLETED THE OFFICIAL MICROSOFT TRAINING COURSE', 561, 365);
+
+  // Course name
+  const gradCourse = ctx.createLinearGradient(361, 0, 761, 0);
+  gradCourse.addColorStop(0, '#38bdf8'); gradCourse.addColorStop(1, '#10d9a8');
+  ctx.fillStyle = gradCourse; ctx.font = 'bold 28px Georgia';
+  ctx.fillText('Microsoft Azure Administrator (AZ-104)', 561, 420);
+
+  // Meta row
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.font = '500 12px Arial';
+  ctx.fillText('COURSE DURATION: 5 DAYS   ·   FORMAT: OFFICIAL MOC   ·   INSTRUCTOR: MCT CERTIFIED', 561, 460);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(160, 500); ctx.lineTo(962, 500); ctx.stroke();
+
+  // Signatures section
+  const sigs = [['Rohit Aggarwal', 'CEO, Koenig Solutions'], ['Microsoft Partner', 'Authorized Training Partner']];
+  sigs.forEach(([name, role], i) => {
+    const sx = 300 + i * 460;
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(sx-80, 590); ctx.lineTo(sx+80, 590); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)'; ctx.font = '700 12px Arial';
+    ctx.fillText(name, sx, 608);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)'; ctx.font = '400 11px Arial';
+    ctx.fillText(role, sx, 624);
+  });
+
+  // Date
+  const today = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'long',year:'numeric'});
+  ctx.fillStyle = 'rgba(255,255,255,0.25)'; ctx.font = '400 11px Arial';
+  ctx.fillText(`Date of Completion: ${today}`, 561, 680);
+
+  // Seal circle
+  ctx.beginPath(); ctx.arc(561, 540, 46, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(6,148,209,0.35)'; ctx.lineWidth = 2; ctx.stroke();
+  ctx.beginPath(); ctx.arc(561, 540, 38, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(6,148,209,0.15)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = 'rgba(6,148,209,0.08)'; ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '700 22px Arial'; ctx.textAlign = 'center';
+  ctx.fillText('✓', 561, 550);
+
+  // Bottom bar
+  const bbar = ctx.createLinearGradient(0, 0, 1122, 0);
+  bbar.addColorStop(0, '#0694d1'); bbar.addColorStop(0.5, '#10d9a8'); bbar.addColorStop(1, '#38bdf8');
+  ctx.fillStyle = bbar; ctx.fillRect(0, 788, 1122, 6);
+
+  // Trigger download
+  const link = document.createElement('a');
+  link.download = 'Koenig-Sample-Certificate.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── CERT SHOWCASE ──
+function CertShowcase({ onUnlock }) {
+  return (
+    <section className="cert-showcase-sec">
+      <div className="cert-showcase-inner reveal">
+        {/* LEFT — text */}
+        <div className="cert-showcase-left">
+          <div className="cert-showcase-label">✦ Sample Certificate</div>
+          <div className="cert-showcase-title">Your Microsoft<br/><em>Certification</em><br/>Awaits</div>
+          <div className="cert-showcase-desc">
+            See what your official Microsoft certification looks like. Download a sample certificate — then let our advisors map the fastest path to earning the real one.
+          </div>
+          <div className="cert-value-list">
+            {[
+              { icon: "🏅", title: "Industry Recognised", text: "Microsoft certifications are the gold standard for cloud and enterprise tech roles globally." },
+              { icon: "📈", title: "35% Average Salary Uplift", text: "Certified professionals earn significantly more than non-certified peers in the same role." },
+              { icon: "⚡", title: "95% First-Attempt Pass Rate", text: "Koenig's MCT instructors and official MOC courseware deliver results, not just training." },
+            ].map((v,i) => (
+              <div key={i} className="cert-value-item">
+                <div className="cert-value-icon">{v.icon}</div>
+                <div className="cert-value-text"><strong>{v.title}</strong>{v.text}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — cert preview card */}
+        <div className="cert-showcase-right">
+          <div className="cert-preview-wrap">
+            {/* Mock certificate */}
+            <div className="cert-card-mock">
+              <div className="cert-watermark">🏅</div>
+              <div className="cert-mock-header">
+                <div className="cert-mock-org">
+                  <svg width="22" height="22" viewBox="0 0 23 23" fill="none">
+                    <rect x="1" y="1" width="10" height="10" fill="#f25022"/>
+                    <rect x="12" y="1" width="10" height="10" fill="#7fba00"/>
+                    <rect x="1" y="12" width="10" height="10" fill="#00a4ef"/>
+                    <rect x="12" y="12" width="10" height="10" fill="#ffb900"/>
+                  </svg>
+                  <span className="cert-mock-org-name">Microsoft · Koenig Solutions</span>
+                </div>
+                <div className="cert-mock-stamp">🏅</div>
+              </div>
+              <div className="cert-mock-presented">This is to certify that</div>
+              <div className="cert-mock-recipient">Your Name Here</div>
+              <div className="cert-mock-subtitle">has successfully completed the official Microsoft training</div>
+              <div className="cert-mock-course-label">Course</div>
+              <div className="cert-mock-course">Microsoft Azure Administrator<br/>AZ-104</div>
+              <div className="cert-mock-footer">
+                <div className="cert-mock-sig">
+                  <div className="cert-mock-sig-line"/>
+                  <div className="cert-mock-sig-name">Rohit Aggarwal, CEO</div>
+                </div>
+                <div className="cert-mock-badge">
+                  <div className="cert-mock-badge-ring">
+                    <div className="cert-mock-badge-inner">✓</div>
+                  </div>
+                  <div className="cert-mock-badge-text">VERIFIED</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Blur overlay with unlock CTA */}
+            <div className="cert-blur-overlay">
+              <div className="cert-unlock-label">🔒 Fill your details to unlock</div>
+              <button className="cert-unlock-btn" onClick={onUnlock}>
+                Request Course Details
+              </button>
+              <div className="cert-unlock-note">Free · No credit card · Instant download<br/>after submitting your details</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── AWARDS SLIDER ──
+function AwardsSlider() {
+  const [idx, setIdx] = useState(0);
+  const visibleCount = 3;
+  const maxIdx = Math.max(0, AWARDS.length - visibleCount);
+
+  useEffect(() => {
+    const t = setInterval(() => setIdx(i => i >= maxIdx ? 0 : i + 1), 3500);
+    return () => clearInterval(t);
+  }, [maxIdx]);
+
+  const prev = () => setIdx(i => i <= 0 ? maxIdx : i - 1);
+  const next = () => setIdx(i => i >= maxIdx ? 0 : i + 1);
+
+  return (
+    <section className="awards-sec">
+      <div className="awards-inner">
+        <div className="awards-header reveal">
+          <div className="sec-label">Recognition & Authority</div>
+          <div className="sec-title">Recognised as a<br/><em>Microsoft Partner of the Year</em></div>
+          <div className="sec-sub" style={{margin:'14px auto 0',textAlign:'center'}}>
+            30+ years of excellence recognised by Microsoft globally
+          </div>
+        </div>
+
+        <div className="awards-slider-wrap reveal">
+          <div className="awards-track-outer">
+            <div
+              className="awards-track"
+              style={{ transform: `translateX(calc(-${idx * (100/visibleCount)}% - ${idx * 20/visibleCount}px))` }}
+            >
+              {AWARDS.map((a, i) => (
+                <div key={i} className="award-card">
+                  <div className="award-card-glow"/>
+                  {/* Real award image */}
+                  <div className="award-img-wrap">
+                    {a.svgIcon}
+                  </div>
+                  <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, marginTop:4}}>
+                    <div className="award-org">{a.org}</div>
+                    <div className="award-year-badge">⭐ {a.year}</div>
+                  </div>
+                  <div className="award-title">{a.title}</div>
+                  <div className="award-desc">{a.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="awards-controls">
+            <button className="awards-btn" onClick={prev}>←</button>
+            <div className="awards-dots">
+              {Array.from({length: maxIdx + 1}).map((_, i) => (
+                <div key={i} className={`awards-dot${i === idx ? ' active' : ''}`} onClick={() => setIdx(i)}/>
+              ))}
+            </div>
+            <button className="awards-btn" onClick={next}>→</button>
+          </div>
+        </div>
+
+        {/* Trust logos strip */}
+        <div className="trust-logos-strip reveal">
+          {[
+            { label: "Microsoft Gold Partner", svg: <svg width="18" height="18" viewBox="0 0 23 23" fill="none"><rect x="1" y="1" width="10" height="10" fill="#f25022"/><rect x="12" y="1" width="10" height="10" fill="#7fba00"/><rect x="1" y="12" width="10" height="10" fill="#00a4ef"/><rect x="12" y="12" width="10" height="10" fill="#ffb900"/></svg> },
+            { label: "ISO 9001 Certified", svg: <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/><path d="M9 12l2 2 4-4" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/></svg> },
+            { label: "30+ Years Established", svg: <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinejoin="round"/></svg> },
+            { label: "50+ Countries", svg: <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/><path d="M2 12h20M12 2c-3 4-3 14 0 20M12 2c3 4 3 14 0 20" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/></svg> },
+            { label: "500K+ Certified", svg: <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/><circle cx="9" cy="7" r="4" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5" strokeLinecap="round"/></svg> },
+          ].map((item, i) => (
+            <div key={i} className="trust-logo-item">
+              {item.svg}
+              {item.label}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── MAIN ──
+export default function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [certTab, setCertTab] = useState("Azure");
+  const [modal, setModal] = useState(false);
+  const trackRef = useRef(null);
+  const [drag, setDrag] = useState(false);
+  const [ds, setDs] = useState({ x: 0, s: 0 });
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll);
+
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("in"); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+    return () => { window.removeEventListener("scroll", onScroll); obs.disconnect(); };
+  }, []);
+
+  // Countdown
+  const [time, setTime] = useState({ h: 11, m: 47, s: 23 });
+  useEffect(() => {
+    const t = setInterval(() => {
+      setTime(p => {
+        let { h, m, s } = p;
+        s--; if (s < 0) { s = 59; m--; } if (m < 0) { m = 59; h--; } if (h < 0) { h = 23; m = 59; s = 59; }
+        return { h, m, s };
+      });
+    }, 1000);
+    return () => clearInterval(t);
+  }, []);
+  const pad = n => String(n).padStart(2, "0");
+
+  return (
+    <>
+      <style>{CSS}</style>
+
+      {/* NAV */}
+      <nav className={`nav ${scrolled ? "scrolled" : ""}`}>
+        <div className="nav-logo">
+          <img src="data:image/png;base64,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" alt="Koenig Solutions — step forward" className="nav-logo-img" />
+          <div className="nav-logo-divider"/>
+          <div className="nav-ms-badge">
+            <div className="ms-flag">
+              {[["#f25022","#7fba00"],["#00a4ef","#ffb900"]].flat().map((c,i)=><div key={i} className="ms-sq" style={{background:c}}/>)}
+            </div>
+            <span className="nav-badge-text">Microsoft Partner</span>
+          </div>
+        </div>
+        <div className="nav-right">
+          <button className="nav-cta" onClick={() => setModal(true)}>Request More Information</button>
+        </div>
+      </nav>
+
+
+      {/* HERO */}
+      <section className="hero" id="hero">
+        <div className="hero-bg"/>
+        <div className="hero-grid"/>
+        <div className="hero-sep"/>
+
+        {/* LEFT — eyebrow + headline + desc + pills + social */}
+        <div className="hero-left">
+          <div className="hero-heading">
+            <div className="hero-eyebrow">
+              <span className="dot-live"/>
+              Microsoft Authorized Learning Partner
+            </div>
+            <h1>Advance Your Career with<br/><span className="accent">Microsoft Certifications</span></h1>
+          </div>
+          <div className="hero-details">
+            <p className="hero-desc">
+              Get certified with MCT-qualified instructors on official Microsoft courseware. Train 1-on-1, live online, or on-site — available in 50+ countries with a 95% exam pass rate.
+            </p>
+            <div className="trust-row">
+              {["✓ Official MOC Courseware","✓ MCT-Qualified Instructors","✓ 50+ Countries","✓ 95% Pass Rate","✓ Microsoft ESI Partner"].map(t => (
+                <div key={t} className="trust-pill"><span className="check">{t.slice(0,1)}</span>{t.slice(2)}</div>
+              ))}
+            </div>
+            <div className="social-proof">
+              <div className="sp-avatars">
+                {[
+                  svgAvatar("RM","#1e40af"),
+                  svgAvatar("SK","#7c3aed"),
+                  svgAvatar("AR","#0e7490"),
+                  svgAvatar("PS","#0f766e"),
+                  svgAvatar("JT","#b45309"),
+                ].map((src,i) => <img key={i} className="sp-avatar" src={src} alt="learner" />)}
+              </div>
+              <div className="sp-text">
+                <div className="stars">★★★★★</div>
+                <div><strong>500,000+ professionals</strong> certified with Koenig</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT — lead gen form */}
+        <div className="lead-form-wrap">
+          <div className="form-glow"/>
+          <div className="lead-form">
+            <LeadForm />
+          </div>
+        </div>
+      </section>
+
+      {/* TICKER */}
+      <div className="ticker">
+        <div className="ticker-track">
+          {[...TICKER_ITEMS,...TICKER_ITEMS,...TICKER_ITEMS,...TICKER_ITEMS].map((t,i)=>(
+            <span key={i} className="ticker-item">{t}<span className="ticker-dot"/></span>
+          ))}
+        </div>
+      </div>
+
+      {/* STATS */}
+      <section className="stats-strip reveal">
+        <div className="stats-inner">
+          {[
+            {n:500000, suf:"+", label:"Professionals Trained", src:"Koenig internal data"},
+            {n:95, suf:"%", label:"Exam Pass Rate", src:"vs. 60-70% industry avg"},
+            {n:50, suf:"+", label:"Countries Served", src:"Active delivery markets"},
+            {n:4.7, suf:"★", label:"Google Rating", src:"Based on verified reviews"},
+          ].map((s,i)=>(
+            <div key={i} className="stat-item">
+              <div className="stat-number">
+                <Counter end={s.n} suffix={s.suf}/>
+              </div>
+              <div className="stat-label">{s.label}</div>
+              <div className="stat-source">{s.src}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* COMPANIES */}
+      <CompaniesSection onCTA={() => setModal(true)} />
+
+      {/* FEATURES */}
+      <section className="features-sec">
+        <div className="features-header reveal">
+          <div className="sec-label">Why Koenig</div>
+          <div className="sec-title">Training That<br/><em>Gets You Certified</em></div>
+          <div className="sec-sub">Not just another training vendor. Koenig's authorizations, trainer quality, and delivery model set a different standard entirely.</div>
+        </div>
+        <div className="features-grid">
+          {FEATURES.map((f,i)=>(
+            <div key={i} className="feat-card reveal" style={{transitionDelay:`${i*0.08}s`}}>
+              <span className="feat-icon">{f.icon()}</span>
+              <div className="feat-title">{f.title}</div>
+              <div className="feat-desc">{f.desc}</div>
+              <div className="feat-stat">{f.stat}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CERT PATHS — Sidebar Layout */}
+      <section className="certs-sec" id="cert">
+        <div className="certs-inner">
+          <div className="certs-header reveal">
+            <div className="sec-label">Certification Paths</div>
+            <div className="sec-title">Choose Your<br/><em>Microsoft Path</em></div>
+            <div className="sec-sub">Select a technology from the sidebar to explore all available certification courses.</div>
+          </div>
+
+          <div className="certs-layout reveal">
+
+            {/* LEFT SIDEBAR — technology selector */}
+            <div className="cert-sidebar">
+              <div className="cert-sidebar-label">Technologies</div>
+              {CERT_TABS.map((t, i) => (
+                <button
+                  key={t}
+                  className={`cert-sidebar-item ${certTab === t ? "active" : ""}`}
+                  onClick={() => setCertTab(t)}
+                >
+                  <span className="csi-icon">{TECH_LOGOS[t]({ size: 20 })}</span>
+                  <div className="csi-body">
+                    <span className="csi-label">{t}</span>
+                    <span className="csi-sublabel">{CERT_META[t].sublabel}</span>
+                  </div>
+                  <span className="csi-count">{CERTS[t].length}</span>
+                </button>
+              ))}
+              <div className="cert-sidebar-divider"/>
+              <div style={{padding:"10px 20px 14px"}}>
+                <div style={{fontSize:11,color:"rgba(255,255,255,0.2)",lineHeight:1.5}}>
+                  All courses delivered by Microsoft Certified Trainers on official MOC courseware.
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT PANEL — courses for selected technology */}
+            <div className="cert-panel">
+
+              {/* Panel header */}
+              <div className="cert-panel-header">
+                <div className="cert-panel-title-block">
+                  <div className="cert-panel-icon">
+                    {TECH_LOGOS[certTab]({ size: 36 })}
+                  </div>
+                  <div className="cert-panel-name">{certTab.toUpperCase()}</div>
+                  <div className="cert-panel-desc">{CERT_META[certTab].desc}</div>
+                  <div className="cert-panel-meta">
+                    {CERT_META[certTab].pills.map(p => (
+                      <span key={p} className="cert-meta-pill">✓ {p}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="cert-panel-cta">
+                  <button className="cert-panel-enroll" onClick={() => setModal(true)}>
+                    Enquire Now →
+                  </button>
+                </div>
+              </div>
+
+              {/* Course cards grid */}
+              <div className="cert-grid">
+                {CERTS[certTab].map((c, i) => (
+                  <div
+                    key={`${certTab}-${i}`}
+                    className="cert-card"
+                    onClick={() => setModal(true)}
+                    style={{cursor:'pointer'}}
+                  >
+                    <span className={`cert-badge ${c.level}`}>
+                      {c.level === "fund" ? "Fundamentals" : c.level === "assoc" ? "Associate" : "Expert"}
+                    </span>
+                    <div className="cert-name">{c.name}</div>
+                    <div className="cert-code">{c.code}</div>
+                    <div className="cert-footer">
+                      <span className="cert-dur">⏱ {c.dur}</span>
+                      <span className="cert-enroll">Enroll →</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* CERT SHOWCASE */}
+      <CertShowcase onUnlock={() => setModal(true)} />
+
+      {/* TESTIMONIALS */}
+      <section className="test-sec">
+        <div className="test-inner">
+          <div className="reveal" style={{marginBottom:36}}>
+            <div className="sec-label">Learner Stories</div>
+            <div className="sec-title">What Our<br/><em>Learners Say</em></div>
+          </div>
+          <div className="test-track-wrap"
+            ref={trackRef}
+            onMouseDown={e=>{setDrag(true);setDs({x:e.clientX,s:trackRef.current.scrollLeft})}}
+            onMouseMove={e=>{if(!drag)return;trackRef.current.scrollLeft=ds.s-(e.clientX-ds.x)}}
+            onMouseUp={()=>setDrag(false)} onMouseLeave={()=>setDrag(false)}
+          >
+            <div className="test-track">
+              {TESTIMONIALS.map((t,i)=>(
+                <div key={i} className="test-card">
+                  <div className="test-stars">★★★★★</div>
+                  <div className="test-quote">"{t.quote}"</div>
+                  <div className="test-author">
+                    <img className="test-avatar" src={t.photo} alt={t.name} />
+                    <div>
+                      <div className="test-name">{t.name}</div>
+                      <div className="test-role">{t.role}</div>
+                      <div className="test-cert">{t.cert}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{textAlign:"center",marginTop:20,fontSize:13,color:"rgba(255,255,255,0.3)"}}>← drag to explore →</div>
+        </div>
+      </section>
+
+      {/* AWARDS */}
+      <AwardsSlider />
+
+      {/* BOTTOM CTA */}
+      <section className="bottom-cta">
+        <div className="cta-title">Ready to Step<br/><span>Forward?</span></div>
+        <div className="cta-sub">Join 500,000+ professionals who've advanced their careers with Koenig.</div>
+        <div className="cta-btns">
+          <button className="cta-primary" onClick={()=>setModal(true)}>Request More Information</button>
+          <button className="cta-ghost">View All Courses →</button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="footer-left">© 2026 Koenig Solutions · Microsoft Authorized Learning Partner · ESI Partner</div>
+        <div className="footer-right">
+          <a href="#" className="footer-link">Privacy Policy</a>
+          <a href="#" className="footer-link">Terms of Use</a>
+          <a href="#" className="footer-link">Contact Us</a>
+        </div>
+      </footer>
+
+      {/* STICKY CTA */}
+      <button
+        className="dl-brochure-fab"
+        onClick={() => setModal(true)}
+      >
+        <span className="dl-brochure-icon">⬇</span>
+        <span className="dl-brochure-text">Enquire Now</span>
+      </button>
+
+      {/* MODAL */}
+      {modal && (
+        <div className="modal-overlay" onClick={e=>{ if(e.target===e.currentTarget) setModal(false); }}>
+          <div className="modal-box">
+            <button className="modal-close" onClick={()=>setModal(false)}>✕</button>
+            <LeadForm onClose={()=>setModal(false)}/>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+</script></body></html>

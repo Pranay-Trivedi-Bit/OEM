@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Koenig brand-mapped shadcn/ui CSS variables (dark theme) */
+    --background: 207 73% 11%;        /* #071e2e – ink */
+    --foreground: 210 40% 96%;        /* near-white */
+
+    --muted: 207 60% 18%;             /* #0d2a3e – slightly lighter dark */
+    --muted-foreground: 215 20% 65%;  /* slate-400 equivalent */
+
+    --border: 207 50% 25%;            /* subtle navy border */
+  }
+}

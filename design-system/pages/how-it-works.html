@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works — Koenig Design System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: {
+            ink:   '#071e2e',
+            ink2:  '#093148',
+            navy:  '#0a2740',
+            blue:  '#0694D1',
+            sky:   '#50e6ff',
+            amber: '#f59e0b',
+            orange:'#f97316',
+          },
+          keyframes: {
+            'fade-up': {
+              '0%':   { opacity: '0', transform: 'translateY(32px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'draw-line': {
+              '0%':   { transform: 'scaleY(0)' },
+              '100%': { transform: 'scaleY(1)' },
+            },
+            shimmer: {
+              '0%':   { backgroundPosition: '200% center' },
+              '100%': { backgroundPosition: '-200% center' },
+            },
+          },
+          animation: {
+            'fade-up':   'fade-up 0.65s cubic-bezier(0.22,1,0.36,1) both',
+            'draw-line': 'draw-line 0.8s cubic-bezier(0.22,1,0.36,1) both',
+            shimmer:     'shimmer 3.5s linear infinite',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── utility: animation delays ── */
+    .delay-0   { animation-delay: 0ms }
+    .delay-1   { animation-delay: 120ms }
+    .delay-2   { animation-delay: 240ms }
+    .delay-3   { animation-delay: 360ms }
+    .delay-line{ animation-delay: 80ms }
+
+    /* ── reveal: hidden state ── */
+    .reveal       { opacity: 0; transform: translateY(32px); }
+    .reveal-line  { transform-origin: top center; transform: scaleY(0); opacity: 0; }
+
+    /* ── reveal: visible state triggered by JS ── */
+    .reveal.is-visible {
+      animation: fade-up 0.65s cubic-bezier(0.22,1,0.36,1) both;
+      opacity: 1;
+    }
+    .reveal-line.is-visible {
+      animation: draw-line 0.85s cubic-bezier(0.22,1,0.36,1) both;
+      opacity: 1;
+    }
+
+    /* ── gradient border card trick ──
+       Wrapper sets the gradient bg; inner card clips over it leaving a 1.5px rim */
+    .grad-card-wrap {
+      background: linear-gradient(145deg, rgba(246,115,22,0.55) 0%, rgba(6,148,209,0.35) 55%, rgba(6,148,209,0.08) 100%);
+      border-radius: 20px;
+      padding: 1.5px;
+    }
+    .grad-card-wrap:hover .grad-card-inner {
+      background: linear-gradient(145deg, rgba(15,38,60,1) 0%, rgba(10,39,64,1) 100%);
+    }
+    .grad-card-wrap:hover {
+      background: linear-gradient(145deg, rgba(249,115,22,0.9) 0%, rgba(6,148,209,0.65) 55%, rgba(80,230,255,0.3) 100%);
+    }
+    .grad-card-inner {
+      border-radius: 18.5px;
+      background: linear-gradient(145deg, #0d2d45 0%, #071e2e 100%);
+      transition: background 0.3s ease;
+    }
+
+    /* ── step number glow ring ── */
+    .step-num {
+      position: relative;
+      z-index: 1;
+    }
+    .step-num::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249,115,22,0.25) 0%, transparent 70%);
+      z-index: -1;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+    .grad-card-wrap:hover .step-num::before { opacity: 1; }
+
+    /* ── connector line ── */
+    .connector {
+      transform-origin: top center;
+      background: linear-gradient(to bottom, rgba(249,115,22,0.7), rgba(6,148,209,0.4));
+    }
+
+    /* ── shimmer title ── */
+    .shimmer-text {
+      background: linear-gradient(
+        90deg,
+        #e2e8f0 0%,
+        #e2e8f0 30%,
+        #f97316 45%,
+        #fbbf24 50%,
+        #f97316 55%,
+        #e2e8f0 70%,
+        #e2e8f0 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 3.5s linear infinite;
+    }
+
+    /* ── icon circle ── */
+    .icon-circle {
+      background: linear-gradient(135deg, rgba(249,115,22,0.18), rgba(6,148,209,0.12));
+      border: 1px solid rgba(249,115,22,0.25);
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .grad-card-wrap:hover .icon-circle {
+      background: linear-gradient(135deg, rgba(249,115,22,0.28), rgba(6,148,209,0.2));
+      border-color: rgba(249,115,22,0.5);
+    }
+
+    /* ── tag pill ── */
+    .step-tag {
+      background: linear-gradient(90deg, rgba(249,115,22,0.12), rgba(6,148,209,0.08));
+      border: 1px solid rgba(249,115,22,0.22);
+    }
+  </style>
+</head>
+
+<body class="bg-ink font-sans antialiased">
+
+  <!-- ═══════════════════════════════════════════
+       HOW IT WORKS SECTION
+  ════════════════════════════════════════════ -->
+  <section id="how-it-works" class="relative overflow-hidden py-28 px-6 lg:px-8">
+
+    <!-- Background grid texture -->
+    <div class="pointer-events-none absolute inset-0"
+         style="background-image: linear-gradient(rgba(6,148,209,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(6,148,209,0.04) 1px, transparent 1px); background-size: 48px 48px;">
+    </div>
+
+    <!-- Radial glow -->
+    <div class="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 w-[900px] h-[500px] rounded-full"
+         style="background: radial-gradient(ellipse at center, rgba(249,115,22,0.07) 0%, transparent 65%);">
+    </div>
+
+    <div class="relative mx-auto max-w-5xl">
+
+      <!-- ── Section header ── -->
+      <div class="mb-20 text-center">
+        <span class="reveal delay-0 inline-block mb-4 rounded-full px-4 py-1.5 text-xs font-700 tracking-widest uppercase step-tag text-orange-400">
+          Your Path to Certification
+        </span>
+
+        <h2 class="reveal delay-1 mt-2 text-4xl font-800 leading-tight tracking-tight sm:text-5xl">
+          <span class="shimmer-text">How It Works</span>
+        </h2>
+
+        <p class="reveal delay-2 mx-auto mt-5 max-w-xl text-base text-slate-400 leading-relaxed">
+          Four straightforward steps from zero knowledge to a Microsoft-recognised certification — at your own pace, on your own schedule.
+        </p>
+      </div>
+
+      <!-- ── Steps ── -->
+      <div class="relative flex flex-col items-center gap-0">
+
+        <!-- ─── Step 1 ─── -->
+        <div class="reveal delay-0 w-full max-w-2xl group" data-step="1">
+          <div class="grad-card-wrap transition-all duration-300 hover:scale-[1.015] hover:shadow-2xl"
+               style="box-shadow: 0 0 0 0 transparent;">
+            <div class="grad-card-inner flex gap-5 p-7 sm:p-8">
+              <!-- Left: number -->
+              <div class="flex flex-col items-center shrink-0">
+                <div class="step-num flex h-11 w-11 items-center justify-center rounded-full border-2 border-orange-500 bg-orange-500/10 text-lg font-800 text-orange-400 select-none">
+                  01
+                </div>
+              </div>
+              <!-- Right: content -->
+              <div class="flex-1 min-w-0">
+                <div class="mb-3 flex items-center gap-3">
+                  <div class="icon-circle flex h-9 w-9 items-center justify-center rounded-xl shrink-0">
+                    <!-- Icon: search/browse -->
+                    <svg class="h-4.5 w-4.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                      <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-700 text-white tracking-tight">Choose Your Course</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                  Browse 500+ Microsoft certifications — Azure, Security, Power Platform, M365 and more. Filter by role, level, or exam code. Your advisor helps you pick the fastest path to your goal.
+                </p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <span class="step-tag rounded-md px-2.5 py-1 text-xs text-slate-300">AZ-900 · AZ-104 · AZ-305</span>
+                  <span class="step-tag rounded-md px-2.5 py-1 text-xs text-slate-300">SC-200 · SC-300</span>
+                  <span class="step-tag rounded-md px-2.5 py-1 text-xs text-slate-300">PL-300 · AI-102</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connector 1→2 -->
+        <div class="reveal-line delay-line flex flex-col items-center py-1 connector-wrap">
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+          <div class="h-2 w-2 rounded-full bg-orange-500/50 ring-2 ring-orange-500/20"></div>
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+        </div>
+
+        <!-- ─── Step 2 ─── -->
+        <div class="reveal delay-1 w-full max-w-2xl group" data-step="2">
+          <div class="grad-card-wrap transition-all duration-300 hover:scale-[1.015] hover:shadow-2xl">
+            <div class="grad-card-inner flex gap-5 p-7 sm:p-8">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="step-num flex h-11 w-11 items-center justify-center rounded-full border-2 border-orange-500 bg-orange-500/10 text-lg font-800 text-orange-400 select-none">
+                  02
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="mb-3 flex items-center gap-3">
+                  <div class="icon-circle flex h-9 w-9 items-center justify-center rounded-xl shrink-0">
+                    <!-- Icon: calendar -->
+                    <svg class="text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                      <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-700 text-white tracking-tight">Pick Your Schedule</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                  Train on your terms. Choose from live classroom, live online, 1-on-1 flex batches, or self-paced. Sessions span time zones so weekday or weekend, morning or evening — we have a slot for you.
+                </p>
+                <div class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  <div class="step-tag rounded-lg px-3 py-2 text-center">
+                    <div class="text-xs font-600 text-orange-400">Classroom</div>
+                    <div class="mt-0.5 text-[11px] text-slate-500">On-site</div>
+                  </div>
+                  <div class="step-tag rounded-lg px-3 py-2 text-center">
+                    <div class="text-xs font-600 text-blue-400">Live Online</div>
+                    <div class="mt-0.5 text-[11px] text-slate-500">Any timezone</div>
+                  </div>
+                  <div class="step-tag rounded-lg px-3 py-2 text-center">
+                    <div class="text-xs font-600 text-orange-400">1-on-1 Flex</div>
+                    <div class="mt-0.5 text-[11px] text-slate-500">Your pace</div>
+                  </div>
+                  <div class="step-tag rounded-lg px-3 py-2 text-center">
+                    <div class="text-xs font-600 text-blue-400">Self-Paced</div>
+                    <div class="mt-0.5 text-[11px] text-slate-500">On demand</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connector 2→3 -->
+        <div class="reveal-line delay-line flex flex-col items-center py-1">
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+          <div class="h-2 w-2 rounded-full bg-orange-500/50 ring-2 ring-orange-500/20"></div>
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+        </div>
+
+        <!-- ─── Step 3 ─── -->
+        <div class="reveal delay-2 w-full max-w-2xl group" data-step="3">
+          <div class="grad-card-wrap transition-all duration-300 hover:scale-[1.015] hover:shadow-2xl">
+            <div class="grad-card-inner flex gap-5 p-7 sm:p-8">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="step-num flex h-11 w-11 items-center justify-center rounded-full border-2 border-orange-500 bg-orange-500/10 text-lg font-800 text-orange-400 select-none">
+                  03
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="mb-3 flex items-center gap-3">
+                  <div class="icon-circle flex h-9 w-9 items-center justify-center rounded-xl shrink-0">
+                    <!-- Icon: users/experts -->
+                    <svg class="text-orange-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-700 text-white tracking-tight">Learn from Experts</h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                  Train with Microsoft Certified Trainers (MCTs) who bring real-world project experience. Official MOC courseware, hands-on Azure labs, and mock exams mirror the actual test environment.
+                </p>
+                <!-- MCT stats row -->
+                <div class="mt-4 flex gap-4">
+                  <div class="flex items-center gap-2">
+                    <div class="h-7 w-7 rounded-full bg-orange-500/15 border border-orange-500/30 flex items-center justify-center shrink-0">
+                      <svg class="text-orange-400" fill="currentColor" viewBox="0 0 20 20" width="12" height="12">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    </div>
+                    <span class="text-xs text-slate-400"><span class="font-600 text-white">200+</span> MCTs globally</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="h-7 w-7 rounded-full bg-blue-500/15 border border-blue-500/30 flex items-center justify-center shrink-0">
+                      <svg class="text-blue-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="12" height="12">
+                        <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                      </svg>
+                    </div>
+                    <span class="text-xs text-slate-400"><span class="font-600 text-white">95%</span> first-attempt pass rate</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Connector 3→4 -->
+        <div class="reveal-line delay-line flex flex-col items-center py-1">
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+          <div class="h-2 w-2 rounded-full bg-orange-500/50 ring-2 ring-orange-500/20"></div>
+          <div class="connector w-0.5 h-12 rounded-full"></div>
+        </div>
+
+        <!-- ─── Step 4 ─── -->
+        <div class="reveal delay-3 w-full max-w-2xl group" data-step="4">
+          <!-- Special glow on final step -->
+          <div class="absolute -inset-1 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl"
+               style="background: radial-gradient(ellipse, rgba(249,115,22,0.2) 0%, transparent 70%); pointer-events:none;">
+          </div>
+          <div class="grad-card-wrap relative transition-all duration-300 hover:scale-[1.015] hover:shadow-2xl"
+               style="background: linear-gradient(145deg, rgba(249,115,22,0.65) 0%, rgba(6,148,209,0.45) 55%, rgba(80,230,255,0.15) 100%);">
+            <div class="grad-card-inner flex gap-5 p-7 sm:p-8"
+                 style="background: linear-gradient(145deg, #0f2a3e 0%, #071e2e 100%);">
+              <div class="flex flex-col items-center shrink-0">
+                <div class="step-num flex h-11 w-11 items-center justify-center rounded-full text-lg font-800 text-orange-300 select-none"
+                     style="border: 2px solid #f97316; background: linear-gradient(135deg, rgba(249,115,22,0.25), rgba(251,191,36,0.1)); box-shadow: 0 0 18px rgba(249,115,22,0.35);">
+                  04
+                </div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="mb-3 flex items-center gap-3">
+                  <div class="flex h-9 w-9 items-center justify-center rounded-xl shrink-0"
+                       style="background: linear-gradient(135deg, rgba(249,115,22,0.3), rgba(251,191,36,0.15)); border: 1px solid rgba(249,115,22,0.45);">
+                    <!-- Icon: award/certificate -->
+                    <svg class="text-orange-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" height="18">
+                      <circle cx="12" cy="8" r="6"/>
+                      <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-lg font-700 tracking-tight"
+                      style="-webkit-text-fill-color: transparent; background: linear-gradient(90deg, #fff 0%, #fcd34d 60%, #fb923c 100%); -webkit-background-clip: text; background-clip: text;">
+                    Get Certified
+                  </h3>
+                </div>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                  Sit your Microsoft exam with confidence. Our exam-prep sessions, practice tests, and post-training support mean you walk in ready. Once certified, unlock your digital badge and share it on LinkedIn instantly.
+                </p>
+                <!-- Badge row -->
+                <div class="mt-4 flex items-center gap-3">
+                  <div class="flex -space-x-1">
+                    <div class="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-700 text-white ring-2 ring-ink"
+                         style="background: linear-gradient(135deg,#0694D1,#50e6ff);">AZ</div>
+                    <div class="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-700 text-white ring-2 ring-ink"
+                         style="background: linear-gradient(135deg,#7c3aed,#a78bfa);">SC</div>
+                    <div class="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-700 text-white ring-2 ring-ink"
+                         style="background: linear-gradient(135deg,#f59e0b,#fcd34d);">PL</div>
+                    <div class="h-7 w-7 rounded-full flex items-center justify-center text-[10px] font-700 text-white ring-2 ring-ink"
+                         style="background: linear-gradient(135deg,#10b981,#6ee7b7);">DP</div>
+                  </div>
+                  <span class="text-xs text-slate-400">
+                    <span class="font-600 text-white">500K+</span> Microsoft badges earned
+                  </span>
+                  <span class="ml-auto rounded-full px-3 py-1 text-xs font-600 text-orange-300"
+                        style="background: linear-gradient(90deg, rgba(249,115,22,0.18), rgba(251,191,36,0.1)); border: 1px solid rgba(249,115,22,0.35);">
+                    🎯 You're next
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /steps -->
+
+      <!-- ── CTA strip ── -->
+      <div class="reveal delay-3 mt-16 flex flex-col items-center gap-5 sm:flex-row sm:justify-center">
+        <button
+          onclick="this.textContent='✓ Request Sent!'; this.disabled=true; this.classList.add('opacity-60');"
+          class="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-8 py-3.5 text-sm font-700 text-white transition-transform duration-200 active:scale-95"
+          style="background: linear-gradient(135deg, #f97316, #ea580c);">
+          <span class="relative z-10">Start Your Journey</span>
+          <svg class="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+          <div class="absolute inset-0 -translate-x-full bg-white/15 skew-x-12 transition-transform duration-500 group-hover:translate-x-full"></div>
+        </button>
+        <button class="inline-flex items-center gap-2 rounded-xl border border-slate-600 px-8 py-3.5 text-sm font-600 text-slate-300 transition-colors duration-200 hover:border-orange-500/50 hover:text-orange-400">
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+          Download Brochure
+        </button>
+      </div>
+
+    </div><!-- /container -->
+  </section>
+
+
+  <!-- ══════════════════════════════════════
+       IntersectionObserver — no libraries
+  ══════════════════════════════════════ -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ── 1. Collect targets ── */
+      const revealEls  = document.querySelectorAll('.reveal');
+      const lineEls    = document.querySelectorAll('.reveal-line');
+
+      /* ── 2. Apply stored delay from class ── */
+      const delayMap = { 'delay-0': 0, 'delay-1': 120, 'delay-2': 240, 'delay-3': 360, 'delay-line': 80 };
+
+      function applyDelay(el) {
+        for (const [cls, ms] of Object.entries(delayMap)) {
+          if (el.classList.contains(cls)) {
+            el.style.animationDelay = ms + 'ms';
+            break;
+          }
+        }
+      }
+
+      revealEls.forEach(applyDelay);
+      lineEls.forEach(applyDelay);
+
+      /* ── 3. Observer config ── */
+      const options = {
+        root:       null,          // viewport
+        rootMargin: '0px 0px -80px 0px',  // trigger 80px before bottom of viewport
+        threshold:  0.15,
+      };
+
+      /* ── 4. Cards observer ── */
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            cardObserver.unobserve(entry.target);   // fire once
+          }
+        });
+      }, options);
+
+      revealEls.forEach((el) => cardObserver.observe(el));
+
+      /* ── 5. Connector lines observer (tighter threshold) ── */
+      const lineOptions = { ...options, threshold: 0.5 };
+      const lineObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            lineObserver.unobserve(entry.target);
+          }
+        });
+      }, lineOptions);
+
+      lineEls.forEach((el) => lineObserver.observe(el));
+
+    })();
+  </script>
+
+</body>
+</html>
