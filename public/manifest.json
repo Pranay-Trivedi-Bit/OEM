@@ -1,0 +1,17 @@
+{
+  "name": "Koenig Solutions — Microsoft Training",
+  "short_name": "Koenig MS",
+  "description": "Official Microsoft Authorized Learning Partner. 95% pass rate, 500K+ certified.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040C18",
+  "theme_color": "#0694D1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

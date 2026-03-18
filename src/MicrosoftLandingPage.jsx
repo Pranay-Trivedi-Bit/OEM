@@ -1,11 +1,31 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import ScrollFAQAccordion from "./components/ui/scroll-faqaccordion";
 import TwitterTestimonials from "./components/ui/twitter-testimonial-cards";
-import RadialOrbitalTimeline from "./components/ui/radial-orbital-timeline";
 import createGlobe from "cobe";
 import { motion, animate, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, BookOpen, Server, Code2, Network, Layers, Brain, Bot, FlaskConical, AlertTriangle, Lock, MessageSquare, Mail, BarChart2, AppWindow, ShieldCheck } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+
+/* ── Lazy-mount wrapper: defers rendering until section nears viewport ── */
+function LazySection({ children, minHeight = 400, rootMargin = "300px 0px" }) {
+  const ref = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setMounted(true); obs.disconnect(); } },
+      { rootMargin }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [rootMargin]);
+  return (
+    <div ref={ref} style={mounted ? undefined : { minHeight }}>
+      {mounted && children}
+    </div>
+  );
+}
 
 /* ─────────────────────────────────────────────
    KOENIG × MICROSOFT — HIGH-CONVERTING LANDING PAGE
@@ -3739,15 +3759,44 @@ p {
 .certpath-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(6,148,209,0.55); }
 
 @media (max-width: 860px) {
-  .certpath-body { grid-template-columns: 1fr; }
-  .certpath-body-info { position: static; }
+  .certpath-body { grid-template-columns: 1fr; gap: 32px; }
+  .certpath-body-info { position: static; order: -1; }
+  .certpath-body > div:first-child { order: 1; }
+  .certpath-info-stats { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .certpath-info-stat { padding: 12px 8px; }
+  .certpath-info-stat-num { font-size: 18px; }
   .certpath-sec { padding: 64px 20px; }
+  .certpath-cta-btn { width: 100%; justify-content: center; }
+  .certpath-cta-row { padding: 0; }
 }
 @media (max-width: 600px) {
   .certpath-tech-card { min-width: 88px; padding: 16px 12px 12px; }
   .certpath-tech-card-logo { width: 38px; height: 38px; }
+  .certpath-info-stats { grid-template-columns: 1fr 1fr; }
+  .certpath-flow { padding-left: 32px; }
+  .certpath-flow::before { left: 15px; }
+  .certpath-tl-dot { width: 30px; height: 30px; font-size: 9px; left: -32px; }
+  .certpath-flow-card { padding: 10px 12px; gap: 8px; }
+  .cfc-code { font-size: 11px; }
+  .cfc-name { font-size: 11px; }
+  .cfc-dur { display: none; }
 }
-@media (max-width: 480px) { .certpath-sec { padding: 48px 14px; } }
+@media (max-width: 480px) {
+  .certpath-sec { padding: 48px 14px; }
+  .certpath-flow { padding-left: 28px; }
+  .certpath-flow::before { left: 13px; }
+  .certpath-tl-dot { width: 26px; height: 26px; font-size: 8px; left: -28px; }
+  .certpath-flow-card { padding: 8px 10px; gap: 6px; border-radius: 8px; }
+  .certpath-flow-card:hover { transform: none; }
+  .cfc-lvl-badge { display: none; }
+  .cfc-price { font-size: 10px; }
+  .certpath-info-stat-num { font-size: 16px; }
+  .certpath-info-stat-lbl { font-size: 9px; }
+  .certpath-head { margin-bottom: 40px; }
+  .certpath-legend { gap: 12px; margin-bottom: 20px; }
+  .certpath-tabs { gap: 6px; }
+  .certpath-tab { padding: 8px 10px; font-size: 12px; gap: 5px; }
+}
 
 /* ── WHY GET MICROSOFT CERTIFIED — ROI stats section (sticky-right layout) ── */
 .why-cert-sec { background: #f7f7f7; padding: 100px 0; border-top: 1px solid #ebebeb; }
@@ -3854,7 +3903,8 @@ p {
 @media (max-width: 960px) {
   .why-cert-sec { padding: 72px 0; }
   .why-cert-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
-  .why-cert-right { position: static; }
+  .why-cert-right { position: static; order: -1; }
+  .why-cert-left  { order: 1; }
   .why-cert-sub { max-width: 100%; }
 }
 @media (max-width: 600px) {
@@ -6392,9 +6442,10 @@ function CertShowcase({ onUnlock }) {
           <div className="cert-preview-wrap">
             <img
               src="/koenig-sample-cert.png"
+              loading="lazy"
+              decoding="async"
               alt="Sample Microsoft Azure Administrator (AZ-104) certification issued by Koenig Solutions — official Microsoft Authorized Learning Partner"
               className="cert-real-img"
-              loading="lazy"
             />
             {/* Blur overlay */}
             <div className="cert-blur-overlay">
@@ -6757,7 +6808,7 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                                       </div>
                                       <span className="cert-dur">⏱ {c.dur}</span>
                                       <div className="cert-actions">
-                                        <button className="cert-btn-brochure" onClick={onBrochure}>Brochure</button>
+                                        <button className="cert-btn-brochure" onClick={onBrochure}>Download Brochure</button>
                                         <button className="cert-btn-details" onClick={onEnroll}>Enroll Now</button>
                                       </div>
                                     </div>
@@ -7370,7 +7421,7 @@ function CertExamDetails({ onEnroll }) {
                   <span className="ced-dp-footer-note">📋 {detail.bundle}</span>
                 </div>
                 <div className="ced-dp-footer-actions">
-                  <button className="cert-btn-brochure" onClick={onEnroll}>Download Brochure</button>
+                  <button className="cert-btn-brochure" onClick={onBrochure}>Download Brochure</button>
                   <button className="cert-btn-details" onClick={onEnroll}>
                     Enroll in {selectedCert.code}
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -7428,6 +7479,8 @@ function VideoFacade({ videoId }) {
       <img
         src={`https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`}
         alt="Why Choose Koenig Solutions"
+        loading="lazy"
+        decoding="async"
       />
       <div className="why-play-btn">
         <div className="why-play-circle">
@@ -7815,7 +7868,7 @@ const CERT_PATHS = [
 const LEVEL_ABBR = { Fundamentals: "F", Associate: "A", Expert: "E" };
 const STEP_ARROW_COLOR = { "cfc-fund": "#34d399", "cfc-assoc": "#0694D1", "cfc-expert": "#fbbf24" };
 
-function CertPathSection({ onCTA }) {
+function CertPathSection({ onCTA, onBrochure }) {
   const [active, setActive] = useState(0);
   const track = CERT_PATHS[active];
 
@@ -7950,9 +8003,9 @@ function CertPathSection({ onCTA }) {
               </div>
 
               {/* Enrol CTA */}
-              <button className="certpath-cta-btn" onClick={onCTA} style={{justifyContent:'center'}}>
-                Enrol in {track.key}
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <button className="certpath-cta-btn" onClick={onBrochure} style={{justifyContent:'center'}}>
+                <Download size={15} />
+                Download Brochure
               </button>
             </motion.div>
 
@@ -7961,8 +8014,8 @@ function CertPathSection({ onCTA }) {
 
         <div className="certpath-cta-row">
           <button className="certpath-cta-btn" onClick={onCTA}>
-            Explore All Microsoft Certification Paths
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            Enroll Now
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
         </div>
       </div>
@@ -8332,6 +8385,8 @@ function PlatformPreview() {
           alt="Azure portal dashboard"
           className="preview-img"
           draggable="false"
+          loading="lazy"
+          decoding="async"
           style={{ height: 'calc(100% - 42px)' }}
         />
       </ContainerScroll>
@@ -8817,7 +8872,7 @@ export default function App() {
       <section className="hero" id="main-content">
         {/* Backgrounds */}
         <div className="hero-bg">
-          <img className="hero-bg-img" src="https://koenig-website.vercel.app/images/home-baner.png" alt="" />
+          <img className="hero-bg-img" src="https://koenig-website.vercel.app/images/home-baner.png" alt="" fetchpriority="high" decoding="async" />
           <div className="hero-bg-gradient"/>
           <div className="blob1"/>
           <div className="blob2"/>
@@ -8916,11 +8971,11 @@ export default function App() {
             <div className="hero-proof-divider"/>
             <div className="proof-partner-badges">
               <div className="proof-badge-card">
-                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/MS-Partner-of-the-year-2025.svg" alt="Microsoft Partner of the Year 2025 — awarded to Koenig Solutions"/>
+                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/MS-Partner-of-the-year-2025.svg" alt="Microsoft Partner of the Year 2025 — awarded to Koenig Solutions" loading="lazy" decoding="async"/>
                 <div className="proof-badge-label">Partner of the Year</div>
               </div>
               <div className="proof-badge-card">
-                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-fy24.webp" alt="Microsoft Excellence Award FY2024 — Koenig Solutions"/>
+                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-fy24.webp" alt="Microsoft Excellence Award FY2024 — Koenig Solutions" loading="lazy" decoding="async"/>
                 <div className="proof-badge-label">Microsoft Award FY24</div>
               </div>
             </div>
@@ -8939,6 +8994,7 @@ export default function App() {
               muted
               loop
               playsInline
+              preload="none"
             />
             <button
               className="hero-video-mute"
@@ -9053,7 +9109,7 @@ export default function App() {
       <WhyCertSection onCTA={() => setModal(true)} />
 
       {/* HOW TO GET MICROSOFT CERTIFIED — CERT PATHS */}
-      <CertPathSection onCTA={() => setModal(true)} />
+      <CertPathSection onCTA={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
 
       {/* UNIFIED CERT EXPLORER */}
       <UnifiedCertSection onEnroll={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
@@ -9272,7 +9328,9 @@ export default function App() {
       </section>}
 
       {/* ENROLLMENT INSIGHTS */}
-      <EnrollmentInsights />
+      <LazySection minHeight={600}>
+        <EnrollmentInsights />
+      </LazySection>
 
       {/* CERT SHOWCASE */}
       <CertShowcase onUnlock={() => setModal(true)} />
@@ -9310,11 +9368,15 @@ export default function App() {
 
       {/* FAQ */}
       <section style={{ background: "#ffffff", borderTop: "1px solid rgba(6,148,209,0.1)", padding: "0 48px" }}>
-        <ScrollFAQAccordion data={FAQ_DATA} />
+        <LazySection minHeight={400}>
+          <ScrollFAQAccordion data={FAQ_DATA} />
+        </LazySection>
       </section>
 
       {/* GLOBAL PRESENCE */}
-      <GlobeSection />
+      <LazySection minHeight={500}>
+        <GlobeSection />
+      </LazySection>
 
       {/* BOTTOM CTA */}
 

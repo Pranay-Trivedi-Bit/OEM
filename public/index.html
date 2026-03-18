@@ -247,6 +247,30 @@
     </script>
 
     <!-- ── Fonts: SF Pro via Apple system stack, no external font request needed ── -->
+
+    <!-- ── Performance: preconnect to origin servers ── -->
+    <link rel="preconnect" href="https://koenig-website.vercel.app" crossorigin />
+    <link rel="preconnect" href="https://www.koenig-solutions.com" crossorigin />
+    <link rel="dns-prefetch" href="//learn.microsoft.com" />
+    <link rel="dns-prefetch" href="//images.unsplash.com" />
+    <link rel="dns-prefetch" href="//img.youtube.com" />
+
+    <!-- ── PWA / App metadata ── -->
+    <meta name="theme-color" content="#040C18" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Koenig MS Training" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ── Service Worker registration ── -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
   </head>
   <body style="margin:0;background:#093148;">
     <div id="root"></div>
