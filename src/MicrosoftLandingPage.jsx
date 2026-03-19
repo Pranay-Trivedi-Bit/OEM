@@ -3600,7 +3600,7 @@ p {
   width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
 }
 .certpath-tech-card-name {
-  font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,0.55);
+  font-size: 11.5px; font-weight: 800; color: rgba(255,255,255,0.9);
   text-align: center; line-height: 1.3; letter-spacing: 0.02em;
 }
 .certpath-tech-card.active .certpath-tech-card-name { color: var(--blue); }
@@ -3722,8 +3722,10 @@ p {
 .cfc-expert .cfc-code { color: #fbbf24; }
 
 .cfc-name {
-  font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 500;
+  font-size: 13px; color: #fff; font-weight: 800;
   flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  background: linear-gradient(90deg, #fff 60%, rgba(6,148,209,0.7) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
 .cfc-dur {
   font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.3);
@@ -7073,7 +7075,7 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
   );
 }
 
-function CertExamDetails({ onEnroll }) {
+function CertExamDetails({ onEnroll, onBrochure }) {
   const [examTab, setExamTab]         = useState(CERT_TABS[0]);
   const [examLevel, setExamLevel]     = useState("all");
   const [selectedCert, setSelectedCert] = useState(null);
