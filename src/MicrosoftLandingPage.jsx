@@ -9655,6 +9655,12 @@ export default function App() {
     setVideoMuted(v.muted);
   };
 
+  // Scroll to top on mount
+  useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  }, []);
+
   // Typewriter state
   const [twText, setTwText] = useState("");
   const twFull = "Microsoft Certifications";
