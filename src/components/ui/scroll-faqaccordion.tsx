@@ -1,13 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
-import * as Accordion from "@radix-ui/react-accordion";
-import { Minus, Plus } from "lucide-react";
-import { cn } from "../../lib/utils";
-import { useGSAP } from "@gsap/react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 interface FAQItem {
   id: number;
@@ -24,138 +17,109 @@ interface ScrollFAQAccordionProps {
   answerClassName?: string;
 }
 
-export default function ScrollFAQAccordion({
-  data = [],
-  className,
-  questionClassName,
-  answerClassName,
-}: ScrollFAQAccordionProps) {
-  const [openItem, setOpenItem] = React.useState<string | null>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const contentRefs = React.useRef<Map<string, HTMLDivElement>>(new Map());
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      gsap.registerPlugin(ScrollTrigger);
-    }
-  }, []);
-
-  useGSAP(() => {
-    if (!containerRef.current || data.length === 0) return;
-
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top top",
-        end: `+=${data.length * 200}`,
-        scrub: 0.3,
-        pin: true,
-        markers: false,
-      },
-    });
-
-    data.forEach((item, index) => {
-      const contentRef = contentRefs.current.get(item.id.toString());
-      if (contentRef) {
-        tl.add(() => {
-          setOpenItem(item.id.toString());
-        }, index * 2);
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
-  }, [data]);
+export default function ScrollFAQAccordion({ data = [] }: ScrollFAQAccordionProps) {
+  const [openItem, setOpenItem] = React.useState<number | null>(null);
 
   return (
-    <div
-      ref={containerRef}
-      className={cn("max-w-4xl mx-auto text-center py-16", className)}
-    >
-      <h2 className="text-3xl font-bold mb-2 text-[#071e2e]">
-        Frequently Asked Questions
-      </h2>
-      <p className="text-[#4a6375] mb-8 text-base">
-        Everything you need to know about Microsoft certification training with Koenig Solutions.
-      </p>
+    <div style={{ width: "100%", padding: "56px 0 48px" }}>
+      {/* Header */}
+      <div style={{ marginBottom: 36 }}>
+        <span style={{
+          display: "inline-flex", alignItems: "center", gap: 6,
+          fontSize: 11, fontWeight: 700, letterSpacing: "0.12em",
+          textTransform: "uppercase", color: "#0694D1", marginBottom: 12,
+        }}>
+          <span style={{ width: 20, height: 2, background: "#0694D1", borderRadius: 2, display: "inline-block" }} />
+          Frequently Asked Questions
+        </span>
+        <h2 style={{
+          fontSize: "clamp(24px,2.8vw,34px)", fontWeight: 800, color: "#071e2e",
+          margin: "0 0 10px", letterSpacing: "-0.025em", lineHeight: 1.2,
+        }}>
+          Got Questions? <span style={{ color: "#0694D1" }}>We've Got Answers.</span>
+        </h2>
+        <p style={{ fontSize: 15, color: "#6b8299", lineHeight: 1.65, margin: 0, maxWidth: 480 }}>
+          Everything you need to know about Microsoft certification training with Koenig Solutions.
+        </p>
+      </div>
 
-      <Accordion.Root type="single" collapsible value={openItem || ""}>
-        {data.map((item) => (
-          <Accordion.Item value={item.id.toString()} key={item.id} className="mb-4">
-            <Accordion.Header>
-              <Accordion.Trigger className="flex w-full items-center justify-start gap-x-4 cursor-default">
-                <div
-                  className={cn(
-                    "relative flex items-center space-x-2 rounded-xl p-3 px-4 transition-colors text-left",
-                    openItem === item.id.toString()
-                      ? "bg-[#0694D1]/10 text-[#0694D1] border border-[#0694D1]/20"
-                      : "bg-white border border-[#e5eef6] shadow-sm text-[#071e2e]",
-                    questionClassName
-                  )}
-                >
-                  {item.icon && (
-                    <span
-                      className={cn(
-                        "absolute bottom-6",
-                        item.iconPosition === "right" ? "right-0" : "left-0"
-                      )}
-                      style={{
-                        transform: item.iconPosition === "right" ? "rotate(7deg)" : "rotate(-4deg)",
-                      }}
-                    >
-                      {item.icon}
-                    </span>
-                  )}
-                  <span className="font-semibold text-sm md:text-base">{item.question}</span>
-                </div>
-                <span
-                  className={cn(
-                    "flex-shrink-0 text-[#4a6375]",
-                    openItem === item.id.toString() && "text-[#0694D1]"
-                  )}
-                >
-                  {openItem === item.id.toString() ? (
-                    <Minus className="h-5 w-5" />
-                  ) : (
-                    <Plus className="h-5 w-5" />
-                  )}
-                </span>
-              </Accordion.Trigger>
-            </Accordion.Header>
-
-            <Accordion.Content asChild forceMount>
-              <motion.div
-                ref={(el) => {
-                  if (el) contentRefs.current.set(item.id.toString(), el);
+      {/* FAQ items */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {data.map((item) => {
+          const isOpen = openItem === item.id;
+          return (
+            <div
+              key={item.id}
+              style={{
+                borderRadius: 14,
+                border: `1.5px solid ${isOpen ? "rgba(6,148,209,0.35)" : "rgba(6,148,209,0.1)"}`,
+                background: isOpen ? "rgba(6,148,209,0.03)" : "#fff",
+                overflow: "hidden",
+                transition: "border-color 0.2s, background 0.2s",
+                boxShadow: isOpen ? "0 4px 20px rgba(6,148,209,0.08)" : "0 1px 4px rgba(0,0,0,0.04)",
+              }}
+            >
+              {/* Question */}
+              <button
+                onClick={() => setOpenItem(isOpen ? null : item.id)}
+                style={{
+                  width: "100%", display: "flex", alignItems: "center",
+                  justifyContent: "space-between", gap: 16,
+                  padding: "16px 20px", background: "transparent",
+                  border: "none", cursor: "pointer", textAlign: "left",
+                  fontFamily: "inherit",
                 }}
-                initial="collapsed"
-                animate={openItem === item.id.toString() ? "open" : "collapsed"}
-                variants={{
-                  open: { opacity: 1, height: "auto" },
-                  collapsed: { opacity: 0, height: 0 },
-                }}
-                transition={{ duration: 0.4 }}
-                className="overflow-hidden"
               >
-                <div className="flex justify-end ml-7 mt-3 md:ml-16">
-                  <div
-                    className={cn(
-                      "relative max-w-lg rounded-2xl px-5 py-3 text-white text-sm md:text-base text-left leading-relaxed",
-                      "bg-[#0694D1]",
-                      answerClassName
-                    )}
-                  >
-                    {item.answer}
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+                  {/* Number badge */}
+                  <span style={{
+                    flexShrink: 0, width: 28, height: 28, borderRadius: 8,
+                    background: isOpen ? "#0694D1" : "rgba(6,148,209,0.08)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 11, fontWeight: 800, color: isOpen ? "#fff" : "#0694D1",
+                    transition: "all 0.2s", letterSpacing: 0,
+                  }}>
+                    {String(item.id).padStart(2, "0")}
+                  </span>
+                  <span style={{
+                    fontSize: 14, fontWeight: isOpen ? 700 : 600,
+                    color: isOpen ? "#071e2e" : "#1e3a4f",
+                    lineHeight: 1.45, transition: "color 0.18s",
+                  }}>
+                    {item.question}
+                  </span>
                 </div>
-              </motion.div>
-            </Accordion.Content>
-          </Accordion.Item>
-        ))}
-      </Accordion.Root>
+                {/* Toggle icon */}
+                <span style={{
+                  flexShrink: 0, width: 30, height: 30, borderRadius: "50%",
+                  border: `1.5px solid ${isOpen ? "#0694D1" : "#d5e5f0"}`,
+                  background: isOpen ? "#0694D1" : "#f7f9fb",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  color: isOpen ? "#fff" : "#7a9ab0",
+                  fontSize: 16, fontWeight: 400, lineHeight: 1,
+                  transition: "all 0.2s", transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
+                }}>
+                  +
+                </span>
+              </button>
+
+              {/* Answer */}
+              <div style={{
+                maxHeight: isOpen ? 300 : 0,
+                overflow: "hidden",
+                transition: "max-height 0.38s cubic-bezier(0.4,0,0.2,1)",
+              }}>
+                <div style={{
+                  padding: "0 20px 20px 60px",
+                  fontSize: 14, color: "#4a6375", lineHeight: 1.75,
+                }}>
+                  {item.answer}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

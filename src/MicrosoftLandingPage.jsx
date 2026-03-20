@@ -745,18 +745,19 @@ p {
 
 /* ── Subtitle ── */
 .hero-sub {
-  font-size: 15px; line-height: 1.6;
-  color: rgba(255,255,255,0.55);
-  max-width: 480px; margin-bottom: 14px;
+  font-size: 16px; line-height: 1.7;
+  color: rgba(255,255,255,0.82);
+  max-width: 520px; margin-bottom: 14px;
   animation: fadeUp 0.6s 0.18s ease both;
+  font-weight: 450;
 }
 
 .hero-sub-more {
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.78);
 }
 .hero-read-more {
   background: none; border: none; padding: 0; cursor: pointer;
-  color: var(--blue); font-size: 13px; font-weight: 600;
+  color: var(--blue); font-size: 13.5px; font-weight: 700;
   text-decoration: none; line-height: 1;
   transition: color 0.18s;
   font-family: var(--body);
@@ -771,7 +772,7 @@ p {
 }
 .hero-feat-row {
   display: flex; align-items: center; gap: 10px;
-  font-size: 13px; color: rgba(255,255,255,0.65); font-weight: 500;
+  font-size: 14px; color: rgba(255,255,255,0.88); font-weight: 500;
 }
 .hero-feat-icon {
   width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
@@ -1227,7 +1228,7 @@ p {
 /* ── STATS STRIP ── */
 
 /* ── WHY KOENIG (Features) ── */
-.features-sec { background: var(--light-bg); padding: 100px 48px; }
+.features-sec { background: var(--light-bg); padding: 72px 48px; }
 .sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); margin-bottom: 14px; }
 .sec-title { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.5vw, 44px); color: var(--light-text); letter-spacing: -0.018em; line-height: 1.15; margin-bottom: 16px; }
 /* ── GLOBAL BLUE EM SHIMMER ── */
@@ -1349,7 +1350,7 @@ p {
   .usp-row-koenig, .usp-row-others { font-size: 12px; padding: 14px 12px; }
 }
 
-.features-header { max-width: 1200px; margin: 0 auto 60px; }
+.features-header { max-width: 1200px; margin: 0 auto 40px; }
 .features-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; background: var(--light-border); border: 1px solid var(--light-border); border-radius: var(--r16); overflow: hidden; }
 .feat-card { background: var(--light-white); padding: 36px; transition: all 0.3s; position: relative; overflow: hidden; }
 .feat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: linear-gradient(90deg, var(--blue), var(--sky)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
@@ -1395,7 +1396,7 @@ p {
    HOW IT WORKS  (vertical scroll-reveal)
 ══════════════════════════════ */
 .hiw-sec {
-  background: var(--ink); padding: 100px 48px;
+  background: var(--ink); padding: 80px 48px;
   border-top: 1px solid rgba(255,255,255,0.04);
   overflow: hidden; position: relative;
 }
@@ -1458,7 +1459,7 @@ p {
 }
 
 /* ── Section header ── */
-.hiw-header { max-width: 860px; margin: 0 auto 60px; text-align: center; position: relative; z-index: 1; }
+.hiw-header { max-width: 860px; margin: 0 auto 40px; text-align: center; position: relative; z-index: 1; }
 
 /* ── Vertical steps layout ── */
 .hiw-steps-wrap {
@@ -1698,7 +1699,7 @@ p {
 @media (max-width: 560px) { .learn-sec { padding: 72px 20px; } .learn-footer { flex-direction: column; align-items: flex-start; } }
 
 /* ── CERT PATHS (Sidebar Layout) ── */
-.certs-sec { background: var(--light-bg); padding: 100px 48px; border-top: 1px solid var(--light-border); }
+.certs-sec { background: var(--light-bg); padding: 72px 48px; border-top: 1px solid var(--light-border); }
 .certs-inner { max-width: 1280px; margin: 0 auto; }
 .certs-header { margin-bottom: 40px; }
 .certs-header .sec-label { color: var(--blue); }
@@ -2130,21 +2131,21 @@ p {
 .cert-card:hover::after { opacity: 1; }
 /* level badges — properly colour-coded */
 .cert-badge {
-  display: inline-flex; align-items: center; font-size: 9.5px; font-weight: 600;
-  letter-spacing: 0.4px; text-transform: uppercase; padding: 2px 8px;
-  border-radius: 4px; margin-bottom: 8px; width: fit-content;
+  display: inline-flex; align-items: center; font-size: 8.5px; font-weight: 600;
+  letter-spacing: 0.4px; text-transform: uppercase; padding: 2px 7px;
+  border-radius: 4px; margin-bottom: 7px; width: fit-content; opacity: 0.8;
 }
 .cert-badge.fund   { background: rgba(16,185,129,0.07); color: #059669; border: 1px solid rgba(16,185,129,0.15); }
 .cert-badge.assoc  { background: rgba(6,148,209,0.07);  color: #0578b3; border: 1px solid rgba(6,148,209,0.15); }
 .cert-badge.expert { background: rgba(245,158,11,0.07); color: #d97706; border: 1px solid rgba(245,158,11,0.15); }
 .cert-name {
-  font-size: 13px; font-weight: 600; color: var(--light-text);
-  margin-bottom: 6px; line-height: 1.4; flex: 1;
+  font-size: 15px; font-weight: 800; color: #071e2e;
+  margin-bottom: 6px; line-height: 1.35; flex: 1; letter-spacing: -0.02em;
 }
 .cert-code {
-  display: inline-block; font-size: 10.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
-  color: var(--blue); background: rgba(6,148,209,0.06); border: 1px solid rgba(6,148,209,0.12);
-  padding: 2px 7px; border-radius: 4px; font-weight: 600; letter-spacing: 0.3px;
+  display: inline-block; font-size: 9.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
+  color: #7a9ab0; background: rgba(6,148,209,0.04); border: 1px solid rgba(6,148,209,0.1);
+  padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 0.3px;
   margin-bottom: 10px;
 }
 /* ── Card view toggle button ── */
@@ -2193,35 +2194,35 @@ p {
   display: flex; align-items: baseline; gap: 1px;
 }
 .cert-price-amount {
-  font-size: 16px; font-weight: 700; color: var(--blue);
+  font-size: 14px; font-weight: 700; color: #5a7a90;
   font-family: var(--display); letter-spacing: -0.3px; line-height: 1;
 }
 .cert-price-curr {
-  font-size: 10px; font-weight: 600; color: var(--blue); margin-right: 1px;
+  font-size: 9px; font-weight: 600; color: #7a9ab0; margin-right: 1px;
 }
 .cert-price-label {
-  font-size: 10px; color: #b0bec8; font-weight: 400;
+  font-size: 9px; color: #c0cdd8; font-weight: 400;
 }
 .cert-dur {
-  font-size: 11px; color: #9aabb8; display: flex; align-items: center; gap: 4px;
+  font-size: 10px; color: #aabbc8; display: flex; align-items: center; gap: 4px;
   font-weight: 500;
 }
 .cert-actions { display: flex; gap: 7px; }
 .cert-btn-brochure {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 7px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600;
-  background: #fff; color: var(--blue);
-  border: 1px solid rgba(6,148,209,0.3); cursor: pointer;
+  padding: 6px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 600;
+  background: #fff; color: #7a9ab0;
+  border: 1px solid rgba(6,148,209,0.18); cursor: pointer;
   transition: all 0.18s; white-space: nowrap; font-family: inherit;
 }
-.cert-btn-brochure:hover { background: rgba(6,148,209,0.05); border-color: var(--blue); }
+.cert-btn-brochure:hover { background: rgba(6,148,209,0.05); border-color: var(--blue); color: var(--blue); }
 .cert-btn-details {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 7px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600;
+  padding: 6px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 600;
   background: var(--blue); color: #fff;
   border: none; cursor: pointer;
   transition: all 0.18s; white-space: nowrap; font-family: inherit;
-  box-shadow: 0 2px 8px rgba(6,148,209,0.3);
+  box-shadow: 0 2px 6px rgba(6,148,209,0.25);
 }
 .cert-btn-details:hover { background: var(--blue-dark); box-shadow: 0 4px 12px rgba(6,148,209,0.4); transform: translateY(-1px); }
 
@@ -2725,7 +2726,7 @@ p {
 }
 
 /* ── TESTIMONIALS ── */
-.test-sec { background: var(--light-bg); padding: 100px 48px; overflow: hidden; border-top: 1px solid var(--light-border); }
+.test-sec { background: var(--light-bg); padding: 80px 48px; overflow: hidden; border-top: 1px solid var(--light-border); }
 .test-inner { max-width: 1200px; margin: 0 auto; }
 .test-sec .sec-title { color: var(--light-text); }
 .test-sec .sec-sub { color: var(--light-sub); }
@@ -2788,7 +2789,7 @@ p {
 /* ── GLOBE SECTION ── */
 .globe-sec {
   background: var(--light-white);
-  padding: 100px 48px;
+  padding: 80px 48px;
   overflow: hidden;
   position: relative;
   border-top: 1px solid var(--light-border);
@@ -3078,7 +3079,7 @@ p {
 
 /* ── CERT SHOWCASE ── */
 .cert-showcase-sec {
-  background: var(--light-bg); padding: 100px 48px;
+  background: var(--light-bg); padding: 72px 48px;
   overflow: hidden; position: relative;
 }
 .cert-showcase-sec::before {
@@ -3258,7 +3259,7 @@ p {
 /* ── AWARDS SLIDER ── */
 .awards-sec {
   background: var(--ink);
-  padding: 100px 48px;
+  padding: 80px 48px;
   overflow: hidden;
   position: relative;
   border-top: 1px solid rgba(6,148,209,0.12);
@@ -3444,7 +3445,7 @@ p {
 /* ── BOTTOM CTA ── */
 .bottom-cta {
   background: linear-gradient(135deg, var(--navy) 0%, #0a2a4e 50%, #076d9d 100%);
-  padding: 100px 48px; text-align: center; position: relative; overflow: hidden;
+  padding: 80px 48px; text-align: center; position: relative; overflow: hidden;
 }
 .bottom-cta::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 800px 400px at 50% 100%, rgba(6,148,209,0.12), transparent); }
 .cta-title { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 4.5vw, 64px); color: var(--white); letter-spacing: -0.5px; margin-bottom: 16px; position: relative; z-index:1; }
@@ -3508,7 +3509,7 @@ p {
 
 /* ── HOW TO GET MICROSOFT CERTIFIED — HORIZONTAL TIMELINE ── */
 .certpath-sec {
-  background: var(--ink); padding: 100px 48px;
+  background: var(--ink); padding: 72px 48px;
   position: relative; overflow: hidden;
   border-top: 1px solid rgba(255,255,255,0.06);
 }
@@ -3517,7 +3518,7 @@ p {
   background: radial-gradient(ellipse 900px 500px at 50% 0%, rgba(6,148,209,0.10), transparent 65%);
 }
 .certpath-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
-.certpath-head { text-align: center; margin-bottom: 72px; }
+.certpath-head { text-align: center; margin-bottom: 48px; }
 .certpath-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
 .certpath-title { font-family: var(--display); font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; letter-spacing: -0.02em; color: #fff; line-height: 1.1; margin-bottom: 14px; }
 .certpath-title em { font-style: normal; color: var(--blue); }
@@ -3800,136 +3801,81 @@ p {
   .certpath-tab { padding: 8px 10px; font-size: 12px; gap: 5px; }
 }
 
-/* ── WHY GET MICROSOFT CERTIFIED — ROI stats section (sticky-right layout) ── */
-.why-cert-sec { background: #f7f7f7; padding: 100px 0; border-top: 1px solid #ebebeb; }
-.why-cert-inner {
+/* ── ROI & CAREER OUTCOMES — mirrored layout of edge-sec ── */
+.roi-sec { background: #f0f4f8; padding: 80px 0 56px; border-top: 1px solid #ebebeb; }
+.roi-inner {
   display: grid; grid-template-columns: 1fr 360px;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
   gap: 80px; align-items: start;
 }
-/* LEFT — scrolling stat items */
-.why-cert-left { display: flex; flex-direction: column; gap: 0; }
-.why-cert-item {
-  display: flex; gap: 24px; align-items: flex-start;
-  padding: 28px 0; border-bottom: 1px solid #ebebeb;
-}
-.why-cert-item:first-child { padding-top: 0; }
-.why-cert-stat-block {
-  flex-shrink: 0; width: 96px; text-align: center;
-  background: #fff; border: 1px solid rgba(6,148,209,0.18);
-  border-radius: 14px; padding: 14px 8px;
-  box-shadow: 0 2px 12px rgba(6,148,209,0.08);
-}
-.why-cert-stat {
-  font-size: clamp(28px, 3vw, 42px); font-weight: 900; color: var(--blue);
-  line-height: 1; letter-spacing: -0.03em;
-}
-.why-cert-item-body { flex: 1; }
-.why-cert-stat-label {
-  font-size: 16px; font-weight: 700; color: #212835; margin-bottom: 6px; line-height: 1.3;
-}
-.why-cert-stat-src {
-  font-size: 12px; color: #8a96a6; font-style: italic; line-height: 1.4;
-}
-.why-cert-roles {
-  margin-top: 36px; padding-top: 28px; border-top: 1px solid #e5eaf0;
-}
-.why-cert-roles-title {
-  font-size: 11px; font-weight: 700; color: #94a3b8;
-  margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.12em;
-}
-.why-cert-roles-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
-}
-.why-cert-role-chip {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-  background: #f8fafc; border: 1px solid #e2eaf2;
-  padding: 10px 13px; border-radius: 10px;
-  transition: all 0.18s; cursor: default; position: relative; overflow: hidden;
-}
-.why-cert-role-chip::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: var(--chip-accent, #0694D1); border-radius: 10px 0 0 10px;
-  opacity: 0; transition: opacity 0.18s;
-}
-.why-cert-role-chip:hover { background: #eef6fc; border-color: #c2ddf0; transform: translateX(2px); }
-.why-cert-role-chip:hover::before { opacity: 1; }
-.why-cert-role-chip-name {
-  font-size: 12.5px; font-weight: 600; color: #1e3a4f; line-height: 1.3; flex: 1; min-width: 0;
-}
-.why-cert-role-chip-code {
-  font-size: 10px; font-weight: 700; letter-spacing: 0.04em;
-  color: var(--chip-accent, #0694D1);
-  background: color-mix(in srgb, var(--chip-accent, #0694D1) 10%, transparent);
-  padding: 3px 7px; border-radius: 5px; flex-shrink: 0; white-space: nowrap;
-}
-/* RIGHT — sticky heading */
-.why-cert-right { position: sticky; top: calc(50vh - 200px); }
-.why-cert-eyebrow {
+.roi-left { order: 2; position: sticky; top: calc(50vh - 220px); }
+.roi-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
-  color: var(--blue); margin-bottom: 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 18px;
 }
-.why-cert-eyebrow::before {
-  content: ""; display: block; width: 20px; height: 2px;
-  background: var(--blue); border-radius: 2px;
-}
-.why-cert-heading {
+.roi-eyebrow::before { content: ""; display: block; width: 20px; height: 2px; background: var(--blue); border-radius: 2px; }
+.roi-left-heading {
   font-size: clamp(26px, 2.8vw, 40px); font-weight: 700;
   color: #212835; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em;
 }
-.why-cert-heading em { font-style: normal; color: var(--blue); }
-.why-cert-sub {
-  font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px;
-}
-.why-cert-cta {
+.roi-left-heading em { font-style: normal; color: var(--blue); }
+.roi-left-sub { font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px; }
+.roi-left-cta {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--blue); color: #fff; font-size: 14px; font-weight: 700;
-  padding: 12px 22px; border-radius: 10px; border: none; cursor: pointer;
-  transition: all 0.2s;
+  padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
+  transition: all 0.2s; font-family: var(--body);
 }
-.why-cert-cta:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6,148,209,0.35); }
-.why-cert-mini-stats {
+.roi-left-cta:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6,148,209,0.35); }
+/* Right — stat strip + scrolling items */
+.roi-right { order: 1; display: flex; flex-direction: column; gap: 0; }
+.roi-stat-strip {
   margin-top: 36px; padding-top: 24px; border-top: 1px solid #ebebeb;
   display: flex; gap: 0; align-items: stretch;
 }
-.why-cert-mini-item {
-  flex: 1; text-align: center; padding: 0 16px;
-  border-right: 1px solid #ebebeb;
+.roi-stat-chip { flex: 1; padding-right: 16px; }
+.roi-stat-chip + .roi-stat-chip { padding-left: 16px; padding-right: 0; border-left: 0.5px solid #c9c9c9; }
+.roi-stat-chip-num {
+  font-size: 24px; font-weight: 800; color: var(--blue);
+  line-height: 1; margin-bottom: 5px;
 }
-.why-cert-mini-item:first-child { padding-left: 0; }
-.why-cert-mini-item:last-child { border-right: none; }
-.why-cert-mini-num { font-size: 22px; font-weight: 800; color: #212835; letter-spacing: -0.02em; }
-.why-cert-mini-num span { font-size: 14px; color: var(--blue); font-weight: 700; }
-.why-cert-mini-label { font-size: 11px; color: #586274; font-weight: 500; letter-spacing: 0.03em; }
-@media (max-width: 960px) {
-  .why-cert-sec { padding: 72px 0; }
-  .why-cert-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
-  .why-cert-right { position: static; order: -1; }
-  .why-cert-left  { order: 1; }
-  .why-cert-sub { max-width: 100%; }
+.roi-stat-chip-num span { color: var(--blue); }
+.roi-stat-chip-label { font-size: 11px; color: #586274; font-weight: 500; letter-spacing: 0.03em; }
+.roi-stat-divider { display: none; }
+.roi-item {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 24px; border-radius: 10px; border: 1px solid transparent;
+  background: transparent;
+  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1),
+              background 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.roi-item:hover { background: #fff; border-color: #ebebeb; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.roi-item-icon-wrap {
+  flex-shrink: 0; width: 48px; height: 48px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; background: #fff; border: 1px solid #ebebeb;
+  transition: all 0.2s;
+}
+.roi-item:hover .roi-item-icon-wrap { border-color: rgba(6,148,209,0.3); background: rgba(6,148,209,0.05); }
+.roi-item-body { flex: 1; }
+.roi-item-num { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 0.1em; margin-bottom: 4px; }
+.roi-item-title { font-size: 16px; font-weight: 700; color: #212835; margin-bottom: 6px; line-height: 1.3; }
+.roi-item-desc { font-size: 14px; color: #586274; line-height: 1.7; }
+@media (max-width: 1024px) {
+  .roi-inner { grid-template-columns: 1fr 300px; gap: 48px; padding: 0 32px; }
+}
+@media (max-width: 860px) {
+  .roi-inner { grid-template-columns: 1fr; padding: 0 24px; }
+  .roi-left { order: 1; position: static; }
+  .roi-right { order: 2; }
 }
 @media (max-width: 600px) {
-  .why-cert-sec { padding: 56px 0; }
-  .why-cert-inner { padding: 0 16px; gap: 32px; }
-  .why-cert-item { gap: 12px; padding: 20px 0; }
-  .why-cert-stat-block { width: 72px; padding: 10px 6px; }
-  .why-cert-stat { font-size: 26px; }
-  .why-cert-stat-label { font-size: 14px; }
-  .why-cert-heading { font-size: 22px; }
-  .why-cert-sub { font-size: 13px; }
-  .why-cert-mini-stats { gap: 0; }
-  .why-cert-mini-num { font-size: 18px; }
-  .why-cert-mini-label { font-size: 9px; }
-}
-@media (max-width: 480px) {
-  .why-cert-roles-grid { grid-template-columns: 1fr; }
-  .why-cert-stat-block { width: 64px; padding: 8px 4px; }
-  .why-cert-stat { font-size: 22px; }
+  .roi-inner { padding: 0 16px; }
 }
 
 /* ── KOENIG EDGE SECTION (upGrad sticky-left style) ── */
-.edge-sec { background: #f7f7f7; padding: 100px 0; border-top: 1px solid #ebebeb; }
+.edge-sec { background: #f7f7f7; padding: 80px 0 56px; border-top: 1px solid #ebebeb; }
 .edge-inner {
   display: grid; grid-template-columns: 360px 1fr;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
@@ -3995,7 +3941,7 @@ p {
   .edge-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
   .edge-left { position: static; }
 }
-@media (max-width: 600px) { .edge-sec { padding: 64px 0; } .edge-item { padding: 16px; } }
+@media (max-width: 600px) { .edge-sec { padding: 48px 0 36px; } .edge-item { padding: 16px; } }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 1100px) {
@@ -4084,7 +4030,7 @@ p {
   .lf-row { grid-template-columns: 1fr; }
 
   /* Edge section */
-  .edge-sec { padding: 72px 0; }
+  .edge-sec { padding: 60px 0 44px; }
 
   /* Hero proof badges wrap */
   .hero-proof { gap: 10px; }
@@ -4236,7 +4182,7 @@ p {
   .globe-country-row { padding: 4px 8px; font-size: 10.5px; }
 
   /* Edge */
-  .edge-sec { padding: 56px 0; }
+  .edge-sec { padding: 44px 0 32px; }
   .edge-inner { padding: 0 16px; gap: 32px; }
   .edge-item { padding: 16px 12px; }
   .edge-item-title { font-size: 15px; }
@@ -4810,6 +4756,184 @@ p {
   .ced-sec { padding: 72px 20px; }
   .ced-footer-bar { flex-direction: column; align-items: flex-start; }
   .ced-footer-divider { display: none; }
+}
+
+/* ── FAQ + CHATBOT SECTION ── */
+.faq-chatbot-wrap {
+  max-width: 1260px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 400px;
+  gap: 48px; padding: 0 48px; align-items: start;
+}
+.faq-chatbot-sticky { position: sticky; top: 80px; padding: 48px 0; z-index: 10; }
+
+/* ── Chat widget shell ── */
+.faq-chatbot {
+  background: #fff;
+  border: 1px solid rgba(6,148,209,0.15);
+  border-radius: 24px;
+  box-shadow: 0 8px 48px rgba(6,148,209,0.12), 0 2px 8px rgba(0,0,0,0.05);
+  display: flex; flex-direction: column;
+  overflow: hidden; height: 580px;
+}
+
+/* ── Header ── */
+.faq-chatbot-header {
+  background: linear-gradient(135deg, #071e2e 0%, #093d60 60%, #0b4d78 100%);
+  padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0; position: relative; overflow: hidden;
+}
+.faq-chatbot-header::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 50%, rgba(6,148,209,0.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.faq-chatbot-avatar-wrap { position: relative; flex-shrink: 0; }
+.faq-chatbot-avatar {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: linear-gradient(135deg, #0694D1 0%, #3bbfef 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 800; color: #fff;
+  box-shadow: 0 2px 10px rgba(6,148,209,0.4);
+  letter-spacing: -0.5px;
+}
+.faq-chatbot-status-dot {
+  position: absolute; bottom: -1px; right: -2px;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: #22c55e; border: 2px solid #071e2e;
+}
+.faq-chatbot-header-info { flex: 1; min-width: 0; }
+.faq-chatbot-name { font-size: 14px; font-weight: 700; color: #fff; font-family: var(--body); line-height: 1.2; }
+.faq-chatbot-sub { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; font-family: var(--body); }
+.faq-chatbot-ms-badge {
+  display: flex; align-items: center; gap: 5px; flex-shrink: 0;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px; padding: 4px 8px;
+}
+.faq-chatbot-ms-badge span { font-size: 10px; color: rgba(255,255,255,0.7); font-family: var(--body); font-weight: 600; letter-spacing: 0.03em; }
+
+/* ── Messages ── */
+.faq-chatbot-msgs {
+  flex: 1; overflow-y: auto; padding: 16px 16px 8px;
+  display: flex; flex-direction: column; gap: 12px;
+  scroll-behavior: smooth; background: #f8fafd;
+}
+.faq-chatbot-msgs::-webkit-scrollbar { width: 3px; }
+.faq-chatbot-msgs::-webkit-scrollbar-track { background: transparent; }
+.faq-chatbot-msgs::-webkit-scrollbar-thumb { background: rgba(6,148,209,0.15); border-radius: 4px; }
+
+/* Bot message row (avatar + bubble) */
+.faq-chat-row-bot { display: flex; align-items: flex-end; gap: 8px; animation: chatSlideIn 0.22s ease; }
+.faq-chat-row-user { display: flex; justify-content: flex-end; animation: chatSlideIn 0.22s ease; }
+@keyframes chatSlideIn { from { opacity:0; transform: translateY(8px); } to { opacity:1; transform:none; } }
+
+.faq-chat-mini-avatar {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #0694D1 0%, #3bbfef 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: #fff; margin-bottom: 2px;
+}
+
+.faq-chat-msg {
+  max-width: 82%; padding: 10px 14px; font-size: 13.5px;
+  line-height: 1.6; font-family: var(--body);
+}
+.faq-chat-msg--bot {
+  background: #fff; color: #1e3a4f;
+  border-radius: 4px 16px 16px 16px;
+  border: 1px solid rgba(6,148,209,0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+.faq-chat-msg--user {
+  background: linear-gradient(135deg, #0694D1 0%, #0578b3 100%);
+  color: #fff; border-radius: 16px 16px 4px 16px;
+  box-shadow: 0 2px 8px rgba(6,148,209,0.3);
+}
+
+/* Typing indicator */
+.faq-chat-row-typing { display: flex; align-items: flex-end; gap: 8px; }
+.faq-chat-typing {
+  display: flex; gap: 4px; align-items: center; padding: 12px 16px;
+  background: #fff; border-radius: 4px 16px 16px 16px;
+  border: 1px solid rgba(6,148,209,0.1); box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  width: fit-content;
+}
+.faq-chat-typing span { width: 6px; height: 6px; border-radius: 50%; background: #0694D1; opacity: 0.5; animation: typingBounce 1.2s infinite ease-in-out; }
+.faq-chat-typing span:nth-child(2) { animation-delay: 0.18s; }
+.faq-chat-typing span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typingBounce { 0%,60%,100% { transform: none; opacity:0.4; } 30% { transform: translateY(-4px); opacity:1; } }
+
+/* Lead prompt card */
+.faq-chat-lead-row { display: flex; align-items: flex-end; gap: 8px; animation: chatSlideIn 0.22s ease; }
+.faq-chat-lead-prompt {
+  flex: 1;
+  background: linear-gradient(135deg, #f0f7fc 0%, #e8f3fb 100%);
+  border: 1px solid rgba(6,148,209,0.2); border-radius: 4px 16px 16px 16px;
+  padding: 14px 16px;
+}
+.faq-chat-lead-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.faq-chat-lead-icon { font-size: 18px; }
+.faq-chat-lead-title { font-size: 13px; font-weight: 700; color: #071e2e; font-family: var(--body); }
+.faq-chat-lead-sub { font-size: 12px; color: #5a7a90; font-family: var(--body); margin-bottom: 12px; line-height: 1.5; }
+.faq-chat-lead-btn {
+  width: 100%; background: linear-gradient(135deg, #0694D1 0%, #0578b3 100%); color: #fff; border: none;
+  border-radius: 10px; padding: 9px 16px; font-size: 12.5px; font-weight: 700;
+  font-family: var(--body); cursor: pointer; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  box-shadow: 0 3px 12px rgba(6,148,209,0.35);
+}
+.faq-chat-lead-btn:hover { transform: translateY(-1px); box-shadow: 0 5px 18px rgba(6,148,209,0.45); }
+
+/* ── Suggestions strip ── */
+.faq-chat-quick {
+  display: flex; flex-wrap: nowrap; gap: 6px; padding: 8px 14px 10px;
+  overflow-x: auto; flex-shrink: 0; background: #f8fafd;
+  border-top: 1px solid rgba(6,148,209,0.07);
+}
+.faq-chat-quick::-webkit-scrollbar { height: 0; }
+.faq-chat-quick-btn {
+  background: #fff; border: 1px solid rgba(6,148,209,0.2); color: #0694D1;
+  border-radius: 20px; padding: 5px 12px; font-size: 11.5px; font-weight: 600;
+  font-family: var(--body); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.faq-chat-quick-btn:hover { background: #0694D1; color: #fff; border-color: #0694D1; transform: translateY(-1px); box-shadow: 0 3px 8px rgba(6,148,209,0.25); }
+
+/* ── Input row ── */
+.faq-chatbot-input-row {
+  display: flex; gap: 8px; padding: 10px 14px;
+  border-top: 1px solid rgba(6,148,209,0.08); flex-shrink: 0; background: #fff;
+  align-items: center;
+}
+.faq-chatbot-input {
+  flex: 1; border: 1.5px solid rgba(6,148,209,0.18); border-radius: 24px;
+  padding: 8px 16px; font-size: 13px; font-family: var(--body); color: #071e2e;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: #f8fafd;
+}
+.faq-chatbot-input:focus { border-color: #0694D1; background: #fff; box-shadow: 0 0 0 3px rgba(6,148,209,0.08); }
+.faq-chatbot-input::placeholder { color: #a0b4c4; }
+.faq-chatbot-send {
+  background: linear-gradient(135deg, #0694D1 0%, #0578b3 100%); color: #fff; border: none;
+  border-radius: 50%; width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(6,148,209,0.35);
+}
+.faq-chatbot-send:hover { transform: scale(1.08); box-shadow: 0 4px 14px rgba(6,148,209,0.45); }
+.faq-chatbot-send:disabled { background: #d0e8f5; box-shadow: none; cursor: default; transform: none; }
+
+/* ── Powered by footer ── */
+.faq-chatbot-footer {
+  padding: 6px 16px; background: #fff; border-top: 1px solid rgba(6,148,209,0.06);
+  display: flex; align-items: center; justify-content: center; gap: 5px; flex-shrink: 0;
+}
+.faq-chatbot-footer span { font-size: 10px; color: #b0c4d0; font-family: var(--body); }
+
+@media (max-width: 960px) {
+  .faq-chatbot-wrap { grid-template-columns: 1fr; padding: 0 24px; }
+  .faq-chatbot-sticky { position: static; padding: 0 0 48px; }
+}
+@media (max-width: 600px) {
+  .faq-chatbot-wrap { padding: 0 16px; }
 }
 `;
 
@@ -5814,6 +5938,650 @@ function InteractiveGlobe({ size = 520 }) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/* ── AI CHAT ASSISTANT — data-driven, context-aware ── */
+
+// ── Pulled directly from site data ──
+const BOT_KNOWLEDGE = {
+  faq: [
+    { id:1, q:"Is Koenig a Microsoft Authorized Learning Partner?", a:"Yes — Koenig is an official Microsoft Authorized Learning Partner (ALP) and ESI partner since 2010. Every course uses official Microsoft Official Courseware (MOC), the same curriculum Microsoft uses internally. Only 3% of global training providers hold ALP status.", tags:["authorized","partner","alp","official","moc","esi","legit","trusted"] },
+    { id:2, q:"Which Microsoft certifications can I get through Koenig?", a:"Koenig offers 100+ Microsoft certifications: AZ-104 (Azure Administrator), AI-102 (Azure AI Engineer), SC-300 (Identity & Access), AZ-305 (Azure Infrastructure), PL-300 (Power BI), AZ-900, SC-200, AZ-500, AZ-400, plus all M365, Dynamics 365, Power Platform and GitHub certifications — Fundamentals through Expert.", tags:["certifications","courses","list","which","available","offer"] },
+    { id:3, q:"What is Koenig's Microsoft exam pass rate?", a:"Koenig achieves a 95% Microsoft exam pass rate — well above the industry average of 60–70%. This comes from MCT-certified trainers, hands-on Azure labs, and structured exam prep tailored to each certification track.", tags:["pass rate","exam","success","95","result","guarantee","pass"] },
+    { id:4, q:"What learning formats are available?", a:"Koenig offers 5 formats: **Live Online** (instructor-led virtual), **1-on-1** (dedicated MCT, your schedule), **Classroom** (on-site or Koenig centre), **Fly-Me-A-Trainer** (trainer comes to your office), and **Flexi Training** (start any day). All use official Microsoft courseware.", tags:["format","online","virtual","classroom","1-on-1","one on one","fly","flexi","live","remote"] },
+    { id:5, q:"How long does a Microsoft certification course take?", a:"Duration by level — **Fundamentals** (AZ-900): 1–2 days • **Associate** (AZ-104, SC-300): 3–5 days • **Expert** (AZ-305, SC-100): 5+ days. Koenig's Flexi schedule means you can start any day and pace it around your work.", tags:["duration","long","days","time","how long","weeks","schedule"] },
+    { id:6, q:"How much does Microsoft certification training cost?", a:"Indicative prices: **Fundamentals** from ~$597 • **Associate** from ~$747 • **Expert** from ~$897. Enterprise packages, EA credits, group discounts and TSPv credits are available. Contact us for a custom quote tailored to your team.", tags:["cost","price","fee","how much","pricing","budget","expensive","cheap","rate","quote"] },
+    { id:7, q:"What is the Microsoft exam fee?", a:"All Microsoft certification exams are **$165 USD** globally (via Pearson VUE). Passing score is 700/1000. Associate & Expert certs renew free annually via Microsoft Learn. Fundamentals certs don't expire.", tags:["exam fee","exam cost","$165","pearson","voucher","exam price","renewal"] },
+    { id:8, q:"Can enterprises use Microsoft EA or TSPv credits?", a:"Yes. As an ESI partner, Koenig accepts Training Service Provider (TSPv) credits and Microsoft Enterprise Agreement funding — letting enterprise teams upskill on Azure, AI, Security and M365 using pre-allocated Microsoft budgets.", tags:["enterprise","ea","tspv","credits","budget","corporate","company","team","microsoft budget"] },
+    { id:9, q:"Does Koenig offer Azure AI and Copilot training?", a:"Yes — AI-102 (Azure AI Engineer), AI-900 (Azure AI Fundamentals), MS-4023 (M365 Copilot), GH-300 (GitHub Copilot) and more. AI is Koenig's fastest-growing track with 735+ AI batches in the last 3 months.", tags:["ai","copilot","artificial intelligence","openai","azure ai","machine learning","chatgpt","gpt"] },
+    { id:10, q:"What if I fail my Microsoft exam?", a:"Microsoft allows a 24-hour wait before a retake, then 14 days for further attempts. With Koenig's 95% pass rate most learners pass first time — but our MCT trainers provide additional exam-prep support at no extra cost if needed.", tags:["fail","retake","retry","not pass","exam failed","second attempt","refund"] },
+  ],
+  courses: [
+    { code:"AZ-900", name:"Azure Fundamentals",          track:"Azure",        level:"Fundamentals", dur:"1–2 days", price:"~$597",  pop:"High",    desc:"No-prereq entry point to Azure cloud concepts." },
+    { code:"AZ-104", name:"Azure Administrator",         track:"Azure",        level:"Associate",    dur:"4 days",   price:"~$1,795",pop:"#1",      desc:"Core Azure admin: identity, compute, storage, networking." },
+    { code:"AZ-204", name:"Azure Developer",             track:"Azure",        level:"Associate",    dur:"5 days",   price:"~$2,195",pop:"High",    desc:"Building and deploying cloud apps on Azure." },
+    { code:"AZ-305", name:"Azure Solutions Architect",   track:"Azure",        level:"Expert",       dur:"4 days",   price:"~$1,995",pop:"High",    desc:"Enterprise Azure architecture, governance, hybrid cloud." },
+    { code:"AZ-400", name:"Azure DevOps Engineer",       track:"Azure",        level:"Expert",       dur:"5 days",   price:"~$2,195",pop:"Medium",  desc:"CI/CD pipelines, DevOps practices on Azure." },
+    { code:"AZ-500", name:"Azure Security Engineer",     track:"Security",     level:"Associate",    dur:"4 days",   price:"~$1,795",pop:"High",    desc:"Securing Azure workloads, identity, and data." },
+    { code:"AI-900", name:"Azure AI Fundamentals",       track:"AI",           level:"Fundamentals", dur:"1 day",    price:"~$597",  pop:"High",    desc:"AI and ML concepts on Azure, no coding required." },
+    { code:"AI-102", name:"Azure AI Engineer",           track:"AI",           level:"Associate",    dur:"5 days",   price:"~$2,295",pop:"Trending",desc:"Azure OpenAI, Cognitive Services, Copilot Studio." },
+    { code:"SC-900", name:"Security Fundamentals",       track:"Security",     level:"Fundamentals", dur:"1 day",    price:"~$597",  pop:"High",    desc:"Security, compliance, and identity concepts." },
+    { code:"SC-200", name:"Security Operations Analyst", track:"Security",     level:"Associate",    dur:"4 days",   price:"~$1,795",pop:"High",    desc:"Threat detection, SIEM, Microsoft Sentinel." },
+    { code:"SC-300", name:"Identity & Access Admin",     track:"Security",     level:"Associate",    dur:"4 days",   price:"~$1,795",pop:"High",    desc:"Azure AD, identity governance, Zero Trust." },
+    { code:"MS-900", name:"M365 Fundamentals",           track:"M365",         level:"Fundamentals", dur:"1 day",    price:"~$597",  pop:"High",    desc:"Microsoft 365 cloud services overview." },
+    { code:"MS-700", name:"Teams Administrator",         track:"M365",         level:"Associate",    dur:"4 days",   price:"~$1,795",pop:"High",    desc:"Manage Microsoft Teams environment." },
+    { code:"MS-102", name:"M365 Administrator Expert",   track:"M365",         level:"Expert",       dur:"5 days",   price:"~$2,195",pop:"High",    desc:"Full M365 tenant management." },
+    { code:"PL-900", name:"Power Platform Fundamentals", track:"PowerPlatform",level:"Fundamentals", dur:"1 day",    price:"~$597",  pop:"High",    desc:"Power BI, Power Apps, Power Automate basics." },
+    { code:"PL-300", name:"Power BI Data Analyst",       track:"PowerPlatform",level:"Associate",    dur:"5 days",   price:"~$2,195",pop:"High",    desc:"Build reports and dashboards in Power BI." },
+    { code:"DP-100", name:"Azure Data Scientist",        track:"AI",           level:"Associate",    dur:"4 days",   price:"~$1,995",pop:"Medium",  desc:"ML model training and deployment on Azure." },
+  ],
+  formats: ["Live Online (instructor-led virtual)", "1-on-1 (dedicated MCT, your schedule)", "Classroom (on-site or Koenig centre)", "Fly-Me-A-Trainer (trainer to your office)", "Flexi Training (start any day of the year)"],
+  stats: { alumni:"500,000+", countries:"50+", passRate:"95%", rating:"4.7★", years:"33+", batches:"735+ AI batches (last 3 months)" },
+};
+
+// ── Tokenise + score query against knowledge base ──
+function botScore(query, entry) {
+  const q = query.toLowerCase();
+  const tokens = q.split(/\W+/).filter(t => t.length > 2);
+  let score = 0;
+  // Tag match (weighted)
+  if (entry.tags) {
+    entry.tags.forEach(tag => { if (q.includes(tag)) score += 3; });
+  }
+  // Token match against question
+  if (entry.q) {
+    const eq = entry.q.toLowerCase();
+    tokens.forEach(t => { if (eq.includes(t)) score += 2; });
+  }
+  // Token match against answer/desc
+  const body = ((entry.a || "") + " " + (entry.desc || "") + " " + (entry.name || "") + " " + (entry.code || "")).toLowerCase();
+  tokens.forEach(t => { if (body.includes(t)) score += 1; });
+  // Direct code mention
+  if (entry.code && q.includes(entry.code.toLowerCase())) score += 10;
+  if (entry.track && q.includes(entry.track.toLowerCase())) score += 2;
+  return score;
+}
+
+function botGetAnswer(query, history) {
+  const q = query.toLowerCase();
+
+  // Greeting
+  if (/^(hi|hello|hey|good\s*(morning|afternoon|evening)|howdy|sup)\b/i.test(q)) {
+    return { text: "Hi there! 👋 I'm Kira — your Microsoft certification guide at Koenig. I can answer questions about Azure, AI, Security, M365, pricing, schedules or any specific course. What are you looking to achieve?", lead: false, suggest: ["Which cert should I start with?","What's your pass rate?","Do you offer corporate training?","How much does AZ-104 cost?"] };
+  }
+
+  // Greet with role
+  if (/admin|developer|dev|engineer|architect|analyst|manager|student|beginner|fresher/i.test(q)) {
+    const role = q.match(/admin|developer|dev|engineer|architect|analyst|manager|student|beginner|fresher/i)?.[0];
+    const roleMap = {
+      admin:"AZ-104 (Azure Administrator) is your ideal first cert. After that, AZ-500 for security or AZ-305 for architecture.",
+      developer:"AZ-204 (Azure Developer Associate) is built for you — 5 days covering cloud-native app development on Azure.",
+      dev:"AZ-204 (Azure Developer Associate) is built for you — 5 days covering cloud-native app development on Azure.",
+      engineer:"AZ-104 → AZ-305 is the most popular Azure engineering path. If security is your focus, SC-300 or AZ-500 are great picks.",
+      architect:"AZ-305 (Azure Solutions Architect Expert) is your target — though AZ-104 is the recommended prerequisite.",
+      analyst:"PL-300 (Power BI Data Analyst) is perfect for you. 5-day course, ~$2,195, with 95% pass rate.",
+      manager:"MS-900 (M365 Fundamentals) gives you strong cloud context. For deeper IT management, MS-102 (M365 Admin Expert) is the top pick.",
+      student:"AZ-900 (Azure Fundamentals) is the best starting point — just 1–2 days, no prerequisites, ~$597.",
+      beginner:"AZ-900 (Azure Fundamentals) is the best starting point — just 1–2 days, no prerequisites, ~$597.",
+      fresher:"AZ-900 (Azure Fundamentals) is the best starting point — just 1–2 days, no prerequisites, ~$597.",
+    };
+    const advice = roleMap[role.toLowerCase()] || "Tell me your specific role and goals and I'll pinpoint the right Microsoft certification path for you.";
+    return { text: `As a ${role}, here's my recommendation: ${advice} Want me to walk you through the full path?`, lead: false, suggest: ["Tell me the full path","How long does it take?","What does it cost?","Book a consultation"] };
+  }
+
+  // Score all FAQ entries
+  const faqScores = BOT_KNOWLEDGE.faq.map(f => ({ ...f, score: botScore(query, f) })).sort((a,b) => b.score - a.score);
+  const topFAQ = faqScores[0];
+
+  // Score all course entries
+  const courseScores = BOT_KNOWLEDGE.courses.map(c => ({ ...c, score: botScore(query, c) })).sort((a,b) => b.score - a.score);
+  const topCourse = courseScores[0];
+
+  // If strong course match
+  if (topCourse.score >= 8) {
+    const c = topCourse;
+    const pathEntry = BOT_KNOWLEDGE.faq.find(f => f.id === 5);
+    return {
+      text: `**${c.code} — ${c.name}** (${c.level})\n\n📅 Duration: ${c.dur}\n💰 Price: ${c.price}\n🎯 ${c.desc}\n\n${c.pop === "Trending" ? "🔥 This is one of our fastest-growing courses right now!" : c.pop === "#1" ? "⭐ Our #1 enrolled course with 95% pass rate." : "Popular choice with Koenig's 95% exam pass rate."}\n\nWant the full certification path or a custom quote?`,
+      lead: c.level !== "Fundamentals",
+      suggest: ["What's the full learning path?","How do I enroll?","Tell me about pricing","Compare with similar certs"]
+    };
+  }
+
+  // If strong FAQ match
+  if (topFAQ.score >= 4) {
+    const followUps = {
+      1: ["Which certifications do you offer?","What's your pass rate?","Can I use EA credits?"],
+      2: ["Which cert suits a developer?","What's the Azure path?","How long is AZ-104?"],
+      3: ["How do you achieve 95%?","What if I fail?","Tell me about exam prep"],
+      4: ["What is 1-on-1 training?","What is Fly-Me-A-Trainer?","Which format is best for me?"],
+      5: ["How much does it cost?","Can I start any day?","Tell me about AZ-104"],
+      6: ["Do you have group discounts?","Can I use EA credits?","Get me a quote"],
+      7: ["How much is the training?","Can you bundle exam vouchers?","What if I fail?"],
+      8: ["How do I use EA credits?","Get a corporate quote","Tell me about group training"],
+      9: ["Tell me about AI-102","What is Copilot training?","How long is AI-102?"],
+      10: ["What's your pass rate?","How do I prepare?","Tell me about exam support"],
+    };
+    return {
+      text: topFAQ.a,
+      lead: [6,7,8].includes(topFAQ.id),
+      suggest: followUps[topFAQ.id] || ["Tell me more","How do I enroll?","Get a quote"]
+    };
+  }
+
+  // Track-level match
+  if (/azure/i.test(q)) return { text: "Koenig's Azure track covers 10+ certifications from AZ-900 (Fundamentals) through AZ-104 (Administrator) to AZ-305 (Expert Architect). The most popular starting point depends on your role — tell me yours and I'll map the right path!", lead: false, suggest: ["I'm an Azure admin","I'm a developer","I want the full Azure path","What does AZ-104 cost?"] };
+  if (/security|cyber/i.test(q)) return { text: "Our Security track: SC-900 → SC-300 (Identity) / SC-200 (Security Ops) → SC-100 (Expert Architect). Security is our 3rd most enrolled track — high demand from employers. All taught by MCT-certified security specialists.", lead: false, suggest: ["Tell me about SC-300","What about SC-200?","How long is SC-300?","Get a security training quote"] };
+  if (/m365|microsoft 365|office 365/i.test(q)) return { text: "Microsoft 365 track: MS-900 (Fundamentals) → MS-700 (Teams Admin) / MS-203 (Messaging) → MS-102 (M365 Admin Expert). Perfect for IT admins managing Microsoft 365 environments.", lead: false, suggest: ["Tell me about MS-102","How long is MS-700?","M365 pricing","Compare Azure vs M365"] };
+  if (/power|bi|pl-300|pl.900/i.test(q)) return { text: "Power Platform: PL-900 (Fundamentals, 1 day) → PL-300 (Power BI Data Analyst, 5 days, ~$2,195) → PL-400 (Developer) → PL-600 (Expert). PL-300 is hugely popular with data analysts and BI professionals.", lead: false, suggest: ["Tell me about PL-300","I'm a data analyst","Power BI pricing","Enroll in PL-300"] };
+  if (/dynamics|crm|erp/i.test(q)) return { text: "Dynamics 365 certifications cover CRM, ERP, Finance, Supply Chain, and Field Service. Popular picks: MB-900 (Fundamentals), MB-210 (Sales), MB-300 (Finance & Operations). Want details on a specific Dynamics module?", lead: true, suggest: ["MB-210 Sales details","MB-300 pricing","Corporate Dynamics training","Get a Dynamics quote"] };
+  if (/github|devops|az.?400/i.test(q)) return { text: "GitHub & DevOps: AZ-400 (Azure DevOps Engineer Expert, 5 days) and GH-300 (GitHub Copilot Fundamentals). AZ-400 is popular with engineering teams adopting CI/CD and Agile practices on Azure.", lead: false, suggest: ["AZ-400 details","GitHub Copilot training","DevOps path","AZ-400 pricing"] };
+  if (/corporate|group|team|enterprise|bulk|company|organisation/i.test(q)) return { text: "For corporate teams, Koenig offers: dedicated group batches, Fly-Me-A-Trainer (on-site), custom learning paths mapped to skill gaps, TSPv/EA credit acceptance, and volume pricing. We've trained enterprise teams in 50+ countries.", lead: true, suggest: ["Tell me about Fly-Me-A-Trainer","How do I use EA credits?","Get a corporate quote","How many people can attend?"] };
+  if (/enroll|register|book|sign up|start|join|schedule/i.test(q)) return { text: "Enrolling with Koenig is easy! We offer Flexi Training — you can start **any day of the year**. No waiting for a batch. Our advisors will match you to an MCT trainer and schedule that fits your timezone and availability.", lead: true, suggest: ["Talk to an advisor","Request a training schedule","Which cert should I start with?","How much does enrollment cost?"] };
+  if (/compare|vs|difference|better|which one|choose/i.test(q)) return { text: "Happy to help you compare! For cloud infrastructure → AZ-104 vs AZ-305 (admin vs architect). For security → SC-300 vs AZ-500 (identity vs cloud security). For AI → AI-102 vs DP-100 (AI engineer vs data scientist). Tell me your role and I'll give a direct recommendation.", lead: false, suggest: ["I'm a cloud admin","I focus on security","I work with AI/data","Get personalised advice"] };
+
+  // Catch-all
+  return {
+    text: "That's a great question! For a precise and personalised answer I'd recommend chatting with one of our Microsoft-certified advisors — they can match the exact course, schedule and pricing to your background and goals.",
+    lead: true,
+    suggest: ["Talk to an advisor","Browse Azure certs","Browse Security certs","View pricing"]
+  };
+}
+
+// helper: render **bold** markdown in chat messages
+function BotMsg({ text }) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return (
+    <span>
+      {parts.map((p, i) =>
+        p.startsWith("**") && p.endsWith("**")
+          ? <strong key={i} style={{ fontWeight: 700 }}>{p.slice(2, -2)}</strong>
+          : <span key={i}>{p}</span>
+      )}
+    </span>
+  );
+}
+
+const INIT_QUICK_Qs = [
+  "Which cert should I start with?",
+  "How much does AZ-104 cost?",
+  "Do you offer corporate training?",
+  "What's your exam pass rate?",
+];
+
+function FAQChatBot({ onOpenLead }) {
+  const [messages, setMessages] = useState([
+    { id: 0, from: "bot", text: "Hi! I'm **Kira** 👋 — Koenig's Microsoft certification advisor. I can answer questions about any course, pricing, schedules or certification path. What are you looking to achieve?", suggest: INIT_QUICK_Qs },
+  ]);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const [leadShown, setLeadShown] = useState(false);
+  const [userMsgCount, setUserMsgCount] = useState(0);
+  const bottomRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, typing, leadShown]);
+
+  const sendMessage = (text) => {
+    if (!text.trim() || typing) return;
+    const uid = Date.now();
+    setMessages(prev => [...prev, { id: uid, from: "user", text }]);
+    setInput("");
+    setTyping(true);
+    const newCount = userMsgCount + 1;
+    setUserMsgCount(newCount);
+
+    setTimeout(() => {
+      const result = botGetAnswer(text, messages);
+      setTyping(false);
+      setMessages(prev => [...prev, { id: uid + 1, from: "bot", text: result.text, suggest: result.suggest }]);
+      if ((result.lead || newCount >= 3) && !leadShown) {
+        setTimeout(() => setLeadShown(true), 500);
+      }
+    }, 800 + Math.random() * 600);
+  };
+
+  const lastBotMsg = [...messages].reverse().find(m => m.from === "bot");
+  const currentSuggestions = lastBotMsg?.suggest || [];
+
+  return (
+    <div className="faq-chatbot">
+      {/* ── Header ── */}
+      <div className="faq-chatbot-header">
+        <div className="faq-chatbot-avatar-wrap">
+          <div className="faq-chatbot-avatar">K</div>
+          <div className="faq-chatbot-status-dot" />
+        </div>
+        <div className="faq-chatbot-header-info">
+          <div className="faq-chatbot-name">Kira · Microsoft Advisor</div>
+          <div className="faq-chatbot-sub">Online — replies instantly</div>
+        </div>
+        <div className="faq-chatbot-ms-badge">
+          {/* Microsoft 4-square logo */}
+          <svg width="14" height="14" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1"  y="1"  width="9" height="9" fill="#f25022"/>
+            <rect x="11" y="1"  width="9" height="9" fill="#7fba00"/>
+            <rect x="1"  y="11" width="9" height="9" fill="#00a4ef"/>
+            <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+          </svg>
+          <span>AI Advisor</span>
+        </div>
+      </div>
+
+      {/* ── Messages ── */}
+      <div className="faq-chatbot-msgs">
+        {messages.map(m => (
+          m.from === "bot" ? (
+            <div key={m.id} className="faq-chat-row-bot">
+              <div className="faq-chat-mini-avatar">K</div>
+              <div className="faq-chat-msg faq-chat-msg--bot">
+                <BotMsg text={m.text} />
+              </div>
+            </div>
+          ) : (
+            <div key={m.id} className="faq-chat-row-user">
+              <div className="faq-chat-msg faq-chat-msg--user">{m.text}</div>
+            </div>
+          )
+        ))}
+
+        {typing && (
+          <div className="faq-chat-row-typing">
+            <div className="faq-chat-mini-avatar">K</div>
+            <div className="faq-chat-typing"><span/><span/><span/></div>
+          </div>
+        )}
+
+        {leadShown && (
+          <div className="faq-chat-lead-row">
+            <div className="faq-chat-mini-avatar">K</div>
+            <div className="faq-chat-lead-prompt">
+              <div className="faq-chat-lead-head">
+                <span className="faq-chat-lead-icon">🎯</span>
+                <span className="faq-chat-lead-title">Get a personalised plan</span>
+              </div>
+              <p className="faq-chat-lead-sub">Our advisors will map your goals to the right certification path and provide a custom quote.</p>
+              <button className="faq-chat-lead-btn" onClick={onOpenLead}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Talk to an Advisor
+              </button>
+            </div>
+          </div>
+        )}
+        <div ref={bottomRef} />
+      </div>
+
+      {/* ── Suggestion chips ── */}
+      {currentSuggestions.length > 0 && !typing && (
+        <div className="faq-chat-quick">
+          {currentSuggestions.map(q => (
+            <button key={q} className="faq-chat-quick-btn" onClick={() => sendMessage(q)}>{q}</button>
+          ))}
+        </div>
+      )}
+
+      {/* ── Input row ── */}
+      <div className="faq-chatbot-input-row">
+        <input
+          ref={inputRef}
+          className="faq-chatbot-input"
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(input); } }}
+          placeholder="Ask about courses, pricing, schedule…"
+          autoComplete="off"
+        />
+        <button
+          className="faq-chatbot-send"
+          onClick={() => sendMessage(input)}
+          disabled={!input.trim() || typing}
+          aria-label="Send"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+
+      {/* ── Powered-by footer ── */}
+      <div className="faq-chatbot-footer">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#b0c4d0" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        <span>Powered by Koenig AI · Microsoft Certified Trainers</span>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════
+   TOP VENDOR SECTION — ported from Koenig-website repo
+   Sticky card-stack that flips as user scrolls
+══════════════════════════════════════════════════════════ */
+const VS_CARD_BG = '#0b1929';
+const VS_IMG_BASE = 'https://koenig-website.vercel.app/images/top-six-vendors';
+
+const VS_VENDORS = [
+  {
+    panelGradient: 'linear-gradient(135deg,#0694D1,#4DBFEF)',
+    tag: '⭐ Premier Partner · Cisco',
+    title: 'Cisco',
+    desc: "From CCNA to CCIE — master networking and security with Cisco's premier learning partner.",
+    bullets: [
+      'CCNA 200-301 Network Associate (9,800+ enrolled)',
+      'CCNP Enterprise Core (ENCOR)',
+      'Cisco CyberOps Associate',
+      'Cisco DevNet Associate',
+    ],
+    stats: [{ val: '60+', label: 'Courses' }, { val: 'Premier', label: 'Partner Level' }, { val: '8K+', label: 'Certified' }],
+    cta: 'Explore Cisco Courses →',
+    image: `${VS_IMG_BASE}/Cisco.png`,
+  },
+  {
+    panelGradient: 'linear-gradient(135deg,#04446A,#076D9D)',
+    tag: '⭐ Advanced Partner · AWS',
+    title: 'Amazon Web Services',
+    desc: 'Build, deploy and scale on the world\'s most comprehensive cloud platform.',
+    bullets: [
+      'AWS Solutions Architect Associate (5,747 enrolled)',
+      'AWS Cloud Practitioner (4,593 enrolled)',
+      'AWS DevOps Engineer Professional',
+      'AWS Security Specialty',
+    ],
+    stats: [{ val: '45+', label: 'Courses' }, { val: 'Advanced', label: 'Partner Level' }, { val: '10K+', label: 'Certified' }],
+    cta: 'Explore AWS Courses →',
+    image: `${VS_IMG_BASE}/amazon-authorized.png`,
+  },
+  {
+    panelGradient: 'linear-gradient(135deg,#076D9D,#4DBFEF)',
+    tag: '⭐ Authorized Partner · VMware',
+    title: 'VMware',
+    desc: 'Master virtualization, cloud infrastructure and modern data centre with VMware certifications.',
+    bullets: [
+      'VMware vSphere: Install, Configure, Manage',
+      'VCP-DCV Data Center Virtualization (3,200+ enrolled)',
+      'VMware NSX-T Data Center',
+      'VMware Carbon Black Cloud',
+    ],
+    stats: [{ val: '35+', label: 'Courses' }, { val: 'Authorized', label: 'Partner Level' }, { val: '6K+', label: 'Certified' }],
+    cta: 'Explore VMware Courses →',
+    image: `${VS_IMG_BASE}/VMware-Broadcom.png`,
+  },
+  {
+    panelGradient: 'linear-gradient(135deg,#076D9D,#0694D1)',
+    tag: '⭐ Gold Partner · Oracle',
+    title: 'Oracle',
+    desc: 'From Oracle Database to Oracle Cloud — become certified on the most widely deployed enterprise technology.',
+    bullets: [
+      'Oracle Database 19c Administration (4,100+ enrolled)',
+      'Oracle Cloud Infrastructure Architect Associate',
+      'Oracle Java SE 17 Developer',
+      'Oracle Autonomous Database Specialist',
+    ],
+    stats: [{ val: '50+', label: 'Courses' }, { val: 'Gold', label: 'Partner Level' }, { val: '7K+', label: 'Certified' }],
+    cta: 'Explore Oracle Courses →',
+    image: `${VS_IMG_BASE}/oracle.png`,
+  },
+  { isMore: true },
+];
+
+const VS_MORE_BADGES = ['Google Cloud','CompTIA','Salesforce','PMI','EC-Council','ISACA','ITIL','Red Hat','Tableau','ServiceNow','+ 39 more'];
+
+const VS_TABS = [
+  { icon: '🌐', label: 'Cisco' },
+  { icon: '☁️', label: 'AWS' },
+  { icon: '🖥️', label: 'VMware' },
+  { icon: '🔴', label: 'Oracle' },
+  { icon: '∞',  label: 'More Vendors' },
+];
+
+function VsVendorCard({ v }) {
+  return (
+    <div style={{ height:'100%', background:'radial-gradient(ellipse at 60% 40%,rgba(6,148,209,0.18) 0%,rgba(77,191,239,0.08) 35%,transparent 70%),'+ VS_CARD_BG, border:'1px solid rgba(6,148,209,0.18)', position:'relative', display:'flex', flexDirection:'row' }}>
+      {/* Left content */}
+      <div className="vs-card-content" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
+        <div>
+          <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.3)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', marginBottom:12 }}>{v.tag}</span>
+          <h3 className="vs-card-title" style={{ fontWeight:700, color:'white', lineHeight:1.1, marginBottom:8, marginTop:0 }}>{v.title}</h3>
+          <p style={{ fontSize:13, color:'#8AAFC0', lineHeight:1.6, marginBottom:16, marginTop:0, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{v.desc}</p>
+          <p style={{ fontSize:11, color:'#4DBFEF', letterSpacing:2, fontWeight:700, textTransform:'uppercase', marginBottom:8, marginTop:0 }}>OUR EXPERTISE</p>
+          <ul style={{ listStyle:'none', padding:0, margin:0 }}>
+            {v.bullets.map((b, idx) => (
+              <li key={idx} style={{ display:'flex', alignItems:'flex-start', gap:8, marginBottom: idx < v.bullets.length-1 ? 6 : 0 }}>
+                <span style={{ width:6, height:6, borderRadius:'50%', background:'#076D9D', flexShrink:0, marginTop:4 }}/>
+                <span style={{ fontSize:12, color:'rgba(255,255,255,0.75)', lineHeight:1.4 }}>{b}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <button className="vs-cta-btn" style={{ background:'#076D9D', borderRadius:28, fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', width:'fit-content', marginTop:16 }}
+          onMouseEnter={e=>e.currentTarget.style.background='#0694D1'}
+          onMouseLeave={e=>e.currentTarget.style.background='#076D9D'}>
+          {v.cta}
+        </button>
+      </div>
+      {/* Right image panel */}
+      <div className="vs-card-panel" style={{ position:'relative', flexShrink:0, overflow:'hidden', background:'#EAF6FB', borderLeft:'1px solid rgba(255,255,255,0.08)' }}>
+        <img src={v.image} alt={v.title} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'contain', objectPosition:'center', padding:24, filter:'drop-shadow(0 4px 12px rgba(0,0,0,0.18))', zIndex:1 }}/>
+      </div>
+      {/* Bottom stats bar */}
+      <div className="vs-stats-bar" style={{ position:'absolute', bottom:0, left:0, right:0, height:56, background:'rgba(0,0,0,0.25)', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center' }}>
+        {v.stats.map((s, idx) => (
+          <div key={idx} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
+            <span style={{ fontSize:15, fontWeight:800, color:'#4DBFEF' }}>{s.val}</span>
+            <span style={{ fontSize:10, color:'#8AAFC0', textTransform:'uppercase', letterSpacing:0.5, marginTop:2 }}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function VsMoreCard() {
+  return (
+    <div style={{ height:'100%', background:'radial-gradient(ellipse at 60% 40%,rgba(6,148,209,0.18) 0%,rgba(77,191,239,0.08) 35%,transparent 70%),'+ VS_CARD_BG, border:'1px solid rgba(6,148,209,0.18)', position:'relative', display:'flex', flexDirection:'row' }}>
+      <div className="vs-more-content" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
+        <div>
+          <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.35)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', marginBottom:12 }}>∞&nbsp;&nbsp;50+ Global Vendors</span>
+          <h3 className="vs-more-title" style={{ fontWeight:700, lineHeight:1.1, margin:0 }}>
+            <span style={{ color:'white' }}>Explore All</span><br/>
+            <span style={{ color:'#4DBFEF' }}>Vendor Partners</span>
+          </h3>
+          <p style={{ fontSize:13, color:'#8AAFC0', marginTop:10, marginBottom:16, lineHeight:1.5 }}>
+            Beyond our top picks — Koenig is authorized by 50+ global technology vendors across cloud, networking, security, data and more.
+          </p>
+          <div style={{ display:'flex', gap:24, marginBottom:16 }}>
+            {[{val:'50+',label:'VENDORS'},{val:'3,000+',label:'COURSES'},{val:'500K+',label:'TRAINED'}].map((s,idx) => (
+              <div key={idx} style={{ display:'flex', flexDirection:'column' }}>
+                <span style={{ fontSize:20, fontWeight:900, color:'#4DBFEF' }}>{s.val}</span>
+                <span style={{ fontSize:11, color:'#8AAFC0', letterSpacing:1, marginTop:2 }}>{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
+          <button style={{ background:'#076D9D', borderRadius:28, padding:'9px 18px', fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', whiteSpace:'nowrap' }}
+            onMouseEnter={e=>e.currentTarget.style.background='#0694D1'}
+            onMouseLeave={e=>e.currentTarget.style.background='#076D9D'}>
+            Explore All Courses →
+          </button>
+        </div>
+      </div>
+      {/* Right badges panel */}
+      <div className="vs-more-panel" style={{ position:'relative', overflow:'hidden', flexShrink:0, background:'linear-gradient(135deg,#076D9D,#0694D1)' }}>
+        <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'40%', background:`linear-gradient(to right,${VS_CARD_BG},transparent)`, zIndex:1 }}/>
+        <div style={{ position:'absolute', inset:0, display:'flex', flexWrap:'wrap', alignContent:'center', justifyContent:'center', gap:8, padding:20, zIndex:2 }}>
+          {VS_MORE_BADGES.map((b,idx) => (
+            <span key={idx} style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:8, padding:'7px 10px', fontSize:11, color:'rgba(255,255,255,0.75)', fontWeight:500 }}>{b}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function VendorStack() {
+  const [activeTab, setActiveTab] = useState(0);
+
+  useEffect(() => {
+    const SHIFT = 22, SCALE = 0.03, FADE = 0.12, MAX_BG = 4;
+    const allCards = Array.from(document.querySelectorAll('[data-vs-index]'));
+    const triggers = Array.from(document.querySelectorAll('.vs-trigger'));
+
+    function applyCards(active) {
+      allCards.forEach((el, i) => {
+        const pos = active - i;
+        if (pos < 0) {
+          el.style.transform = 'translateY(110%)'; el.style.opacity = '0'; el.style.zIndex = String(i);
+        } else if (pos === 0) {
+          el.style.transform = 'translateY(0) scale(1)'; el.style.opacity = '1'; el.style.zIndex = '100';
+        } else if (pos > MAX_BG) {
+          el.style.transform = `translateY(-${MAX_BG * SHIFT + 30}px) scale(${Math.max(1 - MAX_BG * SCALE, 0.78)})`; el.style.opacity = '0'; el.style.zIndex = String(100 - pos);
+        } else {
+          el.style.transform = `translateY(-${pos * SHIFT}px) scale(${Math.max(1 - pos * SCALE, 0.78)})`; el.style.opacity = String(Math.max(1 - pos * FADE, 0.2)); el.style.zIndex = String(100 - pos);
+        }
+      });
+    }
+
+    let lastActive = -1;
+    const rafId = requestAnimationFrame(() => {
+      if (!triggers.length) return;
+      const triggerTops = triggers.map(t => t.getBoundingClientRect().top + window.scrollY);
+      const stickyEl = document.querySelector('.vs-section');
+      const stickyH = 56 + (stickyEl ? stickyEl.offsetHeight : 0);
+
+      const onScroll = () => {
+        const viewLine = window.scrollY + stickyH + 40;
+        let active = 0;
+        for (let i = 0; i < triggerTops.length; i++) { if (triggerTops[i] <= viewLine) active = i; else break; }
+        if (active !== lastActive) { lastActive = active; applyCards(active); setActiveTab(active); }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      return () => window.removeEventListener('scroll', onScroll);
+    });
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const scrollToTrigger = (i) => {
+    document.querySelector(`.vs-trigger[data-n="${i}"]`)?.scrollIntoView({ behavior:'smooth', block:'center' });
+  };
+
+  return (
+    <div style={{ position:'relative', background:'linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%)' }}>
+      {/* Sticky section */}
+      <section className="vs-section" style={{ position:'sticky', top:56, zIndex:20, background:'linear-gradient(135deg,#020d18 0%,#061e30 25%,#0a2e4a 50%,#061e30 75%,#020d18 100%)' }}>
+        {/* Header */}
+        <div className="vs-header" style={{ textAlign:'center', padding:'0 16px' }}>
+          <span style={{ display:'inline-block', borderRadius:9999, background:'rgba(6,148,209,0.18)', padding:'6px 16px', fontSize:11, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'#4DBFEF', marginBottom:12 }}>Top Vendor Partners</span>
+          <h2 style={{ marginTop:0, fontSize:'clamp(24px,3.5vw,40px)', fontWeight:800, color:'white' }}>
+            Train with{' '}
+            <span style={{ background:'linear-gradient(to right,#0694D1,#4DBFEF)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>Industry Leaders</span>
+          </h2>
+          <p style={{ margin:'0 auto', maxWidth:520, fontSize:15, color:'rgba(255,255,255,0.55)', lineHeight:1.7 }}>
+            Koenig is an authorized training partner for the world's leading technology vendors, delivering globally recognized certifications.
+          </p>
+        </div>
+
+        {/* Mobile tab bar */}
+        <div className="vs-mobile-tabs" style={{ overflowX:'auto', scrollbarWidth:'none' }}>
+          <div style={{ display:'flex', gap:8, padding:'0 16px', width:'max-content' }}>
+            {VS_TABS.map((tab, i) => (
+              <button key={i} onClick={() => scrollToTrigger(i)} style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:9999, border:`1px solid ${activeTab===i?'#0694D1':'rgba(6,148,209,0.3)'}`, background: activeTab===i?'rgba(6,148,209,0.25)':'transparent', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,border-color 0.2s', fontFamily:'inherit' }}>
+                <span style={{ fontSize:14 }}>{tab.icon}</span>
+                <span style={{ fontSize:13, color: activeTab===i?'white':'rgba(255,255,255,0.7)', fontWeight: activeTab===i?600:400 }}>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Main layout: sidebar + deck */}
+        <div className="vs-layout" style={{ display:'flex', maxWidth:1200, margin:'0 auto', alignItems:'flex-start' }}>
+          {/* Sidebar */}
+          <div className="vs-sidebar" style={{ flexShrink:0, marginTop:30, background:VS_CARD_BG, borderRadius:16, border:'1px solid rgba(6,148,209,0.18)', overflow:'hidden' }}>
+            <div style={{ background:'linear-gradient(135deg,#076D9D,#0694D1)', color:'white', padding:'12px 16px', fontWeight:700, fontSize:13, letterSpacing:'0.12em', textTransform:'uppercase' }}>🏆 Top Vendors</div>
+            {VS_TABS.map((tab, i) => (
+              <button key={i} onClick={() => scrollToTrigger(i)} style={{ display:'flex', flexDirection:'row', alignItems:'center', gap:10, padding:'10px 14px', width:'100%', border:'none', borderLeft:`3px solid ${activeTab===i?'#0694D1':'transparent'}`, background: activeTab===i?'linear-gradient(90deg,rgba(6,148,209,0.35) 0%,rgba(77,191,239,0.12) 100%)':'transparent', cursor:'pointer', textAlign:'left', transition:'background 0.2s', fontFamily:'inherit' }}>
+                <span style={{ width:32, height:32, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, flexShrink:0, background: activeTab===i?'linear-gradient(135deg,#076D9D,#0694D1)':'transparent', color: activeTab===i?'white':'rgba(255,255,255,0.5)', transition:'background 0.2s' }}>{tab.icon}</span>
+                <span className="vs-tab-label" style={{ fontSize:14, color: activeTab===i?'white':'rgba(255,255,255,0.55)', fontWeight: activeTab===i?600:400, whiteSpace:'nowrap' }}>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Deck */}
+          <div className="vs-deck-col" style={{ flex:1, position:'relative', overflow:'hidden', minWidth:0 }}>
+            <div className="vs-viewport" style={{ position:'relative', overflow:'visible', zIndex:10 }}>
+              {VS_VENDORS.map((vendor, i) => (
+                <div key={i} data-vs-index={i} className="vs-card-wrapper" style={{ position:'absolute', top:0, left:0, right:0, borderRadius:18, overflow:'hidden', transform: i===0?'translateY(0) scale(1)':'translateY(110%)', opacity: i===0?1:0, zIndex: i===0?100:i, transition:'transform 0.65s cubic-bezier(0.4,0,0.2,1),opacity 0.5s ease' }}>
+                  {vendor.isMore ? <VsMoreCard /> : <VsVendorCard v={vendor} />}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <style>{`
+          .vs-mobile-tabs { display: none; margin: 8px 0 10px; }
+          .vs-mobile-tabs::-webkit-scrollbar { display: none; }
+          @media (max-width: 767px) {
+            .vs-section { padding: 24px 0; }
+            .vs-header { margin-bottom: 14px; }
+            .vs-mobile-tabs { display: flex !important; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 12px; }
+            .vs-sidebar { display: none !important; }
+            .vs-deck-col { padding-top: 6px; }
+            .vs-viewport { height: 450px; }
+            .vs-card-wrapper { height: 450px; }
+            .vs-card-content { padding: 16px 14px 62px !important; }
+            .vs-card-title { font-size: 22px !important; }
+            .vs-card-panel { display: none !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 9px 14px !important; font-size: 12px !important; }
+            .vs-more-content { padding: 16px 14px !important; }
+            .vs-more-title { font-size: 24px !important; }
+            .vs-more-panel { display: none !important; }
+          }
+          @media (min-width: 768px) and (max-width: 1023px) {
+            .vs-section { padding: 40px 0; }
+            .vs-header { margin-bottom: 28px; }
+            .vs-layout { gap: 20px; padding: 0 16px; }
+            .vs-sidebar { width: 170px; }
+            .vs-deck-col { padding-top: 30px; }
+            .vs-viewport { height: 420px; }
+            .vs-card-wrapper { height: 420px; }
+            .vs-card-content { padding: 24px 20px 68px !important; }
+            .vs-card-title { font-size: 26px !important; }
+            .vs-card-panel { display: block !important; width: 160px !important; }
+            .vs-stats-bar { padding-right: 160px !important; }
+            .vs-cta-btn { padding: 9px 16px !important; font-size: 13px !important; }
+            .vs-more-content { padding: 24px 24px !important; }
+            .vs-more-title { font-size: 28px !important; }
+            .vs-more-panel { display: block !important; width: 220px !important; }
+          }
+          @media (min-width: 1024px) {
+            .vs-section { padding: 52px 0; }
+            .vs-header { margin-bottom: 40px; }
+            .vs-layout { gap: 32px; padding: 0 24px; }
+            .vs-sidebar { width: 220px; }
+            .vs-deck-col { padding-top: 30px; }
+            .vs-viewport { height: 420px; }
+            .vs-card-wrapper { height: 420px; }
+            .vs-card-content { padding: 36px 32px 80px !important; }
+            .vs-card-title { font-size: 32px !important; }
+            .vs-card-panel { display: block !important; width: 220px !important; }
+            .vs-stats-bar { padding-right: 220px !important; }
+            .vs-cta-btn { padding: 10px 20px !important; }
+            .vs-more-content { padding: 28px 36px !important; }
+            .vs-more-title { font-size: 34px !important; }
+            .vs-more-panel { display: block !important; width: 340px !important; }
+          }
+        `}</style>
+      </section>
+
+      {/* Scroll triggers — one per vendor, each 60vh tall */}
+      {VS_VENDORS.map((_, i) => (
+        <div key={i} data-n={i} className="vs-trigger" style={{ height:'60vh' }}/>
+      ))}
     </div>
   );
 }
@@ -8025,87 +8793,279 @@ function CertPathSection({ onCTA, onBrochure }) {
   );
 }
 
-function WhyCertSection({ onCTA }) {
-  const stats = [
-    { stat: "91%", label: "Hiring Managers Value Microsoft Certifications", src: "LinkedIn Workplace Learning Report" },
-    { stat: "26%", label: "Average Salary Increase After Microsoft Certification", src: "Microsoft / IDC Study" },
-    { stat: "63%", label: "Certified Professionals Report a Job Promotion", src: "Pearson VUE Value of IT Certification" },
-    { stat: "5×", label: "Faster Cloud Projects for Certified Azure Teams", src: "IDC White Paper 2024" },
-  ];
-  const roles = [
-    { label: "Azure Administrator",     code: "AZ-104", accent: "#0694D1" },
-    { label: "Azure Solutions Architect",code: "AZ-305", accent: "#0694D1" },
-    { label: "Azure AI Engineer",        code: "AI-102", accent: "#8b5cf6" },
-    { label: "Security Administrator",   code: "SC-300", accent: "#ef4444" },
-    { label: "Power BI Data Analyst",    code: "PL-300", accent: "#f59e0b" },
-    { label: "Azure DevOps Engineer",    code: "AZ-400", accent: "#0694D1" },
-    { label: "Azure Security Engineer",  code: "AZ-500", accent: "#ef4444" },
-    { label: "M365 Administrator",       code: "MS-102", accent: "#10b981" },
-    { label: "GitHub Actions",           code: "GH-300", accent: "#6b7280" },
-    { label: "Copilot Studio",           code: "MS-4023",accent: "#8b5cf6" },
-  ];
-  return (
-    <section className="why-cert-sec">
-      <div className="why-cert-inner">
+/* ── ROI ITEMS — mirrors EDGE_ITEMS format exactly ── */
+const RoiIcons = {
+  salary: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="9" fill="#7fba00" opacity="0.15" stroke="#7fba00" strokeWidth="1.5"/>
+      <text x="12" y="16" textAnchor="middle" fill="#7fba00" fontSize="10" fontWeight="800" fontFamily="sans-serif">$</text>
+      <path d="M9 8.5c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2s-.9 2-2 2h-2c-1.1 0-2 .9-2 2s.9 2 2 2h2c1.1 0 2-.9 2-2" stroke="#7fba00" strokeWidth="1.4" strokeLinecap="round" fill="none"/>
+      <line x1="12" y1="5" x2="12" y2="7" stroke="#7fba00" strokeWidth="1.4" strokeLinecap="round"/>
+      <line x1="12" y1="17" x2="12" y2="19" stroke="#7fba00" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  ),
+  demand: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <circle cx="10" cy="10" r="6" fill="#00a4ef" opacity="0.15" stroke="#00a4ef" strokeWidth="1.5"/>
+      <path d="M14.5 14.5L19 19" stroke="#f25022" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M7 10h6M10 7v6" stroke="#00a4ef" strokeWidth="1.4" strokeLinecap="round"/>
+    </svg>
+  ),
+  promotion: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="15" width="4" height="6" rx="1" fill="#f25022" opacity="0.7"/>
+      <rect x="10" y="10" width="4" height="11" rx="1" fill="#ffb900" opacity="0.7"/>
+      <rect x="17" y="5" width="4" height="16" rx="1" fill="#7fba00" opacity="0.7"/>
+      <path d="M5 12l5-5 5 3 6-7" stroke="#00a4ef" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+      <circle cx="21" cy="3" r="1.5" fill="#00a4ef"/>
+    </svg>
+  ),
+  velocity: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#ffb900" opacity="0.2" stroke="#ffb900" strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  ),
+  azure: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M6 18c-2.2 0-4-1.7-4-3.8 0-1.9 1.4-3.5 3.3-3.8C5.7 8.7 7.7 7 10 7c1.9 0 3.5 1 4.4 2.5.3-.1.6-.1.9-.1C17.9 9.4 20 11.4 20 14c0 2.2-1.8 4-4 4H6z" fill="#00a4ef" opacity="0.18" stroke="#00a4ef" strokeWidth="1.5"/>
+      <path d="M12 17v-6M9 14l3-3 3 3" stroke="#00a4ef" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  security: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M12 3L4 7v6c0 4.4 3.4 8.5 8 9.5C16.6 21.5 20 17.4 20 13V7L12 3z" fill="#f25022" opacity="0.15" stroke="#f25022" strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M9 12l2 2 4-4" stroke="#f25022" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  ai: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="10" r="4" fill="#7fba00" opacity="0.15" stroke="#7fba00" strokeWidth="1.5"/>
+      <path d="M8 10c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#7fba00" strokeWidth="1.3" fill="none"/>
+      <line x1="6" y1="10" x2="2" y2="10" stroke="#ffb900" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="22" y1="10" x2="18" y2="10" stroke="#ffb900" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="12" y1="6" x2="12" y2="2" stroke="#f25022" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="9" y1="7.3" x2="6.5" y2="4.8" stroke="#00a4ef" strokeWidth="1.3" strokeLinecap="round"/>
+      <line x1="15" y1="7.3" x2="17.5" y2="4.8" stroke="#00a4ef" strokeWidth="1.3" strokeLinecap="round"/>
+      <rect x="9" y="14" width="6" height="4" rx="1" fill="#7fba00" opacity="0.3" stroke="#7fba00" strokeWidth="1.2"/>
+      <line x1="12" y1="14" x2="12" y2="18" stroke="#7fba00" strokeWidth="1" opacity="0.5"/>
+      <line x1="9" y1="16" x2="15" y2="16" stroke="#7fba00" strokeWidth="1" opacity="0.5"/>
+    </svg>
+  ),
+  enterprise: () => (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <rect x="3" y="8" width="18" height="13" rx="1.5" fill="#00a4ef" opacity="0.12" stroke="#00a4ef" strokeWidth="1.5"/>
+      <rect x="8" y="4" width="8" height="5" rx="1" fill="#ffb900" opacity="0.3" stroke="#ffb900" strokeWidth="1.3"/>
+      <line x1="8"  y1="13" x2="16" y2="13" stroke="#00a4ef" strokeWidth="1.2" strokeLinecap="round"/>
+      <line x1="8"  y1="16" x2="16" y2="16" stroke="#00a4ef" strokeWidth="1.2" strokeLinecap="round" opacity="0.6"/>
+      <line x1="8"  y1="19" x2="13" y2="19" stroke="#00a4ef" strokeWidth="1.2" strokeLinecap="round" opacity="0.4"/>
+    </svg>
+  ),
+};
 
-        {/* LEFT — scrolling stat items */}
-        <div className="why-cert-left">
-          {stats.map((s, i) => (
-            <div key={i} className="why-cert-item reveal">
-              <div className="why-cert-stat-block">
-                <div className="why-cert-stat">{s.stat}</div>
-              </div>
-              <div className="why-cert-item-body">
-                <div className="why-cert-stat-label">{s.label}</div>
-                <div className="why-cert-stat-src">{s.src}</div>
-              </div>
+const ROI_ITEMS = [
+  { icon: RoiIcons.salary,     num: "01", title: "26% Average Salary Boost After Certification", desc: "Microsoft certified professionals earn 26% more on average vs. non-certified peers. Azure Administrator (AZ-104) roles command $105K–$135K, while Security Engineers (AZ-500) reach $120K–$160K. Microsoft ranks #1 among top-paying certification vendors globally." },
+  { icon: RoiIcons.demand,     num: "02", title: "91% of Hiring Managers Prefer Certified Candidates", desc: "9 in 10 hiring managers say certifications directly influence their hiring decisions. With 3.5 million unfilled cloud roles globally and Azure job postings growing 40% year-over-year, certified professionals move from application to offer faster than their uncertified peers." },
+  { icon: RoiIcons.promotion,  num: "03", title: "63% of Certified Professionals Report a Promotion", desc: "Within 12 months of earning a Microsoft certification, 63% of professionals receive a promotion or significant role expansion. Certified teams are 2× more likely to lead cloud transformation projects and report 87% higher job confidence and career satisfaction." },
+  { icon: RoiIcons.velocity,   num: "04", title: "5× Faster Cloud Project Delivery for Certified Teams", desc: "Enterprises with Microsoft-certified Azure teams complete cloud migrations 5× faster and experience 40% fewer critical infrastructure incidents. Teams with AZ-400 and AI-102 certifications deploy new features 3× faster — directly improving revenue velocity and competitive advantage." },
+  { icon: RoiIcons.azure,      num: "05", title: "Azure — The #1 Microsoft Certification Track", desc: "38% of all Koenig Microsoft enrolments follow the Azure track: AZ-900 → AZ-104 → AZ-305. Koenig achieves a 95% Azure exam pass rate. Azure Solutions Architects earn an average of $135K in the US, making this the highest-ROI single certification path in cloud computing." },
+  { icon: RoiIcons.security,   num: "06", title: "Security Certifications in Highest Global Demand", desc: "3.5 million cybersecurity roles remain unfilled globally — and SC-300, SC-200, and SC-100 certified professionals are among the fastest to receive job offers. SC-300 certified Security Admins average $140K annually, with Security ranking as Koenig's 3rd most popular Microsoft track at 17% of enrolments." },
+  { icon: RoiIcons.ai,         num: "07", title: "AI & Copilot Certifications — Fastest Growing Track", desc: "Koenig delivered 735+ AI training batches in just the last 3 months — reflecting explosive enterprise demand for AI-102 (Azure AI Engineer), MS-4023 (Microsoft 365 Copilot), and DP-100 (Azure Data Scientist). AI-102 certified engineers command $155K average salary in the US, with 40% YoY growth in AI job postings." },
+  { icon: RoiIcons.enterprise, num: "08", title: "3–5× ROI on Enterprise Microsoft Training Investment", desc: "Enterprises report 3–5× return on Microsoft certification training within 12 months — driven by 20% average reduction in Azure cloud spend, fewer outages, and faster feature delivery. As a Microsoft ESI partner, Koenig accepts Enterprise Agreement and TSPv credits, letting teams train at zero net cost." },
+];
+
+function WhyCertSection({ onCTA }) {
+  return (
+    <section className="roi-sec">
+      <div className="roi-inner">
+
+        {/* Left — sticky heading (mirrors edge-left) */}
+        <div className="roi-left">
+          <div className="roi-eyebrow">ROI &amp; Career Outcomes</div>
+          <h2 className="roi-left-heading">
+            Why Get<br /><em>Microsoft Certified</em>?
+          </h2>
+          <p className="roi-left-sub">
+            Data-backed salary, hiring, and business outcomes across every Microsoft certification track — from AZ-900 to Expert-level.
+          </p>
+          <button className="roi-left-cta" onClick={onCTA}>
+            Explore Courses →
+          </button>
+          <div className="roi-stat-strip">
+            <div className="roi-stat-chip">
+              <div className="roi-stat-chip-num">26<span>%</span></div>
+              <div className="roi-stat-chip-label">Avg. Salary Boost</div>
             </div>
-          ))}
-          <div className="why-cert-roles reveal">
-            <div className="why-cert-roles-title">Most In-Demand Microsoft Certification Roles</div>
-            <div className="why-cert-roles-grid">
-              {roles.map((r, i) => (
-                <div key={i} className="why-cert-role-chip" style={{'--chip-accent': r.accent}}>
-                  <span className="why-cert-role-chip-name">{r.label}</span>
-                  <span className="why-cert-role-chip-code">{r.code}</span>
-                </div>
-              ))}
+            <div className="roi-stat-divider" />
+            <div className="roi-stat-chip">
+              <div className="roi-stat-chip-num">91<span>%</span></div>
+              <div className="roi-stat-chip-label">Employers Prefer</div>
+            </div>
+            <div className="roi-stat-divider" />
+            <div className="roi-stat-chip">
+              <div className="roi-stat-chip-num">5<span>×</span></div>
+              <div className="roi-stat-chip-label">Faster Delivery</div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT — sticky heading */}
-        <div className="why-cert-right">
-          <div className="why-cert-eyebrow">ROI &amp; Career Outcomes</div>
-          <h2 className="why-cert-heading">
-            Why Get<br /><em>Microsoft Certified</em>?
-          </h2>
-          <p className="why-cert-sub">
-            Microsoft certifications are among the highest-paying and most in-demand IT credentials globally. The data speaks for itself.
-          </p>
-          <button className="why-cert-cta" onClick={onCTA}>
-            Explore Courses →
-          </button>
-          <div className="why-cert-mini-stats">
-            <div className="why-cert-mini-item">
-              <div className="why-cert-mini-num">95<span>%</span></div>
-              <div className="why-cert-mini-label">Pass Rate</div>
+        {/* Left (order:1 via CSS) — scrolling items */}
+        <div className="roi-right">
+          {ROI_ITEMS.map((item) => (
+            <div key={item.num} className="roi-item reveal">
+              <div className="roi-item-icon-wrap"><item.icon /></div>
+              <div className="roi-item-body">
+                <div className="roi-item-num">{item.num}</div>
+                <h3 className="roi-item-title">{item.title}</h3>
+                <p className="roi-item-desc">{item.desc}</p>
+              </div>
             </div>
-            <div className="why-cert-mini-item">
-              <div className="why-cert-mini-num">500<span>K+</span></div>
-              <div className="why-cert-mini-label">Alumni</div>
-            </div>
-            <div className="why-cert-mini-item">
-              <div className="why-cert-mini-num">33<span>+</span></div>
-              <div className="why-cert-mini-label">Yrs Training</div>
-            </div>
-          </div>
+          ))}
         </div>
 
       </div>
     </section>
   );
 }
+
+/* ── (WC_TABS kept for reference — no longer used) ── */
+const WC_TABS_UNUSED = [
+  {
+    icon: "💰", label: "Salary Growth",
+    eyebrow: "Compensation Impact",
+    title: <>Average <em>26% Salary</em> Boost</>,
+    desc: "Microsoft certified professionals earn significantly more than their non-certified peers. Azure and Security certifications command the highest premiums globally.",
+    stats: [
+      { num: "26%", label: "Avg. salary increase post-certification" },
+      { num: "$15K+", label: "Median pay jump for Azure Admins (US)" },
+      { num: "#1", label: "Microsoft among top-paying cert vendors" },
+    ],
+    features: [
+      { icon: "🏆", title: "Azure Administrator (AZ-104)", desc: "Avg. salary $105K–$135K in the US — one of the highest-paid associate-level roles." },
+      { icon: "🔐", title: "Security Engineer (AZ-500)", desc: "Cybersecurity skills command $120K–$160K, with demand outpacing supply by 3.5M roles globally." },
+      { icon: "🤖", title: "AI Engineer (AI-102)", desc: "AI-focused roles growing 40% YoY — AI-102 certified engineers earn $125K–$165K avg." },
+    ],
+    source: "Source: Microsoft / IDC Study 2024 · LinkedIn Salary Insights",
+  },
+  {
+    icon: "📈", label: "Hiring Demand",
+    eyebrow: "Employer Demand",
+    title: <>91% of Hiring Managers <em>Prefer Certified</em> Candidates</>,
+    desc: "Microsoft certifications are a top signal for employers assessing cloud, security, and AI readiness — making certified professionals significantly easier to hire and retain.",
+    stats: [
+      { num: "91%", label: "Hiring managers prefer certified candidates" },
+      { num: "3.5M", label: "Global cloud skill gap by 2025" },
+      { num: "40%", label: "YoY growth in Azure job postings" },
+    ],
+    features: [
+      { icon: "☁️", title: "Azure Skills Shortage", desc: "Azure Administrator and Architect roles are among the most in-demand in cloud computing globally." },
+      { icon: "🛡️", title: "Security Talent Gap", desc: "SC-300 and SC-200 certified professionals are among the fastest to receive job offers post-certification." },
+      { icon: "📊", title: "Power BI & Analytics", desc: "PL-300 certified analysts have seen a 38% increase in job postings over the last 24 months." },
+    ],
+    source: "Source: LinkedIn Workforce Report · Microsoft Skills Report 2024",
+  },
+  {
+    icon: "🚀", label: "Career Promotion",
+    eyebrow: "Career Advancement",
+    title: <>63% of Certified Pros <em>Report a Promotion</em></>,
+    desc: "Microsoft certifications signal cloud competency, leadership readiness, and technical authority — making certified professionals more likely to be promoted within 12 months.",
+    stats: [
+      { num: "63%", label: "Certified professionals promoted within 1 yr" },
+      { num: "2×", label: "More likely to lead cloud transformation projects" },
+      { num: "87%", label: "Report increased confidence and job satisfaction" },
+    ],
+    features: [
+      { icon: "🎯", title: "Leadership Path", desc: "AZ-305 and SC-100 Expert-level certs position professionals for cloud architect and CISO roles." },
+      { icon: "📋", title: "Project Ownership", desc: "Certified teams are 2× more likely to be given ownership of cloud migration and security projects." },
+      { icon: "🌍", title: "Global Opportunities", desc: "Microsoft certifications are recognised in 50+ countries — opening doors to international roles." },
+    ],
+    source: "Source: Pearson VUE Value of IT Certification Report",
+  },
+  {
+    icon: "⚡", label: "Cloud Velocity",
+    eyebrow: "Business Productivity",
+    title: <>5× Faster <em>Cloud Project Delivery</em></>,
+    desc: "Enterprises with Microsoft-certified Azure teams complete cloud projects 5× faster and with fewer critical incidents — directly impacting revenue and competitive advantage.",
+    stats: [
+      { num: "5×", label: "Faster project delivery for certified teams" },
+      { num: "40%", label: "Reduction in cloud infrastructure incidents" },
+      { num: "3×", label: "ROI on training investment within 12 months" },
+    ],
+    features: [
+      { icon: "🔧", title: "Fewer Outages", desc: "Certified Azure Administrators reduce unplanned downtime by 40% vs. uncertified counterparts." },
+      { icon: "💡", title: "Innovation Speed", desc: "Teams with AI-102 and AZ-400 certifications deploy new features 3× faster on average." },
+      { icon: "💼", title: "Cost Optimisation", desc: "AZ-104/AZ-305 certified architects reduce Azure spend by 20–30% through better resource governance." },
+    ],
+    source: "Source: IDC White Paper 2024 · Microsoft Customer Evidence",
+  },
+  {
+    icon: "☁️", label: "Azure Track",
+    eyebrow: "Azure Career Outcomes",
+    title: <><em>Azure</em> — The #1 Cloud Certification Track</>,
+    desc: "Azure is the world's fastest-growing cloud platform. Koenig's Azure track — from AZ-900 Fundamentals to AZ-305 Expert — is our most enrolled certification path.",
+    stats: [
+      { num: "38%", label: "Of all Koenig Microsoft enrolments are Azure" },
+      { num: "$135K", label: "Avg. Azure Architect salary (US, 2024)" },
+      { num: "95%", label: "Azure cert exam pass rate at Koenig" },
+    ],
+    features: [
+      { icon: "🔵", title: "AZ-900 → AZ-104 → AZ-305", desc: "The most popular progression: Fundamentals → Administrator → Solutions Architect Expert." },
+      { icon: "🔐", title: "AZ-500 Security Engineer", desc: "Adds cloud security expertise to your Azure profile — frequently bundled with AZ-104." },
+      { icon: "⚙️", title: "AZ-400 DevOps Engineer", desc: "Expert-level DevOps cert for teams adopting CI/CD, Agile, and infrastructure-as-code on Azure." },
+    ],
+    source: "Source: Koenig Internal Enrolment Data 2024–25",
+  },
+  {
+    icon: "🛡️", label: "Security Track",
+    eyebrow: "Security Career Outcomes",
+    title: <>Security Certs in <em>Highest Global Demand</em></>,
+    desc: "With 3.5 million unfilled cybersecurity positions globally, SC-300 and SC-200 certified professionals are among the most in-demand IT workers in the world.",
+    stats: [
+      { num: "3.5M", label: "Unfilled cybersecurity roles globally (2025)" },
+      { num: "$140K", label: "Avg. salary for SC-300 certified Security Admins" },
+      { num: "17%", label: "Of Koenig enrolments — 3rd most popular track" },
+    ],
+    features: [
+      { icon: "🔑", title: "SC-300 — Identity & Access Admin", desc: "Azure AD, Zero Trust, conditional access, and identity governance — 4-day intensive." },
+      { icon: "🔍", title: "SC-200 — Security Operations", desc: "Microsoft Sentinel, threat hunting, SIEM/SOAR — for SOC analysts and security engineers." },
+      { icon: "🏛️", title: "SC-100 — Cybersecurity Architect", desc: "Expert-level design of Zero Trust security strategy — fastest path to CISO-track roles." },
+    ],
+    source: "Source: ISC² Cybersecurity Workforce Study 2024 · Koenig Enrolment Data",
+  },
+  {
+    icon: "🤖", label: "AI & Copilot",
+    eyebrow: "AI Career Outcomes",
+    title: <>AI Certifications — <em>Fastest Growing Track</em></>,
+    desc: "Azure AI and Copilot certifications are seeing explosive demand. Koenig delivered 735+ AI batches in the last 3 months alone as enterprises race to build AI competency.",
+    stats: [
+      { num: "735+", label: "AI training batches in last 3 months" },
+      { num: "40%", label: "YoY growth in AI cert enrolments" },
+      { num: "$155K", label: "Avg. AI-102 certified engineer salary (US)" },
+    ],
+    features: [
+      { icon: "🧠", title: "AI-102 — Azure AI Engineer", desc: "Azure OpenAI, Cognitive Services, Copilot Studio, Document Intelligence — 5-day deep dive." },
+      { icon: "💬", title: "MS-4023 — Microsoft 365 Copilot", desc: "Build, deploy and govern Microsoft 365 Copilot experiences for enterprise teams." },
+      { icon: "🔬", title: "DP-100 — Azure Data Scientist", desc: "ML model training, MLflow, AutoML, and responsible AI deployment on Azure." },
+    ],
+    source: "Source: Koenig AI Training Data 2024–25 · LinkedIn AI Jobs Report",
+  },
+  {
+    icon: "🏢", label: "Enterprise ROI",
+    eyebrow: "Business Return on Investment",
+    title: <>Enterprise Training <em>ROI & Value</em></>,
+    desc: "For enterprises, Microsoft certification programmes drive measurable cost savings, faster cloud adoption, and reduced vendor dependency — with a typical ROI of 3–5× within 12 months.",
+    stats: [
+      { num: "3–5×", label: "ROI on Microsoft certification training spend" },
+      { num: "20%", label: "Avg. reduction in Azure cloud spend post-training" },
+      { num: "ESI", label: "Use Microsoft Enterprise Agreement credits" },
+    ],
+    features: [
+      { icon: "💳", title: "TSPv / EA Credits Accepted", desc: "As a Microsoft ESI partner, Koenig accepts Enterprise Agreement and TSPv credits — train teams at zero net cost." },
+      { icon: "✈️", title: "Fly-Me-A-Trainer", desc: "Send an MCT to your office for on-site team training — deployed in 40+ countries with no travel overhead." },
+      { icon: "📐", title: "Custom Learning Paths", desc: "Koenig builds bespoke cert paths mapped to your organisation's Azure, Security, or M365 adoption roadmap." },
+    ],
+    source: "Source: IDC Business Value of Microsoft Certifications 2024",
+  },
+];
 
 function EdgeSection({ onCTA }) {
 
@@ -8796,6 +9756,28 @@ export default function App() {
     );
     revealEls.forEach((el) => revealObs.observe(el));
 
+    // Watch for lazily-mounted .reveal elements (e.g. inside LazySection)
+    const registerReveal = (el) => {
+      if (!el.dataset.delay) {
+        const parent = el.parentElement;
+        if (!parentIndexMap.has(parent)) parentIndexMap.set(parent, 0);
+        const idx = parentIndexMap.get(parent);
+        el.dataset.delay = idx * 90;
+        parentIndexMap.set(parent, idx + 1);
+      }
+      revealObs.observe(el);
+    };
+    const mutObs = new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
+        m.addedNodes.forEach((node) => {
+          if (node.nodeType !== 1) return;
+          if (node.matches(".reveal,.reveal-left,.reveal-right,.reveal-scale")) registerReveal(node);
+          node.querySelectorAll(".reveal,.reveal-left,.reveal-right,.reveal-scale").forEach(registerReveal);
+        });
+      });
+    });
+    mutObs.observe(document.body, { childList: true, subtree: true });
+
     // Connector lines inside 4 Ways section
     const lineObs = new IntersectionObserver(
       (entries) => {
@@ -8814,6 +9796,7 @@ export default function App() {
       window.removeEventListener("mousemove", onMouseMove);
       revealObs.disconnect();
       lineObs.disconnect();
+      mutObs.disconnect();
       tiltEls.forEach(el => { el.removeEventListener('mousemove', onTilt); el.removeEventListener('mouseleave', onTiltLeave); });
     };
   }, []);
@@ -9330,9 +10313,7 @@ export default function App() {
       </section>}
 
       {/* ENROLLMENT INSIGHTS */}
-      <LazySection minHeight={600}>
-        <EnrollmentInsights />
-      </LazySection>
+      <EnrollmentInsights />
 
       {/* CERT SHOWCASE */}
       <CertShowcase onUnlock={() => setModal(true)} />
@@ -9368,19 +10349,26 @@ export default function App() {
       {/* AWARDS */}
       <AwardsSlider />
 
-      {/* FAQ */}
-      <section style={{ background: "#ffffff", borderTop: "1px solid rgba(6,148,209,0.1)", padding: "0 48px" }}>
-        <LazySection minHeight={400}>
-          <ScrollFAQAccordion data={FAQ_DATA} />
-        </LazySection>
+      {/* FAQ + AI CHAT */}
+      <section style={{ background: "#ffffff", borderTop: "1px solid rgba(6,148,209,0.1)", overflow: "visible" }}>
+        <div className="faq-chatbot-wrap">
+          {/* Left — FAQ accordion */}
+          <div>
+            <ScrollFAQAccordion data={FAQ_DATA} />
+          </div>
+          {/* Right — AI chat assistant (always open) */}
+          <div className="faq-chatbot-sticky">
+            <FAQChatBot onOpenLead={() => setModal(true)} />
+          </div>
+        </div>
       </section>
 
-      {/* GLOBAL PRESENCE */}
-      <LazySection minHeight={500}>
-        <GlobeSection />
-      </LazySection>
+      {/* TOP VENDOR PARTNERS */}
+      <VendorStack />
 
-      {/* BOTTOM CTA */}
+      {/* GLOBAL PRESENCE */}
+      <GlobeSection />
+
 
 
       {/* ENQUIRY MODAL */}
