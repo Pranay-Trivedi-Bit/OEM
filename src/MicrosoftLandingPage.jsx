@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
 import ScrollFAQAccordion from "./components/ui/scroll-faqaccordion";
 import TwitterTestimonials from "./components/ui/twitter-testimonial-cards";
+import { AnimatedTestimonials } from "./components/ui/animated-testimonials";
 import createGlobe from "cobe";
-import { motion, animate, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, BookOpen, Server, Code2, Network, Layers, Brain, Bot, FlaskConical, AlertTriangle, Lock, MessageSquare, Mail, BarChart2, AppWindow, ShieldCheck } from "lucide-react";
+import { motion, animate, useScroll, useTransform, AnimatePresence, useAnimation } from "framer-motion";
+import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, BookOpen, Server, Code2, Network, Layers, Brain, Bot, FlaskConical, AlertTriangle, Lock, MessageSquare, Mail, BarChart2, AppWindow, ShieldCheck, Star, ThumbsUp, Users, Monitor, User, Building2, Plane, CalendarDays, Briefcase } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 /* ── Lazy-mount wrapper: defers rendering until section nears viewport ── */
@@ -745,41 +746,43 @@ p {
 
 /* ── Subtitle ── */
 .hero-sub {
-  font-size: 16px; line-height: 1.7;
-  color: rgba(255,255,255,0.82);
+  font-size: 15.5px; line-height: 1.75;
+  color: rgba(255,255,255,1);
   max-width: 520px; margin-bottom: 14px;
   animation: fadeUp 0.6s 0.18s ease both;
-  font-weight: 450;
+  font-weight: 500;
 }
-
-.hero-sub-more {
-  color: rgba(255,255,255,0.78);
-}
+.hero-sub strong { color: #38bdf8; font-weight: 700; }
+.hero-sub-more { color: rgba(255,255,255,0.97); font-weight: 500; }
+.hero-sub-more strong { color: #38bdf8; font-weight: 700; }
 .hero-read-more {
   background: none; border: none; padding: 0; cursor: pointer;
-  color: var(--blue); font-size: 13.5px; font-weight: 700;
+  color: #38bdf8; font-size: 13px; font-weight: 700;
   text-decoration: none; line-height: 1;
   transition: color 0.18s;
   font-family: var(--body);
 }
-.hero-read-more:hover { color: var(--sky); }
+.hero-read-more:hover { color: #ffffff; }
 
-/* ── Feature list (21st.dev "icon + text" rows) ── */
+/* ── Feature list rows ── */
 .hero-features {
-  display: flex; flex-direction: column; gap: 7px;
+  display: flex; flex-direction: column; gap: 6px;
   margin-bottom: 18px;
   animation: fadeUp 0.6s 0.24s ease both;
 }
 .hero-feat-row {
   display: flex; align-items: center; gap: 10px;
-  font-size: 14px; color: rgba(255,255,255,0.88); font-weight: 500;
+  font-size: 13.5px; color: rgba(255,255,255,1); font-weight: 500;
+  line-height: 1.4;
 }
+.hero-feat-hl { color: #ffffff; font-weight: 700; }
+.hero-feat-hl-blue { color: #38bdf8; font-weight: 700; }
 .hero-feat-icon {
   width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
-  background: rgba(6,148,209,0.12); border: 1px solid rgba(6,148,209,0.2);
+  background: rgba(6,148,209,0.15); border: 1px solid rgba(6,148,209,0.3);
   display: flex; align-items: center; justify-content: center;
 }
-.hero-feat-icon svg { width: 12px; height: 12px; color: var(--blue); }
+.hero-feat-icon svg { width: 12px; height: 12px; color: #38bdf8; }
 
 /* ── CTA row ── */
 .hero-ctas {
@@ -2108,39 +2111,73 @@ p {
 }
 .cert-card {
   background: #fff;
-  border: 1px solid rgba(6,148,209,0.11);
-  border-radius: 12px; padding: 14px; cursor: pointer;
-  transition: all 0.22s; display: flex;
+  border: 1.5px solid rgba(6,148,209,0.12);
+  border-radius: 16px; padding: 16px 16px 14px; cursor: pointer;
+  transition: all 0.25s; display: flex;
   flex-direction: column; position: relative; overflow: hidden;
   gap: 0;
+  box-shadow: 0 2px 8px rgba(6,148,209,0.05);
 }
-/* coloured left accent bar */
-.cert-card::after {
-  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
-  background: var(--blue); border-radius: 14px 0 0 14px; opacity: 0;
-  transition: opacity 0.22s;
+/* coloured top accent bar */
+.cert-card::before {
+  content:''; position:absolute; left:0; top:0; right:0; height:3px;
+  border-radius: 16px 16px 0 0; opacity: 0;
+  transition: opacity 0.25s;
 }
-.cert-card.fund-card::after  { background: #10b981; }
-.cert-card.assoc-card::after { background: var(--blue); }
-.cert-card.expert-card::after{ background: #f59e0b; }
+.cert-card.fund-card::before  { background: linear-gradient(90deg,#10b981,#34d399); }
+.cert-card.assoc-card::before { background: linear-gradient(90deg,#0694D1,#38bdf8); }
+.cert-card.expert-card::before{ background: linear-gradient(90deg,#f59e0b,#fbbf24); }
 .cert-card:hover {
-  border-color: rgba(6,148,209,0.28);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(6,148,209,0.12), 0 2px 8px rgba(0,0,0,0.04);
+  border-color: rgba(6,148,209,0.32);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(6,148,209,0.13), 0 2px 8px rgba(0,0,0,0.05);
 }
-.cert-card:hover::after { opacity: 1; }
+.cert-card:hover::before { opacity: 1; }
+/* Popular badge */
+.cert-hot-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 20px;
+  background: rgba(6,148,209,0.10); color: var(--blue);
+  border: 1px solid rgba(6,148,209,0.25);
+  position: absolute; top: 12px; left: 12px;
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+.cert-hot-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--blue); flex-shrink: 0;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-badge { 0%,100%{background:rgba(6,148,209,0.10)} 50%{background:rgba(6,148,209,0.18)} }
+@keyframes pulse-dot   { 0%,100%{opacity:1} 50%{opacity:0.4} }
 /* level badges — properly colour-coded */
 .cert-badge {
-  display: inline-flex; align-items: center; font-size: 8.5px; font-weight: 600;
+  display: inline-flex; align-items: center; font-size: 8.5px; font-weight: 700;
   letter-spacing: 0.4px; text-transform: uppercase; padding: 2px 7px;
-  border-radius: 4px; margin-bottom: 7px; width: fit-content; opacity: 0.8;
+  border-radius: 4px; margin-bottom: 7px; width: fit-content;
 }
-.cert-badge.fund   { background: rgba(16,185,129,0.07); color: #059669; border: 1px solid rgba(16,185,129,0.15); }
-.cert-badge.assoc  { background: rgba(6,148,209,0.07);  color: #0578b3; border: 1px solid rgba(6,148,209,0.15); }
-.cert-badge.expert { background: rgba(245,158,11,0.07); color: #d97706; border: 1px solid rgba(245,158,11,0.15); }
+.cert-badge.fund   { background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.2); }
+.cert-badge.assoc  { background: rgba(6,148,209,0.08);  color: #0578b3; border: 1px solid rgba(6,148,209,0.2); }
+.cert-badge.expert { background: rgba(245,158,11,0.08); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
+/* enrolled + rating row */
+.cert-meta-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px; flex-wrap: wrap;
+}
+.cert-enrolled {
+  font-size: 10px; color: var(--light-sub); font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.cert-enrolled svg { color: var(--blue); }
+.cert-rating {
+  display: flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; color: #d97706;
+}
+.cert-rating-star { font-size: 10px; }
 .cert-name {
-  font-size: 15px; font-weight: 800; color: #071e2e;
-  margin-bottom: 6px; line-height: 1.35; flex: 1; letter-spacing: -0.02em;
+  font-size: 13.5px; font-weight: 800; color: #071e2e;
+  margin-bottom: 5px; line-height: 1.4; flex: 1; letter-spacing: -0.01em;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
 .cert-code {
   display: inline-block; font-size: 9.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
@@ -2152,7 +2189,7 @@ p {
 .cert-card-toggle {
   position: absolute; top: 10px; right: 10px; z-index: 3;
   display: inline-flex; align-items: center; gap: 4px;
-  font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px;
   padding: 3px 9px; border-radius: 20px; border: 1.5px solid rgba(6,148,209,0.22);
   background: rgba(6,148,209,0.06); color: var(--blue);
   cursor: pointer; transition: all 0.18s; white-space: nowrap;
@@ -2723,6 +2760,255 @@ p {
 @media (max-width: 700px) {
   .enroll-radar-header { flex-direction: column; gap: 12px; padding: 20px; }
   .enroll-radar-chart { padding: 8px 8px 16px; }
+}
+
+/* ── LEARNING FORMATS ── */
+.lf-sec { background: var(--light-bg); padding: 80px 48px; border-top: 1px solid var(--light-border); }
+.lf-inner { max-width: 1200px; margin: 0 auto; }
+.lf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+.lf-card {
+  background: var(--light-white);
+  border: 1.5px solid var(--light-border);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  display: flex; flex-direction: column; gap: 0;
+  position: relative; overflow: hidden;
+  transition: border-color 0.28s, box-shadow 0.28s, transform 0.28s;
+  cursor: default;
+}
+.lf-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(90deg, #0694D1, #38bdf8);
+  opacity: 0; transition: opacity 0.28s;
+}
+.lf-card:hover { border-color: rgba(6,148,209,0.35); box-shadow: 0 16px 40px rgba(6,148,209,0.10); transform: translateY(-4px); }
+.lf-card:hover::before { opacity: 1; }
+.lf-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.lf-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: rgba(6,148,209,0.08); border: 1px solid rgba(6,148,209,0.15);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background 0.25s, border-color 0.25s;
+}
+.lf-card:hover .lf-icon { background: rgba(6,148,209,0.15); border-color: rgba(6,148,209,0.3); }
+.lf-icon svg { width: 22px; height: 22px; color: var(--blue); }
+.lf-badge {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 20px;
+  background: rgba(6,148,209,0.08); color: var(--blue);
+  border: 1px solid rgba(6,148,209,0.2);
+  white-space: nowrap; align-self: flex-start;
+}
+.lf-badge.popular { background: rgba(245,158,11,0.08); color: #d97706; border-color: rgba(245,158,11,0.2); }
+.lf-badge.enterprise { background: rgba(168,85,247,0.08); color: #9333ea; border-color: rgba(168,85,247,0.2); }
+.lf-title { font-size: 15px; font-weight: 800; color: var(--light-text); margin-bottom: 8px; letter-spacing: -0.01em; line-height: 1.3; }
+.lf-desc { font-size: 13px; color: var(--light-sub); line-height: 1.7; flex: 1; margin-bottom: 16px; }
+.lf-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+.lf-pill {
+  font-size: 10.5px; font-weight: 600; color: var(--light-sub);
+  background: rgba(6,148,209,0.05); border: 1px solid rgba(6,148,209,0.12);
+  border-radius: 6px; padding: 2px 8px;
+}
+@media (max-width: 1024px) { .lf-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .lf-grid { grid-template-columns: 1fr; } .lf-sec { padding: 56px 24px; } }
+
+/* ── TRAINER PROFILES ── */
+.trainer-sec { background: #071e2e; padding: 80px 48px; border-top: 1px solid rgba(6,148,209,0.15); overflow: hidden; }
+.trainer-inner { max-width: 1200px; margin: 0 auto; }
+.trainer-sec .sec-title { color: #fff; }
+.trainer-sec .sec-label { color: #0694D1; background: rgba(6,148,209,0.12); border-color: rgba(6,148,209,0.25); }
+.trainer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 48px; }
+.trainer-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(6,148,209,0.18);
+  border-radius: 20px; padding: 28px 22px 22px;
+  display: flex; flex-direction: column; gap: 0;
+  position: relative; overflow: hidden;
+  transition: border-color 0.28s, box-shadow 0.28s, transform 0.28s, background 0.28s;
+  backdrop-filter: blur(8px);
+}
+.trainer-card:hover {
+  border-color: rgba(6,148,209,0.5);
+  background: rgba(6,148,209,0.07);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 48px rgba(6,148,209,0.18), 0 4px 12px rgba(0,0,0,0.3);
+}
+.trainer-card-glow {
+  position: absolute; top: -30px; right: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(6,148,209,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.trainer-avatar-wrap { position: relative; width: 72px; height: 72px; margin-bottom: 16px; }
+.trainer-avatar {
+  width: 72px; height: 72px; border-radius: 50%; object-fit: cover;
+  border: 2px solid rgba(6,148,209,0.35);
+  transition: border-color 0.25s;
+}
+.trainer-card:hover .trainer-avatar { border-color: #0694D1; }
+.trainer-mct-badge {
+  position: absolute; bottom: -2px; right: -4px;
+  background: #0694D1; border: 2px solid #071e2e;
+  border-radius: 50%; width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+}
+.trainer-mct-badge svg { width: 11px; height: 11px; color: #fff; }
+.trainer-name { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 2px; letter-spacing: -0.01em; }
+.trainer-title { font-size: 11.5px; color: rgba(255,255,255,0.5); margin-bottom: 14px; font-weight: 500; }
+.trainer-track {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px;
+  padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; width: fit-content;
+  background: rgba(6,148,209,0.12); color: #38bdf8; border: 1px solid rgba(6,148,209,0.25);
+}
+.trainer-exp { font-size: 11px; color: rgba(255,255,255,0.38); font-weight: 600; margin-bottom: 14px; }
+.trainer-usps { display: flex; flex-direction: column; gap: 7px; margin-bottom: 18px; }
+.trainer-usp {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.5;
+}
+.trainer-usp-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: #0694D1;
+  flex-shrink: 0; margin-top: 6px;
+}
+.trainer-certs { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; }
+.trainer-cert-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.3px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.55); border-radius: 4px; padding: 2px 7px;
+  font-family: 'SFMono-Regular','Consolas',monospace;
+}
+@media (max-width: 1100px) { .trainer-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px)  { .trainer-grid { grid-template-columns: 1fr; } .trainer-sec { padding: 56px 24px; } }
+
+/* ── REVIEW STATS CARD ── */
+.review-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.review-stats-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--light-white);
+  border-radius: 20px;
+  border: 1.5px solid var(--light-border);
+  padding: 28px 16px;
+  box-shadow: 0 4px 20px rgba(6,148,209,0.07);
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  cursor: default;
+}
+.review-stats-item:hover {
+  border-color: rgba(6,148,209,0.5);
+  box-shadow: 0 12px 36px rgba(6,148,209,0.14);
+  transform: translateY(-4px);
+}
+.review-stats-icon {
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(6,148,209,0.08);
+  border: 1px solid rgba(6,148,209,0.15);
+  border-radius: 12px;
+  margin-bottom: 14px;
+  transition: background 0.3s, border-color 0.3s;
+}
+.review-stats-icon svg { width: 22px; height: 22px; color: var(--blue); }
+.review-stats-item:hover .review-stats-icon { background: rgba(6,148,209,0.15); border-color: rgba(6,148,209,0.35); }
+.review-stats-number {
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-weight: 900;
+  color: var(--light-text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  transition: color 0.3s;
+}
+.review-stats-item:hover .review-stats-number { color: var(--blue); }
+.review-stats-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--light-sub);
+  margin-top: 8px;
+  transition: color 0.3s;
+}
+.review-stats-item:hover .review-stats-label { color: var(--blue); }
+@media (max-width: 768px) {
+  .review-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+}
+
+/* ── ANIMATED TESTIMONIALS ── */
+.animated-testimonials-wrap {
+  max-width: 900px; margin: 0 auto 16px; padding: 32px 0 8px;
+}
+.animated-testimonials-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
+}
+.animated-testimonials-img-col { position: relative; }
+.animated-testimonials-img-stack {
+  position: relative; height: 340px; width: 100%;
+}
+.animated-testimonials-img-item {
+  position: absolute; inset: 0; transform-origin: bottom;
+}
+.animated-testimonials-img {
+  width: 100%; height: 100%; border-radius: 24px; object-fit: cover; object-position: center;
+  box-shadow: 0 16px 48px rgba(6,148,209,0.14), 0 4px 12px rgba(0,0,0,0.08);
+}
+.animated-testimonials-content {
+  display: flex; flex-direction: column; justify-content: space-between; gap: 16px; padding: 8px 0;
+}
+.animated-testimonials-cert {
+  display: inline-flex; align-items: center; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--blue); background: rgba(6,148,209,0.08);
+  border: 1px solid rgba(6,148,209,0.2); border-radius: 20px;
+  padding: 3px 10px; width: fit-content; margin-bottom: 6px;
+}
+.animated-testimonials-name {
+  font-size: 1.4rem; font-weight: 900; color: var(--light-text);
+  letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 4px;
+}
+.animated-testimonials-role {
+  font-size: 13px; color: var(--light-sub); margin: 0 0 16px; font-weight: 500;
+}
+.animated-testimonials-quote {
+  font-size: 15px; line-height: 1.75; color: var(--light-sub); margin: 0;
+}
+.animated-testimonials-word { display: inline-block; }
+.animated-testimonials-nav {
+  display: flex; align-items: center; gap: 12px; padding-top: 24px;
+}
+.animated-testimonials-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(6,148,209,0.08); border: 1.5px solid rgba(6,148,209,0.18);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.animated-testimonials-btn:hover { background: rgba(6,148,209,0.18); border-color: var(--blue); }
+.animated-testimonials-btn-icon { width: 16px; height: 16px; color: var(--blue); }
+.animated-testimonials-dots { display: flex; gap: 6px; align-items: center; }
+.animated-testimonials-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(6,148,209,0.2); border: none; cursor: pointer;
+  transition: all 0.2s; padding: 0;
+}
+.animated-testimonials-dot.active {
+  width: 18px; border-radius: 3px; background: var(--blue);
+}
+@media (max-width: 768px) {
+  .animated-testimonials-grid { grid-template-columns: 1fr; gap: 24px; }
+  .animated-testimonials-img-stack { height: 240px; }
+  .animated-testimonials-wrap { padding: 16px 0 0; }
 }
 
 /* ── TESTIMONIALS ── */
@@ -5266,6 +5552,29 @@ const CERTS = {
 
 // ── EXAM DETAILS DATA (sourced from learn.microsoft.com) ──
 // ── Price computed from level + training duration ──
+/* Popular courses metadata — enrolled count, rating, hot flag */
+const CERT_POPULAR = {
+  "AZ-104":    { hot: true,  enrolled: "4,200+", rating: 4.9 },
+  "AZ-900":    { hot: true,  enrolled: "6,800+", rating: 4.8 },
+  "AZ-305":    { hot: false, enrolled: "2,100+", rating: 4.9 },
+  "AZ-500":    { hot: true,  enrolled: "1,800+", rating: 4.8 },
+  "AI-102":    { hot: true,  enrolled: "2,400+", rating: 4.9 },
+  "AI-900":    { hot: true,  enrolled: "3,500+", rating: 4.7 },
+  "SC-300":    { hot: true,  enrolled: "1,900+", rating: 4.9 },
+  "SC-900":    { hot: false, enrolled: "2,600+", rating: 4.7 },
+  "SC-100":    { hot: false, enrolled: "980+",   rating: 4.8 },
+  "PL-300":    { hot: true,  enrolled: "2,200+", rating: 4.8 },
+  "PL-900":    { hot: false, enrolled: "1,700+", rating: 4.7 },
+  "DP-600":    { hot: true,  enrolled: "1,400+", rating: 4.8 },
+  "MS-102":    { hot: false, enrolled: "1,300+", rating: 4.7 },
+  "AZ-400":    { hot: false, enrolled: "1,600+", rating: 4.8 },
+  "AZ-204":    { hot: false, enrolled: "1,500+", rating: 4.8 },
+  "MS-700":    { hot: false, enrolled: "1,100+", rating: 4.7 },
+  "DP-203":    { hot: false, enrolled: "1,200+", rating: 4.7 },
+  "MB-910":    { hot: false, enrolled: "900+",   rating: 4.6 },
+  "AZ-104+305":{ hot: false, enrolled: "760+",   rating: 4.9 },
+};
+
 function getCertPrice(cert) {
   const days = parseInt(cert.dur) || 1;
   const ratePerDay = { fund: 199, assoc: 249, expert: 299 };
@@ -5366,16 +5675,71 @@ const FAQ_DATA = [
   { id: 10, question: "What if I fail my Microsoft certification exam after training with Koenig?", answer: "Microsoft allows a 24-hour wait before a retake attempt, then a 14-day waiting period for subsequent retakes. Koenig's 95% pass rate means most learners pass first time, but Koenig trainers provide additional support and exam-prep guidance at no extra cost if you need it." },
 ];
 
+const TRAINERS = [
+  {
+    name: "Rajesh Sharma",
+    title: "Senior Microsoft Certified Trainer",
+    track: "Azure & Cloud",
+    exp: "16 years experience",
+    photo: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face&auto=format",
+    usps: [
+      "Led 300+ Azure certification bootcamps across India, UAE & UK",
+      "Ex-Microsoft field engineer — real-world Azure deployment experience",
+      "98% first-attempt pass rate on AZ-104 & AZ-305 cohorts",
+    ],
+    certs: ["MCT", "AZ-104", "AZ-305", "AZ-500", "AZ-900"],
+  },
+  {
+    name: "Priya Menon",
+    title: "Microsoft AI & Copilot Specialist",
+    track: "AI & Copilot",
+    exp: "11 years experience",
+    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face&auto=format",
+    usps: [
+      "Certified AI-102 trainer since the exam's launch — 500+ engineers certified",
+      "Hands-on Azure OpenAI & Copilot Studio delivery for Fortune 500 clients",
+      "Speaker at Microsoft AI conferences in APAC and Middle East",
+    ],
+    certs: ["MCT", "AI-102", "AI-900", "DP-100", "AZ-204"],
+  },
+  {
+    name: "James Whitfield",
+    title: "Cybersecurity & Compliance Lead Trainer",
+    track: "Security",
+    exp: "14 years experience",
+    photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face&auto=format",
+    usps: [
+      "SC-300 & SC-100 specialist — trained security teams at 60+ enterprises",
+      "Former CISO advisor — teaches from real-world Zero Trust deployments",
+      "Microsoft Security Excellence Award nominee, 2023",
+    ],
+    certs: ["MCT", "SC-300", "SC-100", "SC-200", "AZ-500"],
+  },
+  {
+    name: "Nadia Al-Hassan",
+    title: "Microsoft 365 & Power Platform Expert",
+    track: "M365 & Power Platform",
+    exp: "12 years experience",
+    photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop&crop=face&auto=format",
+    usps: [
+      "Delivered M365 and Power BI training across 25+ countries in 3 languages",
+      "Custom Copilot for M365 rollouts for enterprise L&D teams",
+      "PL-300 top-rated trainer — avg. learner rating 4.9/5 over 3 years",
+    ],
+    certs: ["MCT", "MS-102", "PL-300", "MS-700", "DP-600"],
+  },
+];
+
 const TESTIMONIALS = [
-  { quote: "Passed AZ-104 on first attempt. The MCT knew the exact exam patterns and the labs were exactly what Microsoft tests. Worth every penny.", name: "Rahul M.", role: "Azure Administrator", cert: "AZ-104 Certified", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "I trained 15 of my team members for SC-200. Koenig's on-site delivery was seamless and all 15 passed within 3 months.", name: "Sarah K.", role: "CISO, Financial Services", cert: "Enterprise Client", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "The 1-on-1 format was a game changer. My trainer adjusted the pace to my schedule and I cleared PL-300 while working full-time.", name: "Ahmed R.", role: "Business Intelligence Lead", cert: "PL-300 Certified", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "From AZ-900 to AZ-305 in 6 months. Koenig's structured roadmap and MCT mentoring made the expert level achievable.", name: "Priya S.", role: "Cloud Solutions Architect", cert: "AZ-305 Expert", photo: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "As an L&D head I've used 5 training vendors. Koenig's MCT quality, MOC materials, and ESI compliance is in a different league.", name: "James T.", role: "Head of L&D, UK Enterprise", cert: "100+ Learners Trained", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "SC-900 and SC-300 back to back — both cleared first try. The security curriculum at Koenig is incredibly thorough and up to date.", name: "Aisha N.", role: "Security Analyst", cert: "SC-300 Certified", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "AI-102 was daunting but the trainer broke it down perfectly. Real Azure OpenAI labs made the difference. Highly recommend.", name: "David L.", role: "AI Engineer", cert: "AI-102 Certified", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "DP-600 Fabric certification done in 3 weeks of part-time study. The customised schedule around my timezone was a lifesaver.", name: "Mei W.", role: "Data Platform Engineer", cert: "DP-600 Certified", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&h=80&fit=crop&crop=face&auto=format" },
-  { quote: "Our whole DevOps team got AZ-400 certified through Koenig's corporate training. Smooth logistics and top-tier MCTs throughout.", name: "Carlos R.", role: "Engineering Manager", cert: "AZ-400 Team Training", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=face&auto=format" },
+  { quote: "Passed AZ-104 on first attempt. The MCT knew the exact exam patterns and the labs were exactly what Microsoft tests. Worth every penny.", name: "Rahul M.", role: "Azure Administrator", cert: "AZ-104 Certified", designation: "Azure Administrator · AZ-104 Certified", photo: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "I trained 15 of my team members for SC-200. Koenig's on-site delivery was seamless and all 15 passed within 3 months.", name: "Sarah K.", role: "CISO, Financial Services", cert: "Enterprise Client", designation: "CISO, Financial Services · Enterprise Client", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "The 1-on-1 format was a game changer. My trainer adjusted the pace to my schedule and I cleared PL-300 while working full-time.", name: "Ahmed R.", role: "Business Intelligence Lead", cert: "PL-300 Certified", designation: "Business Intelligence Lead · PL-300 Certified", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "From AZ-900 to AZ-305 in 6 months. Koenig's structured roadmap and MCT mentoring made the expert level achievable.", name: "Priya S.", role: "Cloud Solutions Architect", cert: "AZ-305 Expert", designation: "Cloud Solutions Architect · AZ-305 Expert", photo: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "As an L&D head I've used 5 training vendors. Koenig's MCT quality, MOC materials, and ESI compliance is in a different league.", name: "James T.", role: "Head of L&D, UK Enterprise", cert: "100+ Learners Trained", designation: "Head of L&D, UK Enterprise · 100+ Learners Trained", photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "SC-900 and SC-300 back to back — both cleared first try. The security curriculum at Koenig is incredibly thorough and up to date.", name: "Aisha N.", role: "Security Analyst", cert: "SC-300 Certified", designation: "Security Analyst · SC-300 Certified", photo: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "AI-102 was daunting but the trainer broke it down perfectly. Real Azure OpenAI labs made the difference. Highly recommend.", name: "David L.", role: "AI Engineer", cert: "AI-102 Certified", designation: "AI Engineer · AI-102 Certified", photo: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "DP-600 Fabric certification done in 3 weeks of part-time study. The customised schedule around my timezone was a lifesaver.", name: "Mei W.", role: "Data Platform Engineer", cert: "DP-600 Certified", designation: "Data Platform Engineer · DP-600 Certified", photo: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=500&h=500&fit=crop&crop=face&auto=format" },
+  { quote: "Our whole DevOps team got AZ-400 certified through Koenig's corporate training. Smooth logistics and top-tier MCTs throughout.", name: "Carlos R.", role: "Engineering Manager", cert: "AZ-400 Team Training", designation: "Engineering Manager · AZ-400 Team Training", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&h=500&fit=crop&crop=face&auto=format" },
 ];
 
 const COURSES = ["Azure (AZ series)", "Power BI / Power Platform", "Microsoft 365 / Copilot", "Security (SC series)", "Dynamics 365", "DevOps / Developer", "Not sure yet"];
@@ -6594,7 +6958,7 @@ function GlobeSection() {
         <div className="globe-content reveal">
           <h2 className="sec-title" style={{marginBottom:16, color:"var(--light-text)"}}>
             Training Professionals<br/>
-            <TextShimmer as="em" duration={3} spread={2}>Across 50+ Countries</TextShimmer>
+            <TextShimmer as="em" duration={2.5} spread={2}>Across 50+ Countries</TextShimmer>
           </h2>
           <p style={{fontSize:14,color:"var(--light-sub)",lineHeight:1.6,maxWidth:420,marginBottom:0}}>
             From our headquarters in India to training centers across UAE, Iraq, Saudi Arabia, UK, USA, Singapore, Australia, and more — Koenig delivers Microsoft certification training in 50+ countries.
@@ -7313,7 +7677,7 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
         <div className="certs-header reveal">
           <div className="cert-section-top-row">
             <div>
-              <h2 className="sec-title">Microsoft <em>Certification Explorer</em></h2>
+              <h2 className="sec-title">Microsoft <TextShimmer as="em" duration={2.5} spread={2}>Certification Explorer</TextShimmer></h2>
               <p className="certs-header-sub">
                 Browse 100+ official Microsoft courses across Azure, AI, Security, Power Platform, M365 and more — or dive into exam details, skills breakdown and certification paths.
               </p>
@@ -7544,12 +7908,19 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                             const isFlipped = flippedCards.has(c.code);
                             const bp = CARD_BEST_PRACTICES[c.level] || CARD_BEST_PRACTICES.assoc;
                             return (
-                            <div key={`c-${i}`} className={`cert-card ${c.level}-card`} style={{minHeight:220}}>
+                            <div key={`c-${i}`} className={`cert-card ${c.level}-card`} style={{minHeight:230}}>
+                              {/* Popular badge */}
+                              {CERT_POPULAR[c.code]?.hot && !isFlipped && (
+                                <span className="cert-hot-badge">
+                                  <span className="cert-hot-dot"/>Popular
+                                </span>
+                              )}
                               {/* Toggle button */}
                               <button
                                 className={`cert-card-toggle${isFlipped?" back":""}`}
                                 onClick={e => toggleCard(c.code, e)}
                                 title={isFlipped ? "Back to course info" : "View cert details & tips"}
+                                style={CERT_POPULAR[c.code]?.hot && !isFlipped ? {top:38} : {}}
                               >
                                 {isFlipped ? (
                                   <><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"/><path d="m12 5-7 7 7 7"/></svg>Course</>
@@ -7561,13 +7932,25 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                               <AnimatePresence mode="wait" initial={false}>
                                 {!isFlipped ? (
                                   /* ── FRONT: Course info ── */
-                                  <motion.div key="front" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.22}} style={{display:"flex",flexDirection:"column",height:"100%"}}>
+                                  <motion.div key="front" initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.22}} style={{display:"flex",flexDirection:"column",height:"100%",paddingTop: CERT_POPULAR[c.code]?.hot ? 26 : 0}}>
                                     {searchActive && <span className="cert-track-tag">{c.tab}</span>}
                                     <span className={`cert-badge ${c.level}`}>
                                       {c.level==="fund"?"Fundamentals":c.level==="assoc"?"Associate":"Expert"}
                                     </span>
                                     <div className="cert-name">{c.name}</div>
                                     <div className="cert-code">{c.code}</div>
+                                    {CERT_POPULAR[c.code] && (
+                                      <div className="cert-meta-row">
+                                        <span className="cert-enrolled">
+                                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                          {CERT_POPULAR[c.code].enrolled} enrolled
+                                        </span>
+                                        <span className="cert-rating">
+                                          <span className="cert-rating-star">★</span>
+                                          {CERT_POPULAR[c.code].rating}
+                                        </span>
+                                      </div>
+                                    )}
                                     <div className="cert-footer">
                                       <div className="cert-price-row">
                                         <span className="cert-price">
@@ -7884,7 +8267,7 @@ function CertExamDetails({ onEnroll, onBrochure }) {
             <span className="ced-eyebrow-dot" />
             Source: learn.microsoft.com · koenig-solutions.com
           </div>
-          <h2 className="sec-title">Microsoft Exam <em>Guide & Details</em></h2>
+          <h2 className="sec-title">Microsoft Exam <TextShimmer as="em" duration={2.5} spread={2}>Guide & Details</TextShimmer></h2>
           <p className="certs-header-sub">
             Exam format, skills measured, passing score, cost, duration and indicative training fees for every Microsoft certification — AZ-104, AI-102, SC-300, AZ-305 and more.
           </p>
@@ -8410,11 +8793,28 @@ function LeadGenMid({ onBrochure, onAdvisor }) {
 // ── TESTIMONIALS COLUMN (scrolling) ──
 function TestimonialsColumn({ testimonials, duration = 10, className }) {
   const doubled = [...testimonials, ...testimonials];
+  const controls = useAnimation();
+  const [paused, setPaused] = React.useState(false);
+
+  React.useEffect(() => {
+    if (paused) {
+      controls.stop();
+    } else {
+      controls.start({ translateY: "-50%", transition: { duration, repeat: Infinity, ease: "linear", repeatType: "loop" } });
+    }
+  }, [paused, duration, controls]);
+
   return (
-    <div className={className} style={{ overflow: "hidden" }}>
+    <div
+      className={className}
+      style={{ overflow: "hidden" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onClick={() => setPaused(p => !p)}
+    >
       <motion.ul
-        animate={{ translateY: "-50%" }}
-        transition={{ duration, repeat: Infinity, ease: "linear", repeatType: "loop" }}
+        animate={controls}
+        initial={{ translateY: "0%" }}
         style={{ display: "flex", flexDirection: "column", gap: 20, paddingBottom: 20, listStyle: "none", margin: 0, padding: 0 }}
       >
         {doubled.map((t, i) => (
@@ -8882,7 +9282,7 @@ function WhyCertSection({ onCTA }) {
         <div className="roi-left">
           <div className="roi-eyebrow">ROI &amp; Career Outcomes</div>
           <h2 className="roi-left-heading">
-            Why Get<br /><em>Microsoft Certified</em>?
+            Why Get<br /><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Certified</TextShimmer>?
           </h2>
           <p className="roi-left-sub">
             Data-backed salary, hiring, and business outcomes across every Microsoft certification track — from AZ-900 to Expert-level.
@@ -9077,7 +9477,7 @@ function EdgeSection({ onCTA }) {
         <div className="edge-left">
           <div className="edge-eyebrow">Why Choose Koenig</div>
           <h2 className="edge-left-heading">
-            Why Earn a<br /><em>Microsoft Credential</em><br />with Koenig?
+            Why Earn a<br /><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Credential</TextShimmer><br />with Koenig?
           </h2>
           <p className="edge-left-sub">
             Official Microsoft Authorized Learning Partner since 2010. Here's what makes 500,000+ IT professionals choose Koenig for their Microsoft certification journey.
@@ -9139,7 +9539,7 @@ function AwardsSlider() {
     <section className="awards-sec hex-bg">
       <div className="awards-inner">
         <div className="awards-header reveal">
-          <div className="sec-title">Recognised as a<br/><TextShimmer as="em" duration={3} spread={2}>Microsoft Partner of the Year</TextShimmer></div>
+          <div className="sec-title">Recognised as a<br/><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Partner of the Year</TextShimmer></div>
           <div className="sec-sub" style={{margin:'14px auto 0',textAlign:'center'}}>
             33+ years of Microsoft training excellence recognised globally — Microsoft Partner of the Year, FY24 Award winner
           </div>
@@ -9896,10 +10296,10 @@ export default function App() {
 
           {/* Subtitle */}
           <p className="hero-sub" style={{ marginBottom: heroExpanded ? 10 : 14 }}>
-            Official Microsoft Authorized Learning Partner. MCT-certified instructors, 95% exam pass rate, 100+ courses — train online or 1-on-1 in 50+ countries.
+            <TextShimmer as="strong" duration={2.5} spread={2}>Official Microsoft Authorized Learning Partner.</TextShimmer> MCT-certified instructors, <TextShimmer as="strong" duration={2.5} spread={2}>95% exam pass rate</TextShimmer>, 100+ courses — train online or 1-on-1 in <TextShimmer as="strong" duration={2.5} spread={2}>50+ countries</TextShimmer>.
             {heroExpanded && (
               <span className="hero-sub-more">
-                {" "}Deliver official Microsoft Official Courseware (MOC) for Azure, AI, Security, M365, and Dynamics 365 role tracks. Flexi scheduling lets you start any day — from AZ-900 Fundamentals through AZ-305 Expert-level. Recognized with Microsoft Partner of the Year awards since 2010.
+                {" "}Deliver official <TextShimmer as="strong" duration={2.5} spread={2}>Microsoft Official Courseware (MOC)</TextShimmer> for Azure, AI, Security, M365, and Dynamics 365 role tracks. <TextShimmer as="strong" duration={2.5} spread={2}>Flexi scheduling</TextShimmer> lets you start any day — from <TextShimmer as="strong" duration={2.5} spread={2}>AZ-900 Fundamentals</TextShimmer> through <TextShimmer as="strong" duration={2.5} spread={2}>AZ-305 Expert-level</TextShimmer>. Recognized with <TextShimmer as="strong" duration={2.5} spread={2}>Microsoft Partner of the Year</TextShimmer> awards since 2010.
               </span>
             )}
             {" "}
@@ -9915,14 +10315,14 @@ export default function App() {
           {/* Feature rows */}
           <div className="hero-features">
             {[
-              ["Official Microsoft ALP + ESI Partner — MOC courseware for every role track", <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["MCT-certified trainers for Azure Admin, AI Engineer, Security, M365 & more", <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["500,000+ IT professionals certified — 95% Microsoft exam pass rate", <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              ["Flexi schedule — start any day, Fundamentals to Expert, 50+ countries", <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><span className="hero-feat-hl">Official Microsoft ALP + ESI Partner</span> — MOC courseware for every role track</>, <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><span className="hero-feat-hl">MCT-certified trainers</span> for Azure Admin, AI Engineer, Security, M365 &amp; more</>, <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><TextShimmer as="span" duration={2.5} spread={2}>500,000+</TextShimmer> IT professionals certified — <TextShimmer as="span" duration={2.5} spread={2}>95%</TextShimmer> Microsoft exam pass rate</>, <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><span className="hero-feat-hl">Flexi schedule</span> — start any day, Fundamentals to Expert, <TextShimmer as="span" duration={2.5} spread={2}>50+ countries</TextShimmer></>, <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
             ].map(([text, svgPath],i) => (
               <div key={i} className="hero-feat-row">
                 <div className="hero-feat-icon">
-                  <svg viewBox="0 0 24 24" fill="none" style={{width:12,height:12,color:'var(--blue)'}}>{svgPath}</svg>
+                  <svg viewBox="0 0 24 24" fill="none" style={{width:12,height:12}}>{svgPath}</svg>
                 </div>
                 {text}
               </div>
@@ -9956,7 +10356,7 @@ export default function App() {
               </div>
               <div className="sp-text">
                 <div className="stars">★★★★★</div>
-                <div><strong>500K+</strong> certified professionals</div>
+                <div><TextShimmer as="strong" duration={2.5} spread={2}>500K+</TextShimmer> certified professionals</div>
               </div>
             </div>
             <div className="hero-proof-divider"/>
@@ -10344,7 +10744,31 @@ export default function App() {
             </p>
           </motion.div>
 
-          <div className="test-cols-outer">
+          {/* REVIEW STATS INLINE */}
+          <div className="review-stats-grid" style={{ marginTop: 40 }}>
+            {[
+              { icon: <Star strokeWidth={1.8} />, number: "18,400+", label: "Verified Reviews" },
+              { icon: <TrendingUp strokeWidth={1.8} />, number: "4.9 / 5", label: "Average Rating" },
+              { icon: <ThumbsUp strokeWidth={1.8} />, number: "95%", label: "Would Recommend" },
+              { icon: <Users strokeWidth={1.8} />, number: "1M+", label: "Professionals Trained" },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                className="review-stats-item"
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <div className="review-stats-icon">{stat.icon}</div>
+                <div className="review-stats-number"><TextShimmer as="span" duration={2.5} spread={2}>{stat.number}</TextShimmer></div>
+                <div className="review-stats-label">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Scrolling columns below */}
+          <div className="test-cols-outer" style={{ marginTop: 48 }}>
             <TestimonialsColumn testimonials={TESTIMONIALS.slice(0, 3)} duration={15} />
             <TestimonialsColumn testimonials={TESTIMONIALS.slice(3, 6)} duration={19} className="test-col-md" />
             <TestimonialsColumn testimonials={TESTIMONIALS.slice(6, 9)} duration={17} className="test-col-lg" />
