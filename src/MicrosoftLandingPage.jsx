@@ -11984,6 +11984,9 @@ export default function App() {
           <div className="blob2"/>
           <div className="blob3"/>
         </div>
+        <div className="hero-grid"/>
+        <div className="hero-sep"/>
+
         {/* Background Boxes grid — z:4 so logos appear above bg gradients/blobs */}
         <div className="hero-boxes-wrap" style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 4, pointerEvents: "none" }}>
           <Boxes />
@@ -11993,8 +11996,6 @@ export default function App() {
           position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none",
           background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(4,12,24,0.68) 0%, rgba(4,12,24,0.20) 60%, transparent 100%)",
         }}/>
-        <div className="hero-grid"/>
-        <div className="hero-sep"/>
 
         {/* ══ TWO-COLUMN CONTENT AREA ══ */}
         <div className="hero-cols" style={{ position: "relative", zIndex: 10 }}>
