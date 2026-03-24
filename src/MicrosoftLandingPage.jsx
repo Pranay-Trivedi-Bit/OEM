@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import { Boxes } from "./components/ui/background-boxes";
 import ScrollFAQAccordion from "./components/ui/scroll-faqaccordion";
 import TwitterTestimonials from "./components/ui/twitter-testimonial-cards";
 import { AnimatedTestimonials } from "./components/ui/animated-testimonials";
 import createGlobe from "cobe";
-import { motion, animate, useScroll, useTransform, AnimatePresence, useAnimation } from "framer-motion";
-import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, BookOpen, Server, Code2, Network, Layers, Brain, Bot, FlaskConical, AlertTriangle, Lock, MessageSquare, Mail, BarChart2, AppWindow, ShieldCheck, Star, ThumbsUp, Users, Monitor, User, Building2, Plane, CalendarDays, Briefcase } from "lucide-react";
+import { motion, animate, useScroll, useTransform, AnimatePresence, useAnimation, useInView } from "framer-motion";
+import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, BookOpen, Server, Code2, Network, Layers, Brain, Bot, FlaskConical, AlertTriangle, Lock, MessageSquare, Mail, BarChart2, AppWindow, ShieldCheck, Star, ThumbsUp, Users, Monitor, User, Building2, Plane, CalendarDays, Briefcase, Check } from "lucide-react";
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import NumberFlow from "@number-flow/react";
+import confetti from "canvas-confetti";
 
 /* ── Lazy-mount wrapper: defers rendering until section nears viewport ── */
 function LazySection({ children, minHeight = 400, rootMargin = "300px 0px" }) {
@@ -615,7 +618,7 @@ p {
 
 /* ── In-hero stats bar ── */
 .hero-stats-bar {
-  position: relative; z-index: 4;
+  position: relative; z-index: 11;
   display: grid; grid-template-columns: repeat(5, 1fr);
   border-top: 1px solid rgba(255,255,255,0.08);
   background: rgba(4,12,24,0.72);
@@ -659,7 +662,7 @@ p {
 .hero-bg-gradient {
   position: absolute; inset: 0;
   background: radial-gradient(ellipse at 55% 40%, #0D3F5A 0%, #071B2E 45%, #040C18 100%);
-  opacity: 0.78;
+  opacity: 0.55;
 }
 /* ── Dot particle grid ── */
 .hero-grid {
@@ -1247,6 +1250,11 @@ p {
 .cert-showcase-title em,
 .aps-heading em,
 .aps-panel-title em,
+.roi-left-heading em,
+.certpath-title em,
+.referral-h2 em,
+.compare-title em,
+.pricing-h2 em,
 .cta-title span {
   background-image:
     linear-gradient(90deg,
@@ -1605,6 +1613,52 @@ p {
 @media (max-width: 560px) {
   .hiw-sec { padding: 72px 20px; }
   .hiw-card-title { font-size: 15px; }
+}
+
+/* ── How It Works v2 — horizontal 4-step (Koenig-website design) ── */
+.hiw2-sec { background: #fff; padding: 80px 48px; overflow: hidden; position: relative; border-top: 1px solid rgba(6,148,209,0.08); }
+.hiw2-sec::before { content:''; position:absolute; right:-128px; top:-128px; width:500px; height:500px; background:radial-gradient(circle, rgba(6,148,209,0.18) 0%, transparent 70%); pointer-events:none; border-radius:50%; }
+.hiw2-sec::after  { content:''; position:absolute; left:-80px; bottom:0; width:350px; height:350px; background:radial-gradient(circle, rgba(77,191,239,0.18) 0%, transparent 70%); pointer-events:none; border-radius:50%; }
+.hiw2-inner { max-width: 1200px; margin: 0 auto; position: relative; }
+.hiw2-header { text-align: center; margin-bottom: 52px; }
+.hiw2-pill { display: inline-block; background: rgba(6,148,209,0.1); color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 14px; }
+.hiw2-h2 { font-size: clamp(24px,3vw,38px); font-weight: 800; color: var(--ink); margin-bottom: 10px; line-height: 1.2; letter-spacing: -0.02em; }
+.hiw2-h2 span { background: linear-gradient(90deg, var(--blue), #50e6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hiw2-sub { font-size: 15px; color: #7a9ab0; max-width: 520px; margin: 0 auto; line-height: 1.65; }
+.hiw2-steps-wrap { position: relative; margin-bottom: 52px; }
+.hiw2-connector { display: none; position: absolute; top: 52px; left: 12.5%; right: 12.5%; height: 2px; background: linear-gradient(to right, var(--blue), #4DBFEF, var(--blue)); pointer-events: none; }
+@media (min-width: 1024px) { .hiw2-connector { display: block; } }
+.hiw2-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; align-items: stretch; }
+.hiw2-step { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+.hiw2-icon-wrap { position: relative; z-index: 1; margin-bottom: 24px; }
+.hiw2-icon-ring { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; border: 4px solid #f0f9ff; transition: all 0.3s ease; background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.hiw2-step.active .hiw2-icon-ring { background: var(--blue); box-shadow: 0 8px 30px rgba(6,148,209,0.35); transform: scale(1.1) translateY(-6px); }
+.hiw2-num-badge { position: absolute; top: -4px; right: -4px; width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+.hiw2-step.active .hiw2-num-badge { background: var(--blue); transform: scale(1.2); }
+@keyframes hiwPulse { 0%{box-shadow:0 0 0 0 rgba(6,148,209,0.5)} 70%{box-shadow:0 0 0 18px rgba(6,148,209,0)} 100%{box-shadow:0 0 0 0 rgba(6,148,209,0)} }
+.hiw2-pulse-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid rgba(6,148,209,0.4); animation: hiwPulse 1.8s ease-out infinite; pointer-events: none; }
+.hiw2-card { width: 100%; flex: 1; background: #fff; border: 2px solid #e8f4fa; border-radius: 18px; padding: 22px 20px; text-align: center; transition: all 0.3s ease; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+.hiw2-step.active .hiw2-card { border-color: var(--blue); box-shadow: 0 20px 40px rgba(6,148,209,0.12); transform: translateY(-4px); }
+.hiw2-step-label { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--blue); margin-bottom: 8px; text-transform: uppercase; }
+.hiw2-card-title { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 10px; line-height: 1.3; transition: color 0.3s; }
+.hiw2-step.active .hiw2-card-title { color: var(--blue); }
+.hiw2-card-desc { font-size: 13.5px; color: #7a9ab0; line-height: 1.65; margin-bottom: 16px; }
+.hiw2-dots { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.hiw2-dot { border-radius: 20px; height: 8px; transition: all 0.3s ease; }
+.hiw2-cta-row { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.hiw2-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ink), var(--blue)); color: #fff; font-size: 14px; font-weight: 700; padding: 12px 28px; border-radius: 14px; border: none; cursor: pointer; font-family: var(--body); transition: transform 0.2s, box-shadow 0.2s; }
+.hiw2-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.3); }
+.hiw2-btn-arrow { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.18); transition: transform 0.2s; }
+.hiw2-btn-primary:hover .hiw2-btn-arrow { transform: translateX(4px); }
+.hiw2-btn-outline { display: inline-flex; align-items: center; background: transparent; border: 2px solid var(--blue); color: var(--blue); font-size: 14px; font-weight: 700; padding: 11px 26px; border-radius: 14px; cursor: pointer; font-family: var(--body); transition: background 0.2s, color 0.2s; }
+.hiw2-btn-outline:hover { background: var(--blue); color: #fff; }
+@media (max-width: 900px) {
+  .hiw2-sec { padding: 64px 24px; }
+  .hiw2-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+@media (max-width: 540px) {
+  .hiw2-sec { padding: 48px 16px; }
+  .hiw2-grid { grid-template-columns: 1fr; }
 }
 
 /* ══════════════════════════════
@@ -2022,10 +2076,11 @@ p {
   color: var(--light-sub);
 }
 .cert-level-tab:hover { border-color: currentColor; }
-.cert-level-tab[data-lv="all"]    { --lc: #0694D1; }
-.cert-level-tab[data-lv="fund"]   { --lc: #059669; }
-.cert-level-tab[data-lv="assoc"]  { --lc: #0578b3; }
-.cert-level-tab[data-lv="expert"] { --lc: #d97706; }
+.cert-level-tab[data-lv="all"]     { --lc: #0694D1; }
+.cert-level-tab[data-lv="popular"] { --lc: #e11d48; }
+.cert-level-tab[data-lv="fund"]    { --lc: #059669; }
+.cert-level-tab[data-lv="assoc"]   { --lc: #0578b3; }
+.cert-level-tab[data-lv="expert"]  { --lc: #d97706; }
 .cert-level-tab:hover { color: var(--lc); border-color: var(--lc); background: rgba(0,0,0,0.02); }
 .cert-level-tab.active { color: #fff; background: var(--lc); border-color: var(--lc); }
 .cert-level-tab-count {
@@ -2179,11 +2234,16 @@ p {
   margin-bottom: 5px; line-height: 1.4; flex: 1; letter-spacing: -0.01em;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
 }
+.cert-code-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 .cert-code {
   display: inline-block; font-size: 9.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
-  color: #7a9ab0; background: rgba(6,148,209,0.04); border: 1px solid rgba(6,148,209,0.1);
-  padding: 2px 6px; border-radius: 4px; font-weight: 600; letter-spacing: 0.3px;
-  margin-bottom: 10px;
+  color: #0694D1; background: rgba(6,148,209,0.1); border: 1px solid rgba(6,148,209,0.28);
+  padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 0.4px;
+}
+.cert-hours {
+  display: inline-flex; align-items: center; gap: 3px; font-size: 9.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
+  color: #5a7a90; background: rgba(6,148,209,0.05); border: 1px solid rgba(6,148,209,0.14);
+  padding: 2px 7px; border-radius: 4px; font-weight: 600; letter-spacing: 0.3px;
 }
 /* ── Card view toggle button ── */
 .cert-card-toggle {
@@ -2231,18 +2291,19 @@ p {
   display: flex; align-items: baseline; gap: 1px;
 }
 .cert-price-amount {
-  font-size: 14px; font-weight: 700; color: #5a7a90;
+  font-size: 15px; font-weight: 700; color: var(--blue);
   font-family: var(--display); letter-spacing: -0.3px; line-height: 1;
 }
 .cert-price-curr {
-  font-size: 9px; font-weight: 600; color: #7a9ab0; margin-right: 1px;
+  font-size: 10px; font-weight: 600; color: var(--blue); margin-right: 1px; opacity: 0.8;
 }
 .cert-price-label {
-  font-size: 9px; color: #c0cdd8; font-weight: 400;
+  font-size: 10px; color: #8faabf; font-weight: 400;
 }
 .cert-dur {
-  font-size: 10px; color: #aabbc8; display: flex; align-items: center; gap: 4px;
-  font-weight: 500;
+  font-size: 10.5px; color: #5a7a90; display: inline-flex; align-items: center; gap: 4px;
+  font-weight: 500; background: rgba(6,148,209,0.06); border: 1px solid rgba(6,148,209,0.12);
+  border-radius: 5px; padding: 2px 7px; width: fit-content;
 }
 .cert-actions { display: flex; gap: 7px; }
 .cert-btn-brochure {
@@ -2252,6 +2313,7 @@ p {
   border: 1px solid rgba(6,148,209,0.18); cursor: pointer;
   transition: all 0.18s; white-space: nowrap; font-family: inherit;
 }
+.cert-btn-brochure { flex: 0 0 auto !important; padding: 6px 9px !important; display: inline-flex !important; align-items: center; gap: 4px; }
 .cert-btn-brochure:hover { background: rgba(6,148,209,0.05); border-color: var(--blue); color: var(--blue); }
 .cert-btn-details {
   flex: 1; display: flex; align-items: center; justify-content: center;
@@ -2729,6 +2791,10 @@ p {
 .enroll-legend-bar-wrap { flex: 1; margin: 0 16px; height: 4px; background: rgba(6,148,209,0.1); border-radius: 2px; overflow: hidden; }
 .enroll-legend-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
 .enroll-legend-pct { font-size: 12px; font-weight: 700; color: var(--light-sub); min-width: 36px; text-align: right; }
+.enroll-cta-row { display: flex; align-items: center; gap: 14px; margin-top: 28px; }
+.enroll-download-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; background: var(--blue); border-radius: 10px; color: #fff; font-size: 13.5px; font-weight: 700; text-decoration: none; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-family: var(--body); }
+.enroll-download-btn:hover { background: #0480ba; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.3); }
+.enroll-cta-note { font-size: 12px; color: var(--light-sub); font-weight: 500; }
 .enroll-right { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .enroll-donut-wrap { position: relative; }
 .enroll-center-label { text-align: center; }
@@ -2891,8 +2957,8 @@ p {
 .review-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  max-width: 1200px;
+  gap: 10px;
+  max-width: 900px;
   margin: 0 auto;
 }
 .review-stats-item {
@@ -2902,31 +2968,31 @@ p {
   justify-content: center;
   text-align: center;
   background: var(--light-white);
-  border-radius: 20px;
+  border-radius: 14px;
   border: 1.5px solid var(--light-border);
-  padding: 28px 16px;
-  box-shadow: 0 4px 20px rgba(6,148,209,0.07);
+  padding: 16px 12px;
+  box-shadow: 0 2px 12px rgba(6,148,209,0.06);
   transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
   cursor: default;
 }
 .review-stats-item:hover {
   border-color: rgba(6,148,209,0.5);
-  box-shadow: 0 12px 36px rgba(6,148,209,0.14);
-  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(6,148,209,0.12);
+  transform: translateY(-3px);
 }
 .review-stats-icon {
-  width: 48px; height: 48px;
+  width: 34px; height: 34px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(6,148,209,0.08);
   border: 1px solid rgba(6,148,209,0.15);
-  border-radius: 12px;
-  margin-bottom: 14px;
+  border-radius: 9px;
+  margin-bottom: 8px;
   transition: background 0.3s, border-color 0.3s;
 }
-.review-stats-icon svg { width: 22px; height: 22px; color: var(--blue); }
+.review-stats-icon svg { width: 16px; height: 16px; color: var(--blue); }
 .review-stats-item:hover .review-stats-icon { background: rgba(6,148,209,0.15); border-color: rgba(6,148,209,0.35); }
 .review-stats-number {
-  font-size: clamp(1.7rem, 3vw, 2.4rem);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
   font-weight: 900;
   color: var(--light-text);
   line-height: 1;
@@ -2935,15 +3001,15 @@ p {
 }
 .review-stats-item:hover .review-stats-number { color: var(--blue); }
 .review-stats-label {
-  font-size: 12px;
+  font-size: 10.5px;
   font-weight: 600;
   color: var(--light-sub);
-  margin-top: 8px;
+  margin-top: 5px;
   transition: color 0.3s;
 }
 .review-stats-item:hover .review-stats-label { color: var(--blue); }
 @media (max-width: 768px) {
-  .review-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .review-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 }
 
 /* ── ANIMATED TESTIMONIALS ── */
@@ -3018,11 +3084,15 @@ p {
 .test-sec .sec-sub { color: var(--light-sub); }
 .test-sec .sec-label { color: var(--blue); background: rgba(6,148,209,0.08); border-color: rgba(6,148,209,0.2); }
 /* Scrolling columns */
+@keyframes scrollCol { from { transform: translateY(0); } to { transform: translateY(-50%); } }
 .test-cols-outer { display: flex; justify-content: center; gap: 24px; margin-top: 40px; max-height: 740px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent); }
-.test-col-md { display: none; }
-.test-col-lg { display: none; }
-@media (min-width: 768px) { .test-col-md { display: block; } }
-@media (min-width: 1024px) { .test-col-lg { display: block; } }
+.test-col-scroll-wrap { overflow: hidden; }
+.test-cols-outer:hover .test-col-track { animation-play-state: paused; }
+.test-col-track { display: flex; flex-direction: column; gap: 20px; animation: scrollCol linear infinite; }
+.test-col-scroll-wrap.test-col-md { display: none; }
+.test-col-scroll-wrap.test-col-lg { display: none; }
+@media (min-width: 768px) { .test-col-scroll-wrap.test-col-md { display: block; } }
+@media (min-width: 1024px) { .test-col-scroll-wrap.test-col-lg { display: block; } }
 .test-col-card {
   padding: 28px 28px 24px;
   border-radius: 24px;
@@ -3209,7 +3279,6 @@ p {
   animation: marquee 38s linear infinite;
   will-change: transform;
 }
-.companies-marquee-wrap:hover .companies-marquee { animation-play-state: paused; }
 .companies-marquee-2 { animation-direction: reverse; animation-duration: 46s; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
@@ -3644,6 +3713,18 @@ p {
 }
 .awards-dot.active { background: var(--blue); width: 22px; border-radius: 4px; }
 
+/* ── Awards marquee cards (Koenig-website design) ── */
+.aw2-scroll-wrap { overflow: hidden; padding: 14px 0; mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%); -webkit-mask-image: linear-gradient(to right, transparent 0, #000 80px, #000 calc(100% - 80px), transparent 100%); }
+.aw2-track { display: flex; gap: 20px; padding: 0 20px; width: max-content; will-change: transform; }
+.aw2-card { flex-shrink: 0; width: 380px; height: 260px; background: #fff; border-radius: 18px; border: 1.5px solid #CAEFFF; box-shadow: 0 2px 12px rgba(0,0,0,0.07), 0 4px 16px rgba(6,148,209,0.10); display: flex; overflow: hidden; }
+.aw2-card-left { width: 150px; flex-shrink: 0; background: #F0FAFF; border-right: 1.5px solid #CAEFFF; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 8px; }
+.aw2-award-img { width: 90%; height: 90%; object-fit: contain; }
+.aw2-card-right { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px 16px; text-align: center; }
+.aw2-vendor-logo { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.aw2-vendor-name { font-size: 15px; font-weight: 800; color: var(--ink); }
+.aw2-card-title { font-size: 14.5px; font-weight: 700; color: var(--ink); line-height: 1.35; margin: 0; }
+.aw2-year-pill { display: inline-block; border: 1px solid #CAEFFF; border-radius: 20px; padding: 3px 12px; font-size: 13px; font-weight: 600; color: #7a9ab0; }
+
 .award-card {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
@@ -3807,7 +3888,7 @@ p {
 .certpath-head { text-align: center; margin-bottom: 48px; }
 .certpath-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
 .certpath-title { font-family: var(--display); font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; letter-spacing: -0.02em; color: #fff; line-height: 1.1; margin-bottom: 14px; }
-.certpath-title em { font-style: normal; color: var(--blue); }
+.certpath-title em { font-style: normal; }
 .certpath-sub { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 580px; margin: 0 auto; line-height: 1.65; }
 
 /* ── CERT PATH — interactive tabbed path explorer ── */
@@ -4105,7 +4186,7 @@ p {
   font-size: clamp(26px, 2.8vw, 40px); font-weight: 700;
   color: #212835; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em;
 }
-.roi-left-heading em { font-style: normal; color: var(--blue); }
+.roi-left-heading em { font-style: normal; }
 .roi-left-sub { font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px; }
 .roi-left-cta {
   display: inline-flex; align-items: center; gap: 8px;
@@ -4181,7 +4262,7 @@ p {
   font-size: clamp(26px, 2.8vw, 40px); font-weight: 700;
   color: #212835; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em;
 }
-.edge-left-heading em { font-style: normal; color: var(--blue); }
+.edge-left-heading em { font-style: normal; }
 .edge-left-sub { font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px; }
 .edge-left-cta {
   display: inline-flex; align-items: center; gap: 8px;
@@ -5221,6 +5302,385 @@ p {
 @media (max-width: 600px) {
   .faq-chatbot-wrap { padding: 0 16px; }
 }
+
+/* ══ COMPARISON TABLE ══ */
+.compare-sec { background: var(--ink); padding: 96px 48px; border-top: 1px solid rgba(255,255,255,0.06); overflow: hidden; position: relative; }
+.compare-sec::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(6,148,209,0.1) 0%, transparent 70%); pointer-events:none; }
+.compare-inner { max-width: 1100px; margin: 0 auto; position: relative; }
+.compare-header { text-align: center; margin-bottom: 44px; }
+.compare-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: rgba(6,148,209,0.12); color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; border: 1px solid rgba(6,148,209,0.22); }
+.compare-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: livePulse 1.5s infinite; display:inline-block; }
+.compare-title { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; color: #fff; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 14px; }
+.compare-title em { font-style: normal; }
+.compare-sub { font-size: 15px; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto; line-height: 1.65; }
+/* Score cards */
+.compare-scores { display: grid; grid-template-columns: repeat(5,1fr); gap: 12px; margin-bottom: 40px; }
+.compare-score-card { border-radius: 14px; padding: 18px 14px; text-align: center; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+.compare-score-card.is-koenig { background: linear-gradient(135deg, rgba(6,148,209,0.22) 0%, rgba(6,148,209,0.08) 100%); border-color: rgba(6,148,209,0.4); }
+.compare-score-name { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 6px; }
+.compare-score-card.is-koenig .compare-score-name { color: var(--blue); }
+.compare-score-sub { font-size: 10px; color: rgba(255,255,255,0.25); margin-bottom: 10px; }
+.compare-score-num { font-size: 32px; font-weight: 800; color: rgba(255,255,255,0.25); line-height: 1; }
+.compare-score-card.is-koenig .compare-score-num { color: #4ade80; }
+.compare-score-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.3); margin-top: 3px; letter-spacing: 0.04em; text-transform: uppercase; }
+.compare-score-card.is-koenig .compare-score-label { color: rgba(74,222,128,0.7); }
+/* Table */
+.compare-table-wrap { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
+.compare-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+/* Category header rows */
+.compare-cat-row td { background: rgba(6,148,209,0.08); border-bottom: 1px solid rgba(6,148,209,0.15); padding: 10px 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
+/* Column headers */
+.compare-thead th { padding: 16px 14px; text-align: center; font-size: 11px; font-weight: 700; background: var(--navy); border-bottom: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); letter-spacing: 0.05em; text-transform: uppercase; }
+.compare-thead th:first-child { text-align: left; padding-left: 20px; width: 28%; color: rgba(255,255,255,0.3); }
+.compare-thead th.cth-koenig { background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: 0; text-transform: none; }
+.compare-thead th.cth-koenig .cth-sub { display: block; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.7); margin-top: 2px; }
+.compare-thead th .cth-sub { display: block; font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.3); margin-top: 2px; text-transform: none; letter-spacing: 0; }
+/* Data rows */
+.compare-data-row { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+.compare-data-row:last-child { border-bottom: none; }
+.compare-data-row:hover { background: rgba(255,255,255,0.02); }
+.compare-data-row td { padding: 14px 14px; text-align: center; vertical-align: middle; background: rgba(255,255,255,0.02); }
+.compare-data-row td:first-child { text-align: left; padding-left: 20px; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.01); }
+.compare-data-row td.td-koenig { background: rgba(6,148,209,0.07); border-left: 2px solid rgba(6,148,209,0.2); border-right: 2px solid rgba(6,148,209,0.2); }
+/* Cell values */
+.cv-yes { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(74,222,128,0.15); border: 1.5px solid rgba(74,222,128,0.35); }
+.cv-yes svg { color: #4ade80; }
+.cv-no { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.1); }
+.cv-no svg { color: rgba(255,255,255,0.2); }
+.cv-part { font-size: 11px; font-weight: 700; color: #fbbf24; background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2); padding: 3px 8px; border-radius: 6px; white-space: nowrap; }
+.cv-koenig-val { font-size: 13px; font-weight: 800; color: #4ade80; }
+.cv-koenig-sub { font-size: 10px; color: var(--blue); font-weight: 700; margin-top: 2px; }
+.cv-other-val { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.35); }
+/* CTA */
+.compare-cta-strip { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
+.compare-cta-btn { background: var(--blue); color: white; border: none; cursor: pointer; font-family: var(--body); font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: var(--r8); transition: transform 0.2s, box-shadow 0.2s; letter-spacing: -0.01em; }
+.compare-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(6,148,209,0.45); }
+.compare-cta-note { font-size: 13px; color: rgba(255,255,255,0.4); }
+.compare-footnote { text-align: center; font-size: 11.5px; color: rgba(255,255,255,0.2); margin-top: 14px; }
+@media (max-width: 860px) { .compare-sec { padding: 64px 24px; } .compare-scores { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 600px) { .compare-sec { padding: 48px 16px; } .compare-scores { grid-template-columns: repeat(2,1fr); } .compare-table { font-size: 12px; } }
+
+/* ══ PRICING TIERS ══ */
+.pricing-sec { background: #f8fafc; padding: 88px 48px; border-top: 1px solid rgba(6,148,209,0.1); }
+.pricing-inner { max-width: 1160px; margin: 0 auto; }
+.pricing-trust-strip { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; font-size: 12px; font-weight: 600; color: #6b8299; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 28px; }
+.pts-dot { color: var(--blue); opacity: 0.5; }
+.pricing-h2 { text-align: center; color: var(--ink); margin-bottom: 12px; }
+.pricing-h2 em { font-style: normal; background: linear-gradient(90deg, var(--blue), #50e6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.pricing-sub { text-align: center; color: #6b8299; font-size: 15px; max-width: 560px; margin: 0 auto 0; line-height: 1.6; white-space: pre-line; }
+/* Level badge pill */
+.pricing-level-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 14px; border: 1px solid; }
+/* Grid */
+.pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; align-items: center; }
+.pricing-card { background: #fff; border: 1.5px solid rgba(6,148,209,0.12); border-radius: 20px; padding: 32px 28px 28px; position: relative; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(6,148,209,0.06); }
+.pricing-card-side { transform-origin: center; }
+.pricing-featured { background: var(--blue); border-color: var(--blue); box-shadow: 0 32px 80px rgba(6,148,209,0.35); z-index: 2; }
+.pricing-badge { position: absolute; top: 0; right: 0; background: var(--blue); color: #fff; font-size: 11px; font-weight: 800; padding: 5px 13px 5px 10px; border-radius: 0 18px 0 12px; display: flex; align-items: center; gap: 5px; }
+.pricing-featured .pricing-badge { background: rgba(255,255,255,0.22); }
+.pricing-badge-star { fill: #fbbf24; color: #fbbf24; width: 12px; height: 12px; }
+.pricing-name { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #8faabf; margin-bottom: 20px; }
+.pricing-featured .pricing-name { color: rgba(255,255,255,0.8); }
+.pricing-amount-row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 4px; }
+.pricing-amount { font-size: 52px; font-weight: 800; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.pricing-featured .pricing-amount { color: #fff; }
+.pricing-amount-period { font-size: 13px; font-weight: 600; color: #8faabf; padding-bottom: 8px; }
+.pricing-featured .pricing-amount-period { color: rgba(255,255,255,0.7); }
+.pricing-billed { font-size: 12px; color: #8faabf; margin-bottom: 18px; min-height: 18px; }
+.pricing-featured .pricing-billed { color: rgba(255,255,255,0.65); }
+.pricing-desc { font-size: 13.5px; color: #6b8299; line-height: 1.55; margin-bottom: 20px; }
+.pricing-featured .pricing-desc { color: rgba(255,255,255,0.85); }
+.pricing-features { list-style: none; padding: 0; margin: 0 0 20px; display: flex; flex-direction: column; gap: 10px; }
+.pricing-features li { display: flex; align-items: flex-start; gap: 9px; font-size: 13.5px; color: #3d5a6e; }
+.pricing-featured .pricing-features li { color: rgba(255,255,255,0.95); }
+.pf-check { color: #16a34a; width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+.pricing-featured .pf-check { color: rgba(255,255,255,0.9); }
+.pricing-hr { border: none; border-top: 1px solid rgba(6,148,209,0.1); margin: 4px 0 20px; }
+.pricing-featured .pricing-hr { border-color: rgba(255,255,255,0.2); }
+.pricing-cta-btn { width: 100%; padding: 13px 20px; background: #f0f6fb; border: 1.5px solid rgba(6,148,209,0.2); color: var(--blue); border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.15s; margin-top: auto; letter-spacing: -0.01em; }
+.pricing-cta-btn:hover { background: rgba(6,148,209,0.1); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.15); }
+.pricing-featured .pricing-cta-btn { background: #fff; color: var(--blue); border-color: transparent; }
+.pricing-featured .pricing-cta-btn:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.2); transform: translateY(-2px); }
+.pricing-card-desc { margin-top: 14px; font-size: 12px; text-align: center; color: #a0bccf; line-height: 1.5; }
+.pricing-featured .pricing-card-desc { color: rgba(255,255,255,0.55); }
+.pricing-footnote { text-align: center; font-size: 12px; color: #a0bccf; margin-top: 40px; }
+@media (max-width: 960px) { .pricing-sec { padding: 64px 24px; } .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } .pricing-featured { order: -1; } }
+@media (max-width: 540px) { .pricing-sec { padding: 48px 16px; } }
+
+/* ══ REFERRAL SECTION ══ */
+.referral-sec { background: #f0f6fb; padding: 96px 48px 0; border-top: 1px solid rgba(6,148,209,0.1); overflow: hidden; position: relative; }
+.referral-sec::before { content:''; position:absolute; top:-200px; right:-200px; width:600px; height:600px; background:radial-gradient(circle, rgba(6,148,209,0.07) 0%, transparent 65%); pointer-events:none; border-radius:50%; }
+.referral-sec::after { content:''; position:absolute; bottom:-100px; left:-100px; width:400px; height:400px; background:radial-gradient(circle, rgba(80,230,255,0.05) 0%, transparent 65%); pointer-events:none; border-radius:50%; }
+.referral-inner { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
+
+/* ── Programme badge / logo ── */
+.referral-badge-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
+.referral-badge { display: inline-flex; align-items: center; gap: 12px; background: linear-gradient(135deg, #fff 0%, #f0f8ff 100%); border: 1.5px solid rgba(6,148,209,0.25); border-radius: 50px; padding: 10px 20px 10px 10px; box-shadow: 0 4px 20px rgba(6,148,209,0.12), inset 0 1px 0 rgba(255,255,255,0.9); }
+.referral-badge-icon { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0694D1 0%, #093148 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(6,148,209,0.4); flex-shrink: 0; }
+.referral-badge-text { display: flex; flex-direction: column; }
+.referral-badge-title { font-size: 13px; font-weight: 800; color: #071e2e; letter-spacing: 0.01em; line-height: 1.2; }
+.referral-badge-sub { font-size: 10.5px; font-weight: 600; color: #0694D1; letter-spacing: 0.04em; }
+.referral-badge-verified { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #16a34a; background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.2); border-radius: 20px; padding: 3px 8px; margin-left: 4px; white-space: nowrap; }
+
+/* ── Centered header ── */
+.referral-center-hd { text-align: center; margin-bottom: 56px; }
+.referral-h2 { font-size: clamp(28px,3.4vw,44px); font-weight: 800; color: var(--ink); line-height: 1.18; letter-spacing: -0.025em; margin-bottom: 14px; }
+.referral-h2 em { font-style: normal; background: linear-gradient(90deg, var(--blue) 0%, #50e6ff 50%, var(--blue) 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmerText 3s linear infinite; }
+@keyframes shimmerText { to { background-position: 200% center; } }
+.referral-sub { font-size: 15px; color: #5a7a90; line-height: 1.65; max-width: 540px; margin: 0 auto 24px; }
+.referral-stat-row { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: center; }
+.referral-stat-pill { display: inline-flex; align-items: center; gap: 6px; background: #fff; border: 1px solid rgba(6,148,209,0.18); border-radius: 50px; padding: 6px 14px; font-size: 12.5px; font-weight: 600; color: #1e3a4f; box-shadow: 0 2px 8px rgba(6,148,209,0.06); }
+.referral-stat-pill svg { color: #0694D1; flex-shrink: 0; }
+
+/* ── Main 2-col: get link + calculator ── */
+.referral-main-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 48px; align-items: start; }
+
+/* Get-link card */
+.referral-link-card { background: #fff; border: 1.5px solid rgba(6,148,209,0.18); border-radius: 22px; padding: 34px 30px; box-shadow: 0 8px 40px rgba(6,148,209,0.08), inset 0 1px 0 rgba(255,255,255,0.9); position: relative; overflow: hidden; }
+.referral-link-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, #0694D1, #50e6ff); border-radius:22px 22px 0 0; }
+.referral-link-icon { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, rgba(6,148,209,0.12) 0%, rgba(6,148,209,0.06) 100%); border: 1px solid rgba(6,148,209,0.15); display: flex; align-items: center; justify-content: center; color: #0694D1; margin-bottom: 16px; }
+.referral-link-headline { font-size: 19px; font-weight: 800; color: var(--ink); margin-bottom: 6px; }
+.referral-link-sub { font-size: 13.5px; color: #5a7a90; margin-bottom: 24px; line-height: 1.6; }
+.referral-form { display: flex; gap: 10px; margin-bottom: 20px; }
+.referral-input { flex: 1; padding: 12px 16px; background: #f4f8fc; border: 1.5px solid rgba(6,148,209,0.15); border-radius: 11px; color: var(--ink); font-size: 14px; outline: none; font-family: var(--body); transition: border-color 0.2s, background 0.2s; }
+.referral-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px rgba(6,148,209,0.08); }
+.referral-submit-btn { padding: 12px 20px; background: linear-gradient(135deg, #0694D1 0%, #0580ba 100%); border: none; border-radius: 11px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: transform 0.15s, box-shadow 0.2s; font-family: var(--body); box-shadow: 0 4px 14px rgba(6,148,209,0.3); }
+.referral-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
+.referral-success-wrap { display: flex; align-items: center; gap: 12px; background: rgba(22,163,74,0.08); border: 1.5px solid rgba(22,163,74,0.25); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
+.referral-success-icon { width: 36px; height: 36px; border-radius: 50%; background: #16a34a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; }
+.referral-success-text { font-size: 14px; font-weight: 700; color: #16a34a; }
+.referral-success-sub { font-size: 12px; color: #5a7a90; font-weight: 500; }
+.referral-trust-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.referral-trust-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #3d5a70; background: #f4f8fc; border: 1px solid rgba(6,148,209,0.12); border-radius: 20px; padding: 5px 12px; }
+.referral-trust-badge svg { color: #0694D1; flex-shrink: 0; }
+.referral-corp-note { font-size: 12px; color: #8faabf; margin: 0; }
+.referral-corp-link { background: none; border: none; color: var(--blue); font-size: 12px; cursor: pointer; text-decoration: underline; padding: 0; font-family: var(--body); }
+
+/* Earnings Calculator card */
+.referral-calc-card { background: linear-gradient(160deg, #071e2e 0%, #093148 60%, #0d3d58 100%); border: 1px solid rgba(6,148,209,0.25); border-radius: 22px; padding: 34px 30px; box-shadow: 0 12px 48px rgba(7,30,46,0.3); position: relative; overflow: hidden; }
+.referral-calc-card::before { content:''; position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:radial-gradient(circle, rgba(6,148,209,0.15) 0%, transparent 70%); border-radius:50%; pointer-events:none; }
+.referral-calc-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 8px; }
+.referral-calc-headline { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 20px; }
+.referral-calc-display { display: flex; align-items: baseline; gap: 4px; margin-bottom: 4px; }
+.referral-calc-amount { font-size: 64px; font-weight: 800; color: #fff; line-height: 1; letter-spacing: -0.03em; transition: all 0.3s cubic-bezier(0.16,1,0.3,1); }
+.referral-calc-currency { font-size: 30px; font-weight: 800; color: #50e6ff; align-self: flex-start; margin-top: 12px; }
+.referral-calc-refs { font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 26px; }
+.referral-calc-refs strong { color: rgba(255,255,255,0.9); font-weight: 700; }
+.referral-calc-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 6px; background: linear-gradient(to right, #0694D1 0%, #50e6ff var(--slider-pct, 22%), rgba(255,255,255,0.15) var(--slider-pct, 22%), rgba(255,255,255,0.15) 100%); outline: none; cursor: pointer; margin-bottom: 8px; display: block; }
+.referral-calc-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 2px 10px rgba(6,148,209,0.5); cursor: pointer; transition: transform 0.15s; }
+.referral-calc-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.referral-calc-slider::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: none; }
+.referral-calc-labels { display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.3); font-weight: 600; margin-bottom: 22px; }
+.referral-calc-milestones { display: flex; gap: 8px; flex-direction: column; }
+.referral-calc-milestone { display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px 14px; transition: background 0.2s, border-color 0.2s; }
+.referral-calc-milestone.active { background: rgba(6,148,209,0.2); border-color: rgba(6,148,209,0.5); }
+.referral-calc-ms-left { display: flex; align-items: center; gap: 8px; }
+.referral-calc-ms-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; transition: background 0.2s; }
+.referral-calc-milestone.active .referral-calc-ms-dot { background: #50e6ff; box-shadow: 0 0 6px #50e6ff; }
+.referral-calc-ms-label { font-size: 12.5px; color: rgba(255,255,255,0.6); font-weight: 600; }
+.referral-calc-milestone.active .referral-calc-ms-label { color: rgba(255,255,255,0.9); }
+.referral-calc-ms-reward { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.35); }
+.referral-calc-milestone.active .referral-calc-ms-reward { color: #50e6ff; }
+
+/* ── How it works — connected step flow ── */
+.referral-steps-section { margin-bottom: 48px; }
+.referral-steps-label { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #b0c8d8; display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+.referral-steps-label::after { content:''; flex: 1; height: 1px; background: rgba(6,148,209,0.12); }
+.referral-steps-track { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+.referral-steps-track::before { content:''; position:absolute; top:32px; left:calc(12.5% + 16px); right:calc(12.5% + 16px); height:2px; background:linear-gradient(90deg, rgba(6,148,209,0.3) 0%, rgba(6,148,209,0.15) 100%); border-radius:2px; z-index:0; }
+.referral-step-card { background: #fff; border: 1.5px solid rgba(6,148,209,0.1); border-radius: 18px; padding: 24px 20px 20px; margin: 0 8px; position: relative; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s; z-index: 1; }
+.referral-step-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(6,148,209,0.12); border-color: rgba(6,148,209,0.3); }
+.referral-step-num-badge { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0694D1 0%, #093148 100%); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(6,148,209,0.35); border: 3px solid #fff; position: relative; z-index: 1; }
+.referral-step-icon-wrap { width: 40px; height: 40px; border-radius: 11px; background: rgba(6,148,209,0.08); color: var(--blue); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.referral-step-title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
+.referral-step-when { font-size: 11.5px; color: #b0c8d8; font-weight: 600; margin-bottom: 10px; letter-spacing: 0.02em; }
+.referral-step-desc { font-size: 12.5px; color: #5a7a90; line-height: 1.6; margin-bottom: 12px; }
+.referral-step-reward-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; padding: 5px 11px; border-radius: 8px; }
+
+/* ── Reward tiers strip ── */
+.referral-rewards-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 72px; }
+.referral-reward-item { background: #fff; border: 1.5px solid rgba(6,148,209,0.1); border-radius: 18px; padding: 30px 26px; position: relative; overflow: hidden; text-align: center; transition: transform 0.22s, box-shadow 0.22s; }
+.referral-reward-item::before { content:''; position: absolute; top:0; left:0; right:0; height: 4px; background: linear-gradient(90deg, var(--rc, var(--blue)), transparent); border-radius: 18px 18px 0 0; }
+.referral-reward-item::after { content:''; position:absolute; bottom:0; right:0; width:100px; height:100px; background:radial-gradient(circle, rgba(var(--rc-rgb, 6,148,209),0.05) 0%, transparent 70%); border-radius:50%; pointer-events:none; }
+.referral-reward-item:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.07); border-color: rgba(6,148,209,0.2); }
+.referral-reward-icon-wrap { width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+.referral-reward-amount { font-size: 28px; font-weight: 800; color: var(--ink); margin-bottom: 6px; letter-spacing: -0.025em; }
+.referral-reward-label { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 11px; border-radius: 20px; margin-bottom: 12px; }
+.referral-reward-desc { font-size: 13px; color: #5a7a90; line-height: 1.55; }
+
+/* ── Bottom dark CTA strip ── */
+.referral-cta-strip { background: linear-gradient(135deg, #071e2e 0%, #093148 100%); padding: 44px 56px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; }
+.referral-cta-question { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.referral-cta-desc { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 20px; }
+.referral-cta-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.referral-cta-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: var(--blue); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-family: var(--body); }
+.referral-cta-btn-primary:hover { background: #0480ba; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
+.referral-cta-btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: var(--body); }
+.referral-cta-btn-ghost:hover { background: rgba(255,255,255,0.15); }
+.referral-trust-pills { display: flex; flex-direction: column; gap: 10px; }
+.referral-trust-pill { display: inline-flex; align-items: center; gap: 9px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 50px; padding: 9px 16px; color: rgba(255,255,255,0.8); font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.referral-trust-pill svg { color: #50e6ff; flex-shrink: 0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .referral-sec { padding: 64px 24px 0; }
+  .referral-main-row { grid-template-columns: 1fr; }
+  .referral-steps-track { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .referral-steps-track::before { display: none; }
+  .referral-rewards-strip { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .referral-cta-strip { grid-template-columns: 1fr; padding: 36px 28px; }
+  .referral-trust-pills { flex-direction: row; flex-wrap: wrap; }
+}
+@media (max-width: 540px) {
+  .referral-sec { padding: 48px 16px 0; }
+  .referral-steps-track { grid-template-columns: 1fr; }
+  .referral-form { flex-direction: column; }
+  .referral-cta-buttons { flex-direction: column; }
+  .referral-calc-amount { font-size: 52px; }
+}
+
+/* ══ LEARNING FORMATS ══ */
+.lf-sec { background:linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%); padding:60px 50px; border-top:1px solid rgba(6,148,209,0.12); position:relative; overflow:hidden; }
+.lf-inner { max-width:1120px; margin:0 auto; position:relative; z-index:1; }
+.lf-eyebrow { display:inline-block; background:rgba(6,148,209,0.18); color:#0694D1; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:6px 16px; border-radius:20px; margin-bottom:12px; }
+.lf-h2 { font-size:clamp(22px,2.8vw,36px); font-weight:800; color:#fff; line-height:1.2; margin-bottom:12px; }
+.lf-h2 em { font-style:normal; background:linear-gradient(90deg,#0694D1,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.lf-sub { font-size:14px; color:rgba(255,255,255,0.55); line-height:1.65; max-width:560px; margin:0 auto; }
+.lf-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+.lf-card { perspective:1000px; height:400px; cursor:pointer; }
+.lf-flip { width:100%; height:100%; transform-style:preserve-3d; transition:transform 0.65s cubic-bezier(0.4,0.2,0.2,1); position:relative; }
+.lf-card:hover .lf-flip { transform:rotateY(180deg); }
+.lf-face { position:absolute; inset:0; border-radius:16px; backface-visibility:hidden; -webkit-backface-visibility:hidden; overflow:hidden; border:1px solid rgba(6,148,209,0.22); }
+.lf-front { background:linear-gradient(145deg,#0a3d5c,#072d44); display:flex; flex-direction:column; }
+.lf-back  { background:linear-gradient(145deg,#0a3d5c,#072d44); transform:rotateY(180deg); display:flex; flex-direction:column; padding:20px; border:1px solid rgba(6,148,209,0.35); }
+.lf-img-panel { height:176px; width:100%; position:relative; overflow:hidden; flex-shrink:0; }
+.lf-img-badge { position:absolute; top:12px; left:12px; z-index:2; font-size:11px; font-weight:400; padding:4px 12px; border-radius:20px; background:rgba(9,49,72,0.55); backdrop-filter:blur(6px); color:#fff; }
+.lf-card-body { flex:1; display:flex; flex-direction:column; padding:16px 20px 20px; }
+.lf-card-title { font-size:15px; font-weight:500; color:#fff; margin-bottom:8px; line-height:1.3; }
+.lf-card-desc  { font-size:12.5px; color:rgba(255,255,255,0.6); line-height:1.65; flex:1; font-weight:300; }
+.lf-card-btn { display:block; width:100%; padding:10px; border-radius:12px; border:none; background:linear-gradient(135deg,#0694d1,#076d9d); color:#fff; font-size:13px; font-weight:700; cursor:pointer; text-align:center; font-family:inherit; margin-top:16px; }
+.lf-back-header { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.lf-back-icon  { width:40px; height:40px; border-radius:12px; background:rgba(6,148,209,0.18); display:flex; align-items:center; justify-content:center; flex-shrink:0; color:rgba(255,255,255,0.9); }
+.lf-back-title { font-size:14px; font-weight:700; color:#fff; line-height:1.3; }
+.lf-back-divider { height:1px; background:rgba(6,148,209,0.25); margin-bottom:16px; }
+.lf-back-bullets { list-style:none; padding:0; margin:0 0 auto; display:flex; flex-direction:column; gap:10px; }
+.lf-back-bullet { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,0.78); line-height:1.4; }
+.lf-back-check { width:17px; height:17px; border-radius:50%; border:1px solid rgba(6,148,209,0.5); background:transparent; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:#0694D1; }
+@keyframes lfRipple { 0%{transform:translate(-50%,-50%) scale(0.25);opacity:0.55} 100%{transform:translate(-50%,-50%) scale(2.8);opacity:0} }
+.lf-ring { position:absolute; border-radius:50%; pointer-events:none; border:1px solid rgba(6,148,209,0.35); animation:lfRipple 5s ease-out infinite; }
+.lf-ring.d1{animation-delay:0s} .lf-ring.d2{animation-delay:1.6s} .lf-ring.d3{animation-delay:3.2s}
+@keyframes lfBtnGlow { 0%,100%{box-shadow:0 0 0 0 rgba(6,148,209,0),0 4px 14px rgba(6,148,209,0.3)} 50%{box-shadow:0 0 22px 7px rgba(6,148,209,0.5),0 4px 14px rgba(6,148,209,0.3)} }
+.lf-btn-glow { animation:lfBtnGlow 2.8s ease-in-out infinite; }
+@media(max-width:900px){ .lf-sec{padding:60px 24px} .lf-grid{grid-template-columns:1fr 1fr;gap:16px} }
+@media(max-width:540px){ .lf-sec{padding:48px 16px} .lf-grid{grid-template-columns:1fr} .lf-card{height:360px} }
+
+/* ══ UPCOMING BATCHES ══ */
+.batches-sec { background:#EBF8FE; padding:60px 50px; border-top:1px solid #CAEFFF; position:relative; overflow:hidden; }
+.batches-sec::before { content:''; position:absolute; top:-100px; right:-80px; width:380px; height:380px; background:radial-gradient(circle,rgba(6,148,209,0.2) 0%,transparent 70%); border-radius:50%; pointer-events:none; }
+.batches-sec::after  { content:''; position:absolute; bottom:-64px; left:25%; width:300px; height:300px; background:radial-gradient(circle,rgba(77,191,239,0.18) 0%,transparent 70%); border-radius:50%; pointer-events:none; }
+.batches-inner { max-width:1120px; margin:0 auto; position:relative; z-index:1; }
+.batches-hd { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:16px; margin-bottom:40px; }
+.batches-eyebrow { display:inline-block; background:rgba(6,148,209,0.1); color:#0694D1; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:6px 16px; border-radius:20px; margin-bottom:6px; }
+.batches-h2 { font-size:clamp(20px,2.4vw,30px); font-weight:800; color:#071e2e; line-height:1.2; }
+.batches-h2 em { font-style:normal; background:linear-gradient(90deg,#0694D1,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.batches-sub { font-size:13px; color:#5a7a90; margin-top:4px; }
+.batches-view-all { display:inline-flex; align-items:center; gap:10px; padding:12px 24px; background:linear-gradient(135deg,#093148,#076D9D); border:none; border-radius:14px; color:#fff; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; transition:transform 0.2s,box-shadow 0.2s; align-self:flex-end; flex-shrink:0; }
+.batches-view-all:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(9,49,72,0.3); }
+.batches-view-all-arrow { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:13px; transition:transform 0.2s; }
+.batches-view-all:hover .batches-view-all-arrow { transform:translateX(3px); }
+.batches-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.batch-card { background:#fff; border:1px solid #CAEFFF; border-radius:12px; padding:20px; cursor:pointer; transition:transform 0.3s,box-shadow 0.3s; box-shadow:0 4px 16px rgba(0,164,239,0.10); position:relative; }
+.batch-card:hover { transform:translateY(-8px); box-shadow:0 20px 40px rgba(6,148,209,0.15); }
+.batch-card-row1 { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.batch-badges { display:flex; align-items:center; gap:8px; }
+.batch-vendor-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:2px 10px; border-radius:20px; background:rgba(6,148,209,0.3); color:#3AB6EB; border:1px solid rgba(6,148,209,0.4); letter-spacing:0.03em; }
+.batch-format-badge { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; padding:2px 8px; border-radius:20px; }
+.batch-format-online { background:#EBF8FE; color:#0694d1; }
+.batch-format-class  { background:#076d9d; color:#fff; }
+.batch-seats { font-size:11px; font-weight:500; padding:2px 8px; border-radius:20px; }
+.batch-seats-low { background:rgba(239,68,68,0.06); color:#dc2626; }
+.batch-seats-ok  { background:rgba(34,197,94,0.08); color:#16a34a; }
+.batch-name { font-size:14px; font-weight:600; color:#071e2e; margin-bottom:6px; line-height:1.35; transition:color 0.2s; }
+.batch-card:hover .batch-name { color:#0694D1; }
+.batch-meta { display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-size:12px; color:#5a7a90; margin-bottom:12px; }
+.batch-meta-item { display:flex; align-items:center; gap:3px; }
+.batch-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid #CAEFFF; padding-top:12px; }
+.batch-location-label { font-size:11px; color:#8faabf; }
+.batch-location-val { display:flex; align-items:center; gap:4px; font-size:13px; font-weight:700; color:#071e2e; margin-top:2px; }
+.batch-reserve-btn { padding:8px 16px; background:#093148; border:none; border-radius:8px; color:#fff; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background 0.2s,box-shadow 0.2s; box-shadow:0 2px 8px rgba(9,49,72,0.2); }
+.batch-reserve-btn:hover { background:#0694D1; box-shadow:0 4px 16px rgba(6,148,209,0.35); }
+@media(max-width:900px){ .batches-sec{padding:60px 24px} .batches-grid{grid-template-columns:1fr 1fr} }
+@media(max-width:600px){ .batches-sec{padding:48px 16px} .batches-grid{grid-template-columns:1fr} .batches-hd{flex-direction:column} }
+
+/* ══ WEBINARS ══ */
+.webinars-sec { background:linear-gradient(160deg,#EBF8FE 0%,#F5FBFF 50%,#EAF6FD 100%); padding:60px 50px; border-top:1px solid #CAEFFF; border-bottom:1px solid #CAEFFF; position:relative; overflow:hidden; }
+.webinars-inner { max-width:1120px; margin:0 auto; position:relative; z-index:1; }
+.webinars-center-hd { text-align:center; margin-bottom:40px; }
+.webinars-h2 { font-size:clamp(20px,2.4vw,30px); font-weight:700; color:#071e2e; margin-bottom:8px; line-height:1.25; }
+.webinars-h2 em { font-style:normal; background:linear-gradient(90deg,#0694D1,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.webinars-sub { font-size:13px; color:#5a7a90; }
+.webinars-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-bottom:32px; }
+.webinar-card { background:#fff; border:1.5px solid #CAEFFF; border-radius:16px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 2px 12px rgba(6,148,209,0.09); transition:transform 0.25s,box-shadow 0.25s; }
+.webinar-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(6,148,209,0.13); }
+.webinar-speaker-panel { position:relative; display:flex; flex-direction:column; align-items:center; padding:32px 20px 20px; background:#EBF8FE; overflow:hidden; }
+.webinar-panel-grad { position:absolute; bottom:0; left:0; right:0; height:64px; background:linear-gradient(to bottom,transparent,rgba(6,148,209,0.18)); pointer-events:none; z-index:1; }
+.webinar-vendor-badge { position:absolute; top:12px; right:12px; z-index:3; background:#fff; border-radius:8px; padding:8px 10px; box-shadow:0 1px 6px rgba(0,0,0,0.12); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; width:100px; height:64px; }
+.webinar-avatar { width:80px; height:80px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:800; color:#fff; border:4px solid #fff; box-shadow:0 4px 16px rgba(0,0,0,0.15); margin-bottom:12px; position:relative; z-index:1; }
+.webinar-speaker-name { font-size:13.5px; font-weight:600; color:#071e2e; position:relative; z-index:1; }
+.webinar-card-body { flex:1; display:flex; flex-direction:column; padding:20px; gap:16px; }
+.webinar-title { font-size:14px; font-weight:700; color:#071e2e; line-height:1.55; min-height:78px; overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+.webinar-meta { display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:#5a7a90; flex-wrap:wrap; }
+.webinar-meta-item { display:flex; align-items:center; gap:4px; }
+.webinar-sep { color:#c5d8e5; }
+.webinar-register-btn { display:block; width:100%; padding:10px; border-radius:50px; border:2px solid #0694D1; background:transparent; color:#0694D1; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit; transition:background 0.2s,color 0.2s; }
+.webinar-register-btn:hover { background:#0694D1; color:#fff; }
+.webinars-nav { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:24px; }
+.webinars-nav-btn { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:none; transition:all 0.2s; }
+.webinars-nav-btn.active { background:#093148; box-shadow:0 4px 14px rgba(9,49,72,0.25); cursor:pointer; }
+.webinars-nav-btn.inactive { background:#F3F4F6; cursor:not-allowed; }
+.webinars-nav-count { font-size:13.5px; font-weight:600; color:#5a7a90; }
+.webinars-view-all { display:flex; justify-content:center; }
+.webinars-view-all-btn { display:inline-flex; align-items:center; gap:12px; padding:12px 32px; background:linear-gradient(135deg,#093148,#076D9D); border:none; border-radius:14px; color:#fff; font-size:13.5px; font-weight:700; cursor:pointer; font-family:inherit; transition:transform 0.2s,box-shadow 0.2s; }
+.webinars-view-all-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(7,30,46,0.3); }
+.webinars-view-all-arrow { width:24px; height:24px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:13px; transition:transform 0.2s; }
+.webinars-view-all-btn:hover .webinars-view-all-arrow { transform:translateX(3px); }
+@media(max-width:900px){ .webinars-sec{padding:60px 24px} .webinars-grid{grid-template-columns:1fr 1fr} }
+@media(max-width:600px){ .webinars-sec{padding:48px 16px} .webinars-grid{grid-template-columns:1fr} }
+
+/* ── 768px tablet — fill gap between 900px and 600px ── */
+@media(max-width:768px){
+  .batches-sec  { padding:48px 20px; }
+  .webinars-sec { padding:48px 20px; }
+  .batches-grid { grid-template-columns:1fr 1fr; }
+  .webinars-grid{ grid-template-columns:1fr 1fr; }
+  .webinar-avatar { width:64px; height:64px; font-size:18px; }
+  .webinar-vendor-badge { width:80px; height:52px; }
+  /* Hide background boxes on tablet/mobile — performance */
+  .hero-boxes-wrap { display:none !important; }
+  /* Chatbot popup: push above FABs on small screens */
+  .chat-popup-mobile { right:0 !important; left:0 !important; margin:0 12px; width:auto !important; max-width:100% !important; }
+}
+/* ── 480px — small phones ── */
+@media(max-width:480px){
+  .batches-grid { grid-template-columns:1fr; }
+  .webinars-grid{ grid-template-columns:1fr; }
+  .batches-sec  { padding:40px 14px; }
+  .webinars-sec { padding:40px 14px; }
+  .webinar-title{ min-height:auto; }
+  /* Chatbot FAB — move back-to-top above chat on small screens */
+  .back-to-top-btn { bottom:5rem !important; right:1.25rem !important; }
+}
+
+@keyframes cardFadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══ CHATBOT + BACK-TO-TOP ══ */
+@keyframes chatIn  { from{opacity:0;transform:scale(0.82) translateY(12px)} to{opacity:1;transform:scale(1) translateY(0)} }
+@keyframes chatOut { from{opacity:1;transform:scale(1) translateY(0)} to{opacity:0;transform:scale(0.82) translateY(12px)} }
+@keyframes chatPulse { 0%,100%{box-shadow:0 0 0 0 rgba(7,109,157,0.55)} 60%{box-shadow:0 0 0 14px rgba(7,109,157,0)} }
+@keyframes chatPing  { 0%{transform:scale(1);opacity:0.7} 100%{transform:scale(2.2);opacity:0} }
+.chat-enter { animation:chatIn  0.28s cubic-bezier(0.34,1.56,0.64,1) both; }
+.chat-exit  { animation:chatOut 0.2s ease both; }
+.chat-pulse { animation:chatPulse 2.4s ease-in-out infinite; }
+.chat-ping  { animation:chatPing  1.6s ease-out infinite; }
 `;
 
 // ── DATA ──
@@ -5277,12 +5737,12 @@ const FeatureIcons = {
 };
 
 const FEATURES = [
-  { icon: FeatureIcons.alp,        title: "Microsoft Authorized Learning Partner",  desc: "Koenig is an official Microsoft Authorized Learning Partner (ALP) delivering Microsoft Official Courseware (MOC) — the same curriculum Microsoft uses to train its own engineers.", stat: "Only 3% of global training providers hold ALP status" },
-  { icon: FeatureIcons.mct,        title: "MCT-Certified Instructors Only",   desc: "Every Microsoft course is taught by an active Microsoft Certified Trainer (MCT). No freelancers, no subcontractors — guaranteed certified expertise on every session.", stat: "Avg. trainer experience: 14+ years in Microsoft technologies" },
-  { icon: FeatureIcons.oneOnOne,   title: "1-on-1 Microsoft Training",     desc: "Exclusive to Koenig: your dedicated MCT trains only you, on your schedule. Perfect for busy IT professionals pursuing AZ-104, AI-102, SC-300 or any Microsoft cert.", stat: "Available in 50+ countries — 24/7 scheduling" },
-  { icon: FeatureIcons.flyTrainer, title: "Fly-Me-A-Trainer",    desc: "Koenig sends a Microsoft-certified trainer directly to your office. Ideal for enterprise IT teams needing on-site Azure, Security or Microsoft 365 training.", stat: "On-site Microsoft training deployed in 40+ countries" },
-  { icon: FeatureIcons.esi,        title: "ESI & Enterprise Skills Partner", desc: "As a Microsoft Enterprise Skills Initiative (ESI) partner, Koenig enables enterprise customers to use Training Service Provider (TSPv) credits for workforce certification.", stat: "Accepts Microsoft Enterprise Agreements & EA credits" },
-  { icon: FeatureIcons.passRate,   title: "95% Microsoft Exam Pass Rate",       desc: "Structured exam prep, hands-on Azure labs, and dedicated MCT mentoring drive an industry-leading 95% pass rate across all Microsoft certification tracks.", stat: "vs. 60–70% industry average — verified on AZ-104, AI-102, SC-300" },
+  { icon: FeatureIcons.alp,        title: "You Train on Microsoft’s Own Curriculum",  desc: "As a Microsoft Authorized Learning Partner, Koenig delivers the exact courseware Microsoft uses to train its own engineers — not a third-party interpretation. What you study maps directly to what the exam tests.", stat: "Only 3% of global training providers hold ALP status" },
+  { icon: FeatureIcons.mct,        title: "Every Trainer Holds the MCT Credential",   desc: "No freelancers. No subcontractors. Every session is led by an active Microsoft Certified Trainer with hands-on enterprise experience — the credential Microsoft requires to teach its own courses.", stat: "Avg. trainer experience: 14+ years in Microsoft technologies" },
+  { icon: FeatureIcons.oneOnOne,   title: "Train 1-on-1 — No Class Schedule, No Waiting",     desc: "Your dedicated MCT focuses entirely on you — your pace, your gaps, your exam date. No cohort to sync with, no one else’s questions eating your time. Available in 50+ countries, starting any day.", stat: "Available in 50+ countries — 24/7 scheduling" },
+  { icon: FeatureIcons.flyTrainer, title: "We Send a Certified Trainer to Your Office",    desc: "Need to upskill your entire Azure or Security team without disrupting operations? Koenig flies an MCT directly to your location. Minimal travel overhead. Maximum impact — deployed in 40+ countries.", stat: "On-site Microsoft training deployed in 40+ countries" },
+  { icon: FeatureIcons.esi,        title: "Use Your Microsoft EA Credits to Train", desc: "If your organisation has a Microsoft Enterprise Agreement, you may already have TSPv credits for training. Koenig is an official Microsoft ESI partner — meaning you can certify your entire team at zero additional net cost.", stat: "Accepts Microsoft Enterprise Agreements & EA credits" },
+  { icon: FeatureIcons.passRate,   title: "95% of Koenig Students Pass on the First Attempt",       desc: "The industry average pass rate is 60–70%. Ours is 95%. That gap is built on MCT-led exam prep, hands-on Azure lab access, and practice tests that mirror the real exam format — not just watching videos.", stat: "vs. 60–70% industry average — verified on AZ-104, AI-102, SC-300" },
 ];
 
 const CERT_TABS = ["Azure", "AI & Copilot", "Power Platform", "Security", "Microsoft 365", "Dynamics 365", "Data & Analytics", "DevOps & Dev", "GitHub", "Windows Server"];
@@ -5663,7 +6123,7 @@ function svgAvatar(initials, bg, textColor = '#fff') {
 
 // ── FAQ DATA (SEO-optimised for Microsoft certification training) ──
 const FAQ_DATA = [
-  { id: 1,  question: "Is Koenig Solutions a Microsoft Authorized Learning Partner (ALP)?",        answer: "Yes. Koenig Solutions is an official Microsoft Authorized Learning Partner (ALP) and Enterprise Skills Initiative (ESI) partner since 2010. All courses use official Microsoft Official Courseware (MOC) — the same curriculum Microsoft uses internally." },
+  { id: 1,  question: "Is Koenig Solutions a Microsoft Authorized Learning Partner (ALP)?",        answer: "Yes. Koenig Solutions is an official Microsoft Authorized Learning Partner (ALP) and Enterprise Skills Initiative (ESI) partner since 2010. All courses use official Microsoft Courseware (MOC) — the same curriculum Microsoft uses internally." },
   { id: 2,  question: "Which Microsoft certifications can I get through Koenig?",                  answer: "Koenig offers 100+ Microsoft certification courses including AZ-104 (Azure Administrator), AI-102 (Azure AI Engineer), SC-300 (Identity & Access), AZ-305 (Azure Infrastructure), PL-300 (Power BI), AZ-900, SC-200, AZ-500, AZ-400, and all Microsoft 365, Dynamics 365, Power Platform and GitHub certifications across Fundamentals, Associate and Expert levels." },
   { id: 3,  question: "What is the Microsoft exam pass rate at Koenig?",                           answer: "Koenig achieves a 95% Microsoft certification exam pass rate — significantly above the industry average of 60–70%. This is driven by MCT-certified trainers, official labs, and structured exam prep sessions tailored to each certification track." },
   { id: 4,  question: "What learning formats does Koenig offer for Microsoft training?",           answer: "Koenig offers Live Online Training (instructor-led virtual classrooms), 1-on-1 Training (dedicated MCT, your schedule), Classroom Training (on-site or at a Koenig centre), Fly-Me-A-Trainer (trainer travels to your office), and Flexi Training (start any day). All formats use official Microsoft courseware." },
@@ -5742,7 +6202,7 @@ const TESTIMONIALS = [
   { quote: "Our whole DevOps team got AZ-400 certified through Koenig's corporate training. Smooth logistics and top-tier MCTs throughout.", name: "Carlos R.", role: "Engineering Manager", cert: "AZ-400 Team Training", designation: "Engineering Manager · AZ-400 Team Training", photo: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=face&auto=format", src: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&h=500&fit=crop&crop=face&auto=format" },
 ];
 
-const COURSES = ["Azure (AZ series)", "Power BI / Power Platform", "Microsoft 365 / Copilot", "Security (SC series)", "Dynamics 365", "DevOps / Developer", "Not sure yet"];
+const COURSES = ["Not sure yet", "Azure (AZ series)", "Power BI / Power Platform", "Microsoft 365 / Copilot", "Security (SC series)", "Dynamics 365", "DevOps / Developer"];
 
 const KOENIG_LOGO = "data:image/png;base64,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";
 
@@ -5865,44 +6325,76 @@ function LeadForm({ onClose, mode }) {
     }
   };
 
-  const STEPS = ["You", "Interests", "Goals"];
+  const STEPS = ["You", "Interests", "Get Plan"];
 
-  if (submitted) return (
-    <div className="lf-success">
-      <div className="lf-success-icon">{isBrochure ? "📥" : "✅"}</div>
-      <div className="lf-success-title">
-        {isBrochure ? `Your Brochure is Downloading, ${data.firstName || "there"}!` : `You're All Set, ${data.firstName || "there"}!`}
-      </div>
-      <div className="lf-success-msg">
-        {isBrochure
-          ? <>Your brochure download has started. A training advisor will also follow up within <strong style={{color:"#0694D1"}}>2 business hours</strong>.</>
-          : <>A Microsoft Training Advisor will reach out within <strong style={{color:"#0694D1"}}>2 business hours</strong>.</>
-        }
-      </div>
-      <div className="lf-success-steps">
-        {[
-          {n:1, title:"Confirmation email sent", sub:"Check your inbox for a copy of your request"},
-          {n:2, title:"Free 30-min consultation", sub:"We'll map the right certification path for your goals"},
-          {n:3, title:"Custom training plan", sub:"Receive a personalised schedule and pricing"},
-        ].map(({n,title,sub}) => (
-          <div key={n} className="lf-success-step">
-            <div className="lf-success-step-num">{n}</div>
-            <div className="lf-success-step-text"><strong>{title}</strong>{sub}</div>
-          </div>
-        ))}
-      </div>
-      <div className="lf-success-dl">
-        <div className="lf-success-dl-icon">📄</div>
-        <div className="lf-success-dl-text">
-          <div className="lf-success-dl-title">Your sample certificate is ready</div>
-          <div className="lf-success-dl-sub">Personalised with your name · PNG format</div>
+  if (submitted) {
+    const isEnterprise = ["6–20 people","21–50 people","50+ people"].includes(data.teamSize);
+    const isLnD = data.role === "L&D / HR Manager";
+    const isExec = data.role === "CTO / IT Director";
+    const isEnterpriseContact = isEnterprise || isLnD || isExec;
+    const courseLabel = data.course.length > 0 ? data.course.slice(0,2).join(" & ") + (data.course.length > 2 ? ` (+${data.course.length-2})` : "") : "Microsoft";
+    const firstName = data.firstName || "there";
+    const prepItems = isEnterpriseContact
+      ? ["Your current Microsoft EA / ESI agreement details (if applicable)", `Number of team members who need ${courseLabel} training`, "Preferred training format: online, on-site, or Fly-Me-A-Trainer", "Your target go-live / certification deadline"]
+      : [`Which ${courseLabel} certification you want to prioritise first`, "How many hours per week you can dedicate to training", "Whether you prefer group sessions or 1-on-1 private training", "Your target exam date (so we can build a realistic schedule)"];
+    const advisorLabel = isEnterpriseContact ? "Enterprise Training Specialist" : "Certification Advisor";
+    return (
+      <div className="lf-success">
+        <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(6,148,209,0.12)",border:"1px solid rgba(6,148,209,0.3)",borderRadius:20,padding:"5px 14px",fontSize:11,fontWeight:700,color:"#0694D1",letterSpacing:0.5,marginBottom:14}}>
+          <span style={{width:6,height:6,borderRadius:"50%",background:"#0694D1",animation:"pingRing 1.5s ease-out infinite"}}/>
+          Request Received
         </div>
-        <button className="lf-success-dl-btn" onClick={() => generateCertPDF(data.firstName + (data.lastName ? ' ' + data.lastName : ''))}>
-          ↓ Download
-        </button>
+        <div className="lf-success-title" style={{fontSize:20,lineHeight:1.25,marginBottom:8}}>
+          {isEnterpriseContact ? <>Your team’s training plan<br/>starts here, {firstName}.</> : <>Your certification journey<br/>starts now, {firstName}.</>}
+        </div>
+        <div className="lf-success-msg" style={{marginBottom:16}}>
+          {isEnterpriseContact
+            ? <>A <strong style={{color:"#0694D1"}}>Microsoft Enterprise Training Specialist</strong> will call within <strong style={{color:"#0694D1"}}>2 business hours</strong> to build a custom team plan.</>
+            : <>Your <strong style={{color:"#0694D1"}}>Microsoft Certification Advisor</strong> will call within <strong style={{color:"#0694D1"}}>2 business hours</strong>.</>}
+        </div>
+        <div className="lf-success-steps">
+          {[
+            {n:1,title:"Confirmation email sent",sub:`Check your inbox at ${data.email || "your email"} — usually within 2 minutes`},
+            {n:2,title:`${advisorLabel} calls you`,sub:isEnterpriseContact ? "We’ll map a training programme, cover ESI/EA credits, and confirm delivery format." : `We’ll confirm the right ${courseLabel} cert path, scheduling, and answer exam questions.`},
+            {n:3,title:isEnterpriseContact ? "Custom team plan delivered" : "Personalised study plan & pricing",sub:isEnterpriseContact ? "Receive a scoped proposal with per-seat pricing and MCT trainer profiles." : "Get your cert roadmap, flexi schedule options, and pricing — same day."},
+          ].map(({n,title,sub}) => (
+            <div key={n} className="lf-success-step">
+              <div className="lf-success-step-num">{n}</div>
+              <div className="lf-success-step-text"><strong>{title}</strong>{sub}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:12,padding:"12px 14px",marginBottom:16,textAlign:"left"}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:1.5,textTransform:"uppercase",color:"rgba(255,255,255,0.3)",marginBottom:8}}>Have this ready for your call</div>
+          {prepItems.map((item,i)=>(
+            <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,fontSize:12,color:"rgba(255,255,255,0.6)",lineHeight:1.5,marginBottom:6}}>
+              <span style={{width:4,height:4,borderRadius:"50%",background:"#0694D1",flexShrink:0,marginTop:7}}/>
+              {item}
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap"}}>
+          {[{icon:"🎯",text:"95% exam pass rate"},{icon:"⚡",text:"Reply in 2 hrs"},{icon:"🏆",text:"MS Partner of the Year"}].map(({icon,text})=>(
+            <div key={text} style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:"rgba(255,255,255,0.5)",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"5px 10px",flex:"1 1 auto"}}>
+              <span style={{fontSize:13}}>{icon}</span>{text}
+            </div>
+          ))}
+        </div>
+        {!isBrochure && (
+          <div className="lf-success-dl">
+            <div className="lf-success-dl-icon">📄</div>
+            <div className="lf-success-dl-text">
+              <div className="lf-success-dl-title">Your sample certificate is ready</div>
+              <div className="lf-success-dl-sub">Personalised with your name · PNG format</div>
+            </div>
+            <button className="lf-success-dl-btn" onClick={() => generateCertPDF(data.firstName + (data.lastName ? ' ' + data.lastName : ''))}>
+              ↓ Download
+            </button>
+          </div>
+        )}
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <>
@@ -5981,7 +6473,7 @@ function LeadForm({ onClose, mode }) {
             {errors.phone && <div className="lf-err"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>{errors.phone}</div>}
           </div>
           <ShinyButton fullWidth onClick={next}>
-            Continue
+            Continue — Step 1 of 3
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </ShinyButton>
         </div>
@@ -6031,7 +6523,7 @@ function LeadForm({ onClose, mode }) {
           <div className="lf-nav" style={{marginTop:16}}>
             <button className="lf-btn-back" onClick={back}>← Back</button>
             <ShinyButton fullWidth onClick={next}>
-              Continue
+              Continue — Step 2 of 3
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </ShinyButton>
           </div>
@@ -6072,6 +6564,13 @@ function LeadForm({ onClose, mode }) {
               </div>
             )}
           </div>
+          <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+            {[{icon:"🎯",text:"95% exam pass rate"},{icon:"⚡",text:"Reply in 2 hrs"},{icon:"🏆",text:"MS Partner of the Year"}].map(({icon,text})=>(
+              <div key={text} style={{display:"flex",alignItems:"center",gap:6,fontSize:11,color:"rgba(255,255,255,0.5)",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:8,padding:"5px 10px",flex:"1 1 auto"}}>
+                <span style={{fontSize:13}}>{icon}</span>{text}
+              </div>
+            ))}
+          </div>
           <ShinyButton fullWidth onClick={submit} disabled={loading}>
             {loading
               ? <><span style={{animation:"spin 1s linear infinite",display:"inline-block",fontSize:16}}>⟳</span> Submitting…</>
@@ -6084,9 +6583,12 @@ function LeadForm({ onClose, mode }) {
         </div>
       )}
 
-      <div className="lf-trust">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Your details are safe. No spam, ever.
+      <div className="lf-trust" style={{flexDirection:"column",gap:4}}>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span>SSL-secured · No spam, ever</span>
+        </div>
+        <div style={{fontSize:10,color:"rgba(255,255,255,0.25)"}}>95% pass rate or we provide free exam-prep support — at no extra cost</div>
       </div>
     </>
   );
@@ -6311,7 +6813,7 @@ function InteractiveGlobe({ size = 520 }) {
 // ── Pulled directly from site data ──
 const BOT_KNOWLEDGE = {
   faq: [
-    { id:1, q:"Is Koenig a Microsoft Authorized Learning Partner?", a:"Yes — Koenig is an official Microsoft Authorized Learning Partner (ALP) and ESI partner since 2010. Every course uses official Microsoft Official Courseware (MOC), the same curriculum Microsoft uses internally. Only 3% of global training providers hold ALP status.", tags:["authorized","partner","alp","official","moc","esi","legit","trusted"] },
+    { id:1, q:"Is Koenig a Microsoft Authorized Learning Partner?", a:"Yes — Koenig is an official Microsoft Authorized Learning Partner (ALP) and ESI partner since 2010. Every course uses official Microsoft Courseware (MOC), the same curriculum Microsoft uses internally. Only 3% of global training providers hold ALP status.", tags:["authorized","partner","alp","official","moc","esi","legit","trusted"] },
     { id:2, q:"Which Microsoft certifications can I get through Koenig?", a:"Koenig offers 100+ Microsoft certifications: AZ-104 (Azure Administrator), AI-102 (Azure AI Engineer), SC-300 (Identity & Access), AZ-305 (Azure Infrastructure), PL-300 (Power BI), AZ-900, SC-200, AZ-500, AZ-400, plus all M365, Dynamics 365, Power Platform and GitHub certifications — Fundamentals through Expert.", tags:["certifications","courses","list","which","available","offer"] },
     { id:3, q:"What is Koenig's Microsoft exam pass rate?", a:"Koenig achieves a 95% Microsoft exam pass rate — well above the industry average of 60–70%. This comes from MCT-certified trainers, hands-on Azure labs, and structured exam prep tailored to each certification track.", tags:["pass rate","exam","success","95","result","guarantee","pass"] },
     { id:4, q:"What learning formats are available?", a:"Koenig offers 5 formats: **Live Online** (instructor-led virtual), **1-on-1** (dedicated MCT, your schedule), **Classroom** (on-site or Koenig centre), **Fly-Me-A-Trainer** (trainer comes to your office), and **Flexi Training** (start any day). All use official Microsoft courseware.", tags:["format","online","virtual","classroom","1-on-1","one on one","fly","flexi","live","remote"] },
@@ -7006,144 +7508,77 @@ function GlobeSection() {
   );
 }
 
-function ParticleCanvas() {
-  const canvasRef = useRef(null);
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    const parent = canvas.parentElement;
-    if (!ctx || !parent) return;
+// Certification floating pill data
+// Positioned in px from the edge so they stay within the hero side margins
+// (hero-cols has padding: 80px 48px 36px 64px — left margin 64px, right margin 48px)
+const CERT_PILLS_LEFT = [
+  { code: "AZ-900", clr: "#0078D4", top: "10%", dur: 22, delay: 0 },
+  { code: "AI-102", clr: "#50e6ff", top: "32%", dur: 26, delay: 3 },
+  { code: "AZ-500", clr: "#a78bfa", top: "56%", dur: 20, delay: 6 },
+  { code: "SC-300", clr: "#c084fc", top: "78%", dur: 23, delay: 1 },
+];
+const CERT_PILLS_RIGHT = [
+  { code: "AZ-104", clr: "#0078D4", top: "14%", dur: 20, delay: 2 },
+  { code: "AZ-305", clr: "#38bdf8", top: "36%", dur: 24, delay: 5 },
+  { code: "AZ-400", clr: "#00a4ef", top: "60%", dur: 21, delay: 0 },
+  { code: "PL-300", clr: "#F2C811", top: "82%", dur: 19, delay: 4 },
+];
 
-    let W = 0, H = 0, nodes = [], t = 0, raf = 0, paused = false;
-    const mouse = { x: -9999, y: -9999, on: false };
-
-    function init() {
-      W = parent.offsetWidth; H = parent.offsetHeight;
-      canvas.width = W; canvas.height = H;
-      nodes = Array.from({ length: 115 }, () => {
-        const x = Math.random() * W, y = Math.random() * H;
-        const right = x > 0.55 * W;
-        return {
-          x, y, hx: x, hy: y, vx: 0, vy: 0,
-          rad: 1.5 * Math.random() + 0.8,
-          ph: Math.random() * Math.PI * 2,
-          fx: 0.22 * Math.random() + 0.1, fy: 0.22 * Math.random() + 0.1,
-          ax: 20 * Math.random() + 8, ay: 14 * Math.random() + 6,
-          baseOp: right ? 0.62 : 0.22,
-        };
-      });
-    }
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      if (!paused) t += 0.007;
-
-      // Lines between nearby nodes
-      ctx.lineWidth = 0.65;
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const d = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-          if (d < 95) {
-            ctx.strokeStyle = `rgba(6,148,209,${(1 - d / 95) * 0.38})`;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[j].x, nodes[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Mouse connections
-      if (mouse.on && !paused) {
-        ctx.save();
-        ctx.lineWidth = 0.85;
-        for (const n of nodes) {
-          const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-          if (d < 155) {
-            ctx.strokeStyle = `rgba(6,148,209,${(1 - d / 155) * 0.42})`;
-            ctx.shadowBlur = 6;
-            ctx.shadowColor = 'rgba(6,148,209,0.55)';
-            ctx.beginPath();
-            ctx.moveTo(mouse.x, mouse.y);
-            ctx.lineTo(n.x, n.y);
-            ctx.stroke();
-          }
-        }
-        ctx.shadowBlur = 0;
-        ctx.restore();
-      }
-
-      // Update + draw nodes
-      for (const n of nodes) {
-        if (!paused) {
-          const tx = n.hx + Math.sin(t * n.fx * 6 + n.ph) * n.ax;
-          const ty = n.hy + Math.cos(t * n.fy * 6 + 1.35 * n.ph) * n.ay;
-          if (mouse.on) {
-            const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-            if (d < 135 && d > 0) {
-              const force = 3 * Math.pow((135 - d) / 135, 1.4);
-              const angle = Math.atan2(n.y - mouse.y, n.x - mouse.x);
-              n.vx += Math.cos(angle) * force;
-              n.vy += Math.sin(angle) * force;
-            }
-          }
-          n.vx += (tx - n.x) * 0.03;
-          n.vy += (ty - n.y) * 0.03;
-          n.vx *= 0.8; n.vy *= 0.8;
-          n.x += n.vx; n.y += n.vy;
-        }
-        let op = n.baseOp;
-        if (mouse.on && !paused) {
-          const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-          if (d < 279) op = Math.min(op + (1 - d / 279) * n.baseOp * 2.2, 0.88);
-        }
-        const r = 3.5 * n.rad;
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r);
-        grad.addColorStop(0, `rgba(6,148,209,${op})`);
-        grad.addColorStop(0.4, `rgba(6,148,209,${0.55 * op})`);
-        grad.addColorStop(1, 'rgba(6,148,209,0)');
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-      raf = requestAnimationFrame(draw);
-    }
-
-    const onMouseMove = (e) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.on = true;
-    };
-    const onMouseLeave = () => { mouse.on = false; };
-    const onFocusIn  = () => { paused = true; };
-    const onFocusOut = (e) => { if (!parent.contains(e.relatedTarget)) paused = false; };
-
-    init();
-    draw();
-    parent.addEventListener('mousemove', onMouseMove);
-    parent.addEventListener('mouseleave', onMouseLeave);
-    parent.addEventListener('focusin', onFocusIn);
-    parent.addEventListener('focusout', onFocusOut);
-    window.addEventListener('resize', init);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      parent.removeEventListener('mousemove', onMouseMove);
-      parent.removeEventListener('mouseleave', onMouseLeave);
-      parent.removeEventListener('focusin', onFocusIn);
-      parent.removeEventListener('focusout', onFocusOut);
-      window.removeEventListener('resize', init);
-    };
-  }, []);
+function FloatingLogos() {
+  const pillStyle = (clr) => ({
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 6,
+    padding: "6px 11px 6px 9px",
+    borderRadius: 8,
+    background: "rgba(4,18,36,0.55)",
+    border: `1px solid ${clr}55`,
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+    boxShadow: `0 2px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 10px ${clr}18`,
+    whiteSpace: "nowrap",
+  });
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 3 }}
-    />
+    <div style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 2, top: 80, bottom: 90 }}>
+      <style>{`
+        @keyframes cpUp   { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+        @keyframes cpDown { 0%,100%{transform:translateY(0)} 50%{transform:translateY( 10px)} }
+        @media (max-width: 1100px) { .fl-cert-pill { display:none !important; } }
+      `}</style>
+
+      {/* ── LEFT strip ── */}
+      {CERT_PILLS_LEFT.map((p, i) => (
+        <div key={`l${i}`} className="fl-cert-pill" style={{
+          position: "absolute", top: p.top, left: 10,
+          animation: `${i%2===0?"cpUp":"cpDown"} ${p.dur}s ease-in-out ${p.delay}s infinite`,
+          opacity: 0.78,
+        }}>
+          <div style={pillStyle(p.clr)}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: p.clr, flexShrink: 0, boxShadow: `0 0 5px ${p.clr}` }}/>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.09em", color: "rgba(255,255,255,0.88)", fontFamily: "'Courier New',monospace" }}>
+              {p.code}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* ── RIGHT strip ── */}
+      {CERT_PILLS_RIGHT.map((p, i) => (
+        <div key={`r${i}`} className="fl-cert-pill" style={{
+          position: "absolute", top: p.top, right: 10, left: "auto",
+          animation: `${i%2===0?"cpDown":"cpUp"} ${p.dur}s ease-in-out ${p.delay}s infinite`,
+          opacity: 0.78,
+        }}>
+          <div style={pillStyle(p.clr)}>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: p.clr, flexShrink: 0, boxShadow: `0 0 5px ${p.clr}` }}/>
+            <span style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.09em", color: "rgba(255,255,255,0.88)", fontFamily: "'Courier New',monospace" }}>
+              {p.code}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -7360,7 +7795,7 @@ function downloadBrochure() {
   ctx.fillText('Official Microsoft courses delivered by certified MCT trainers', 397, 295);
 
   // Stats row
-  const stats = [['500K+','Professionals Trained'],['95%','First-Attempt Pass Rate'],['30+','Years of Excellence'],['200+','Countries Served']];
+  const stats = [['500K+','Professionals Trained'],['95%','First-Attempt Pass Rate'],['33+','Years of Excellence'],['50+','Countries Served']];
   stats.forEach(([val, label], i) => {
     const x = 100 + i * 160;
     ctx.fillStyle = '#0694D1'; ctx.font = 'bold 26px Arial'; ctx.textAlign = 'center';
@@ -7637,16 +8072,18 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
 
   const allCerts = CERTS[activeTab] || [];
   const counts = {
-    all:    allCerts.length,
-    fund:   allCerts.filter(c => c.level === "fund").length,
-    assoc:  allCerts.filter(c => c.level === "assoc").length,
-    expert: allCerts.filter(c => c.level === "expert").length,
+    all:     allCerts.length,
+    popular: allCerts.filter(c => CERT_POPULAR[c.code]?.hot).length,
+    fund:    allCerts.filter(c => c.level === "fund").length,
+    assoc:   allCerts.filter(c => c.level === "assoc").length,
+    expert:  allCerts.filter(c => c.level === "expert").length,
   };
   const levels = [
-    { key: "all",    label: "All",          count: counts.all },
-    { key: "fund",   label: "Fundamentals", count: counts.fund },
-    { key: "assoc",  label: "Associate",    count: counts.assoc },
-    { key: "expert", label: "Expert",       count: counts.expert },
+    { key: "all",     label: "All",          count: counts.all },
+    { key: "popular", label: "Popular",       count: counts.popular },
+    { key: "fund",    label: "Fundamentals",  count: counts.fund },
+    { key: "assoc",   label: "Associate",     count: counts.assoc },
+    { key: "expert",  label: "Expert",        count: counts.expert },
   ].filter(lv => lv.count > 0 || lv.key === "all");
 
   // Courses mode
@@ -7657,11 +8094,11 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
         c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.tab.toLowerCase().includes(q) ||
         (c.level==="fund"&&"fundamentals".includes(q)) || (c.level==="assoc"&&"associate".includes(q)) || (c.level==="expert"&&"expert".includes(q))
       )
-    : allCerts.filter(c => activeLevel==="all" ? true : c.level===activeLevel).map(c => ({ ...c, tab: activeTab }));
+    : allCerts.filter(c => activeLevel==="all" ? true : activeLevel==="popular" ? !!CERT_POPULAR[c.code]?.hot : c.level===activeLevel).map(c => ({ ...c, tab: activeTab }));
 
   // Exams mode
   const skills       = EXAM_SKILLS[activeTab] || [];
-  const examDisplay  = allCerts.filter(c => activeLevel==="all" ? true : c.level===activeLevel);
+  const examDisplay  = allCerts.filter(c => activeLevel==="all" ? true : activeLevel==="popular" ? !!CERT_POPULAR[c.code]?.hot : c.level===activeLevel);
   const lc           = activeLevel==="fund"?"#059669":activeLevel==="assoc"?"#0578b3":activeLevel==="expert"?"#d97706":"var(--blue)";
   const ll           = activeLevel==="all"?"All":activeLevel==="fund"?"Fundamentals":activeLevel==="assoc"?"Associate":"Expert";
   const detail       = selectedCert ? (CERT_DETAIL[selectedCert.level] || CERT_DETAIL.assoc) : null;
@@ -7677,7 +8114,7 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
         <div className="certs-header reveal">
           <div className="cert-section-top-row">
             <div>
-              <h2 className="sec-title">Microsoft <TextShimmer as="em" duration={2.5} spread={2}>Certification Explorer</TextShimmer></h2>
+              <h2 className="sec-title">Find Your <em>Microsoft Certification</em></h2>
               <p className="certs-header-sub">
                 Browse 100+ official Microsoft courses across Azure, AI, Security, Power Platform, M365 and more — or dive into exam details, skills breakdown and certification paths.
               </p>
@@ -7938,7 +8375,13 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                                       {c.level==="fund"?"Fundamentals":c.level==="assoc"?"Associate":"Expert"}
                                     </span>
                                     <div className="cert-name">{c.name}</div>
-                                    <div className="cert-code">{c.code}</div>
+                                    <div className="cert-code-row">
+                                      <span className="cert-code">{c.code}</span>
+                                      <span className="cert-hours">
+                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        {c.dur} · {(parseInt(c.dur) || 1) * 8}hrs
+                                      </span>
+                                    </div>
                                     {CERT_POPULAR[c.code] && (
                                       <div className="cert-meta-row">
                                         <span className="cert-enrolled">
@@ -7959,9 +8402,11 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                                         </span>
                                         <span className="cert-price-label">per person · USD</span>
                                       </div>
-                                      <span className="cert-dur">⏱ {c.dur}</span>
                                       <div className="cert-actions">
-                                        <button className="cert-btn-brochure" onClick={onBrochure}>Download Brochure</button>
+                                        <button className="cert-btn-brochure" onClick={onBrochure}>
+                                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                          Brochure
+                                        </button>
                                         <button className="cert-btn-details" onClick={onEnroll}>Enroll Now</button>
                                       </div>
                                     </div>
@@ -8234,21 +8679,23 @@ function CertExamDetails({ onEnroll, onBrochure }) {
   const skills   = EXAM_SKILLS[examTab] || [];
   const allCerts = CERTS[examTab] || [];
   const counts   = {
-    all:    allCerts.length,
-    fund:   allCerts.filter(c => c.level === "fund").length,
-    assoc:  allCerts.filter(c => c.level === "assoc").length,
-    expert: allCerts.filter(c => c.level === "expert").length,
+    all:     allCerts.length,
+    popular: allCerts.filter(c => CERT_POPULAR[c.code]?.hot).length,
+    fund:    allCerts.filter(c => c.level === "fund").length,
+    assoc:   allCerts.filter(c => c.level === "assoc").length,
+    expert:  allCerts.filter(c => c.level === "expert").length,
   };
   const levels = [
-    { key: "all",    label: "All",          count: counts.all },
-    { key: "fund",   label: "Fundamentals", count: counts.fund },
-    { key: "assoc",  label: "Associate",    count: counts.assoc },
-    { key: "expert", label: "Expert",       count: counts.expert },
+    { key: "all",     label: "All",         count: counts.all },
+    { key: "popular", label: "Popular",      count: counts.popular },
+    { key: "fund",    label: "Fundamentals", count: counts.fund },
+    { key: "assoc",   label: "Associate",    count: counts.assoc },
+    { key: "expert",  label: "Expert",       count: counts.expert },
   ].filter(lv => lv.count > 0 || lv.key === "all");
 
-  const displayCerts = allCerts.filter(c => examLevel === "all" ? true : c.level === examLevel);
-  const lc = examLevel === "fund" ? "#059669" : examLevel === "assoc" ? "#0578b3" : examLevel === "expert" ? "#d97706" : "var(--blue)";
-  const ll = examLevel === "all" ? "All Exams" : examLevel === "fund" ? "Fundamentals" : examLevel === "assoc" ? "Associate" : "Expert";
+  const displayCerts = allCerts.filter(c => examLevel === "all" ? true : examLevel === "popular" ? !!CERT_POPULAR[c.code]?.hot : c.level === examLevel);
+  const lc = examLevel === "popular" ? "#e11d48" : examLevel === "fund" ? "#059669" : examLevel === "assoc" ? "#0578b3" : examLevel === "expert" ? "#d97706" : "var(--blue)";
+  const ll = examLevel === "all" ? "All Exams" : examLevel === "popular" ? "Popular" : examLevel === "fund" ? "Fundamentals" : examLevel === "assoc" ? "Associate" : "Expert";
 
   // Detail panel derived data
   const detail    = selectedCert ? (CERT_DETAIL[selectedCert.level] || CERT_DETAIL.assoc) : null;
@@ -8793,37 +9240,15 @@ function LeadGenMid({ onBrochure, onAdvisor }) {
 // ── TESTIMONIALS COLUMN (scrolling) ──
 function TestimonialsColumn({ testimonials, duration = 10, className }) {
   const doubled = [...testimonials, ...testimonials];
-  const controls = useAnimation();
-  const [paused, setPaused] = React.useState(false);
-
-  React.useEffect(() => {
-    if (paused) {
-      controls.stop();
-    } else {
-      controls.start({ translateY: "-50%", transition: { duration, repeat: Infinity, ease: "linear", repeatType: "loop" } });
-    }
-  }, [paused, duration, controls]);
 
   return (
     <div
-      className={className}
+      className={`test-col-scroll-wrap${className ? " " + className : ""}`}
       style={{ overflow: "hidden" }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onClick={() => setPaused(p => !p)}
     >
-      <motion.ul
-        animate={controls}
-        initial={{ translateY: "0%" }}
-        style={{ display: "flex", flexDirection: "column", gap: 20, paddingBottom: 20, listStyle: "none", margin: 0, padding: 0 }}
-      >
+      <ul className="test-col-track" style={{ animationDuration: `${duration}s`, listStyle: "none", margin: 0, padding: 0 }}>
         {doubled.map((t, i) => (
-          <motion.li
-            key={i}
-            className="test-col-card"
-            style={{ position: "relative" }}
-            whileHover={{ scale: 1.03, y: -6, transition: { type: "spring", stiffness: 400, damping: 17 } }}
-          >
+          <li key={i} className="test-col-card" style={{ position: "relative" }}>
             <div className="test-col-quote">"{t.quote}"</div>
             <div className="test-col-author">
               <img className="test-col-avatar" src={t.photo} alt={`${t.name} — ${t.cert}, Microsoft certified via Koenig Solutions`} loading="lazy" />
@@ -8833,9 +9258,9 @@ function TestimonialsColumn({ testimonials, duration = 10, className }) {
                 <div className="test-col-cert">{t.cert}</div>
               </div>
             </div>
-          </motion.li>
+          </li>
         ))}
-      </motion.ul>
+      </ul>
     </div>
   );
 }
@@ -8869,7 +9294,7 @@ const EdgeIcons = {
   book: () => (
     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Official Microsoft courseware materials">
       {/* back page */}
-      <title>Official Microsoft Official Courseware (MOC)</title>
+      <title>Official Microsoft Courseware (MOC)</title>
       <rect x="6" y="3" width="14" height="18" rx="2" fill="#7fba00" opacity="0.35"/>
       {/* front page */}
       <rect x="4" y="2" width="14" height="18" rx="2" fill="#fff" stroke="#00a4ef" strokeWidth="1.5"/>
@@ -8968,7 +9393,7 @@ const EdgeIcons = {
 };
 
 const EDGE_ITEMS = [
-  { icon: EdgeIcons.msLogo,   num: "01", title: "Microsoft Authorized Learning Partner (ALP)", desc: "One of a select few Microsoft Authorized Learning Partners globally — you train with official Microsoft Official Courseware (MOC), MCT-certified instructors, and Microsoft-verified labs. Valid for Azure Administrator, AI Engineer, Security, and all role-based cert paths." },
+  { icon: EdgeIcons.msLogo,   num: "01", title: "Microsoft Authorized Learning Partner (ALP)", desc: "One of a select few Microsoft Authorized Learning Partners globally — you train with official Microsoft Courseware (MOC), MCT-certified instructors, and Microsoft-verified labs. Valid for Azure Administrator, AI Engineer, Security, and all role-based cert paths." },
   { icon: EdgeIcons.mct,      num: "02", title: "300+ MCT-Certified Trainers", desc: "Every trainer holds the Microsoft Certified Trainer (MCT) credential with proven enterprise deployment experience across Azure, AI, Security and Microsoft 365 — not contractors, not theory-only instructors." },
   { icon: EdgeIcons.book,     num: "03", title: "Official MOC Courseware", desc: "Training materials authored and maintained directly by Microsoft, keeping you current with the latest Azure updates, Microsoft 365 features, Copilot AI capabilities, and exam blueprint changes." },
   { icon: EdgeIcons.lab,      num: "04", title: "Hands-On Azure Lab Access", desc: "Practice in official Microsoft Learn sandboxes and pre-provisioned Azure environments with real-world guided exercises. Directly aligned to AZ-104, AZ-305, AI-102, and SC-300 lab scenarios." },
@@ -9056,8 +9481,8 @@ function CertPathSection({ onCTA, onBrochure }) {
         {/* Header */}
         <div className="certpath-head reveal">
           <div className="certpath-eyebrow">✦ Certification Path</div>
-          <h2 className="certpath-title">How to Get <em>Microsoft Certified</em></h2>
-          <p className="certpath-sub">Pick your technology track — then follow the path from Fundamentals through Associate to Expert, guided by Koenig's MCT-certified trainers.</p>
+          <h2 className="certpath-title">Choose Your <em>Certification Path</em></h2>
+          <p className="certpath-sub">Every Microsoft role has a defined path from Fundamentals to Expert. Select your track below and see exactly which exams to take — in order.</p>
         </div>
 
         {/* Technology grid */}
@@ -9282,10 +9707,10 @@ function WhyCertSection({ onCTA }) {
         <div className="roi-left">
           <div className="roi-eyebrow">ROI &amp; Career Outcomes</div>
           <h2 className="roi-left-heading">
-            Why Get<br /><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Certified</TextShimmer>?
+            A Microsoft Cert <em>Pays for Itself.</em><br />Fast.
           </h2>
           <p className="roi-left-sub">
-            Data-backed salary, hiring, and business outcomes across every Microsoft certification track — from AZ-900 to Expert-level.
+            26% average salary boost. 91% of hiring managers favour certified candidates. Here’s what the data shows across every Microsoft role track.
           </p>
           <button className="roi-left-cta" onClick={onCTA}>
             Explore Courses →
@@ -9477,10 +9902,10 @@ function EdgeSection({ onCTA }) {
         <div className="edge-left">
           <div className="edge-eyebrow">Why Choose Koenig</div>
           <h2 className="edge-left-heading">
-            Why Earn a<br /><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Credential</TextShimmer><br />with Koenig?
+            What You Get With Koenig<br /><em>That You Won’t Find Elsewhere</em>
           </h2>
           <p className="edge-left-sub">
-            Official Microsoft Authorized Learning Partner since 2010. Here's what makes 500,000+ IT professionals choose Koenig for their Microsoft certification journey.
+            33 years of Microsoft training. 500,000+ professionals certified. Eight specific reasons our pass rate, flexibility, and delivery model beat every alternative.
           </p>
           <button className="edge-left-cta" onClick={onCTA}>
             Explore Courses →
@@ -9520,99 +9945,127 @@ function EdgeSection({ onCTA }) {
   );
 }
 
-function AwardsSlider() {
-  const visibleCount = 3;
-  const maxIdx = AWARDS.length - visibleCount;
-  const [idx, setIdx] = useState(0);
+const MS_AWARDS = [
+  { awardImg: "https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/MS-Partner-of-the-year-2025.svg",                        title: "Winner of Microsoft Training Services Partner of the Year Award", year: "2025"         },
+  { awardImg: "https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-fy24.webp",                                         title: "Winner of Microsoft's ANZ Superstar Campaign",                    year: "FY2024"       },
+  { awardImg: "https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/Winner-of-Microsoft-Asia-Superstar-Campaign-in-FY22.svg", title: "Winner of Microsoft's Asia Superstar Campaign",                   year: "FY2022"       },
+  { awardImg: "https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-aug-2022.webp",                                     title: "Microsoft Recognition Award",                                    year: "2022"         },
+  { awardImg: "https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-page-microsoft.webp",                               title: "Microsoft Authorized Learning Partner",                           year: "2010–Present" },
+];
 
-  const prev = () => setIdx(i => Math.max(0, i - 1));
-  const next = () => setIdx(i => Math.min(maxIdx, i + 1));
+const MsLogo = () => (
+  <svg width="40" height="40" viewBox="0 0 23 23" fill="none" aria-label="Microsoft">
+    <rect x="1" y="1" width="10" height="10" fill="#f25022"/>
+    <rect x="12" y="1" width="10" height="10" fill="#7fba00"/>
+    <rect x="1" y="12" width="10" height="10" fill="#00a4ef"/>
+    <rect x="12" y="12" width="10" height="10" fill="#ffb900"/>
+  </svg>
+);
+
+function AwardsSlider() {
+  const trackRef = useRef(null);
+  const rafRef = useRef(0);
+  const posRef = useRef(0);
+  const dragging = useRef(false);
+  const lastX = useRef(0);
+  const [cursor, setCursor] = useState("grab");
 
   useEffect(() => {
-    const t = setInterval(() => {
-      setIdx(i => (i >= maxIdx ? 0 : i + 1));
-    }, 3500);
-    return () => clearInterval(t);
-  }, [maxIdx]);
+    const track = trackRef.current;
+    if (!track) return;
+    const tick = () => {
+      if (!dragging.current) posRef.current -= 0.8;
+      const halfWidth = track.scrollWidth / 2;
+      if (halfWidth > 0) {
+        if (posRef.current <= -halfWidth) posRef.current += halfWidth;
+        if (posRef.current > 0) posRef.current -= halfWidth;
+      }
+      track.style.transform = `translateX(${posRef.current}px)`;
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  const startDrag = (x) => { dragging.current = true; lastX.current = x; setCursor("grabbing"); };
+  const moveDrag = (x) => { if (!dragging.current) return; posRef.current += x - lastX.current; lastX.current = x; };
+  const endDrag = () => { dragging.current = false; setCursor("grab"); };
+
+  const doubled = [...MS_AWARDS, ...MS_AWARDS];
 
   return (
-    <section className="awards-sec hex-bg">
-      <div className="awards-inner">
-        <div className="awards-header reveal">
-          <div className="sec-title">Recognised as a<br/><TextShimmer as="em" duration={2.5} spread={2}>Microsoft Partner of the Year</TextShimmer></div>
-          <div className="sec-sub" style={{margin:'14px auto 0',textAlign:'center'}}>
-            33+ years of Microsoft training excellence recognised globally — Microsoft Partner of the Year, FY24 Award winner
-          </div>
-        </div>
+    <section style={{
+      position: "relative", overflow: "hidden", background: "#fff",
+      borderTop: "1px solid #CAEFFF", borderBottom: "1px solid #CAEFFF",
+      padding: "60px 50px",
+    }}>
+      {/* Radial blobs */}
+      <div style={{ pointerEvents:"none", position:"absolute", left:-128, top:0, width:400, height:400, borderRadius:"50%", background:"radial-gradient(circle, rgba(6,148,209,0.18) 0%, transparent 70%)" }} />
+      <div style={{ pointerEvents:"none", position:"absolute", right:-80, bottom:0, width:350, height:350, borderRadius:"50%", background:"radial-gradient(circle, rgba(77,191,239,0.18) 0%, transparent 70%)" }} />
 
-        {/* Partner badge hero row */}
-        <div className="awards-partner-row reveal">
-          <div className="awards-partner-badge">
-            <div className="awards-partner-badge-icon">
-              <svg width="22" height="22" viewBox="0 0 23 23" fill="none">
-                <rect x="1" y="1" width="10" height="10" fill="#f25022"/>
-                <rect x="12" y="1" width="10" height="10" fill="#7fba00"/>
-                <rect x="1" y="12" width="10" height="10" fill="#00a4ef"/>
-                <rect x="12" y="12" width="10" height="10" fill="#ffb900"/>
-              </svg>
-            </div>
-            <div className="awards-partner-badge-text">
-              <span className="awards-partner-badge-label">Microsoft</span>
-              <span className="awards-partner-badge-name">Gold Authorized Learning Partner</span>
-            </div>
-          </div>
-          <div className="awards-partner-divider"/>
-          <div className="awards-partner-stat">
-            <div className="awards-partner-stat-num">30+</div>
-            <div className="awards-partner-stat-lbl">Years of Excellence</div>
-          </div>
-          <div className="awards-partner-divider"/>
-          <div className="awards-partner-stat">
-            <div className="awards-partner-stat-num">500K+</div>
-            <div className="awards-partner-stat-lbl">Professionals Trained</div>
-          </div>
-          <div className="awards-partner-divider"/>
-          <div className="awards-partner-stat">
-            <div className="awards-partner-stat-num">50+</div>
-            <div className="awards-partner-stat-lbl">Countries Reached</div>
-          </div>
+      {/* Header */}
+      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <span style={{
+            display: "inline-block", background: "rgba(6,148,209,0.1)", color: "var(--blue)",
+            fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
+            padding: "5px 16px", borderRadius: 20, marginBottom: 10,
+          }}>Recognition</span>
+          <h2 style={{ fontSize: "clamp(22px,2.8vw,34px)", fontWeight: 800, color: "var(--ink)", marginBottom: 8, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+            Awards &amp;{" "}
+            <span style={{ background: "linear-gradient(90deg, var(--blue), #50e6ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              Recognition
+            </span>
+          </h2>
+          <p style={{ fontSize: 14, color: "#7a9ab0", margin: 0 }}>
+            Recognized by Microsoft for training excellence — Partner of the Year, Superstar Campaign winner, and more.
+          </p>
         </div>
+      </div>
 
-        <div className="awards-slider-wrap reveal">
-          <div
-            className="awards-track"
-            style={{ transform: `translateX(calc(-${idx} * (100% / ${visibleCount} + 6px)))` }}
-          >
-            {AWARDS.map((a, i) => (
-              <div key={i} className="award-card glow-card holo-card">
-                <div className="award-card-glow"/>
-                <div className="award-img-wrap">{a.svgIcon}</div>
-                <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, marginTop:4}}>
-                  <div className="award-org">{a.org}</div>
-                  <div className="award-year-badge">⭐ {a.year}</div>
-                </div>
-                <div className="award-title">{a.title}</div>
-                <div className="award-desc">{a.desc}</div>
+      {/* Draggable marquee */}
+      <div
+        style={{
+          overflowX: "clip", padding: "14px 0", cursor, userSelect: "none",
+          maskImage: "linear-gradient(to right,transparent 0,#000 80px,#000 calc(100% - 80px),transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to right,transparent 0,#000 80px,#000 calc(100% - 80px),transparent 100%)",
+        }}
+        onMouseDown={e => { startDrag(e.clientX); e.preventDefault(); }}
+        onMouseMove={e => moveDrag(e.clientX)}
+        onMouseUp={endDrag}
+        onMouseLeave={endDrag}
+        onTouchStart={e => startDrag(e.touches[0].clientX)}
+        onTouchMove={e => { e.preventDefault(); moveDrag(e.touches[0].clientX); }}
+        onTouchEnd={endDrag}
+      >
+        <div ref={trackRef} style={{ display: "flex", gap: 20, paddingLeft: 20, paddingRight: 20, width: "max-content", willChange: "transform" }}>
+          {doubled.map((a, i) => (
+            <div
+              key={i}
+              style={{
+                flexShrink: 0, width: 380, height: 280, background: "#fff",
+                borderRadius: 16, border: "1.5px solid #CAEFFF", overflow: "hidden",
+                display: "flex", boxShadow: "0 2px 12px rgba(0,0,0,0.07), 0 4px 16px rgba(6,148,209,0.10)",
+                transition: "transform 0.25s ease, box-shadow 0.25s ease",
+              }}
+              onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.03)"; e.currentTarget.style.boxShadow = "0 0 28px rgba(7,109,157,0.3)"; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.07), 0 4px 16px rgba(6,148,209,0.10)"; }}
+            >
+              {/* Left — award image */}
+              <div style={{ width: 150, flexShrink: 0, background: "#F0FAFF", borderRight: "1.5px solid #CAEFFF", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                <img src={a.awardImg} alt={a.title} style={{ width: "90%", height: "90%", objectFit: "contain" }} loading="lazy" draggable={false} />
               </div>
-            ))}
-          </div>
+              {/* Right — vendor + title + year */}
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 14, padding: "20px 12px", textAlign: "center" }}>
+                <div style={{ height: 64, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <MsLogo />
+                </div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: "var(--ink)", lineHeight: 1.35, margin: 0 }}>{a.title}</p>
+                <span style={{ border: "1px solid #CAEFFF", borderRadius: 20, padding: "2px 12px", fontSize: 13, fontWeight: 600, color: "#7a9ab0" }}>{a.year}</span>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <div className="awards-ctl">
-          <button className="awards-arrow" onClick={prev} aria-label="Previous">&#8592;</button>
-          <div className="awards-dots">
-            {Array.from({ length: maxIdx + 1 }).map((_, i) => (
-              <button
-                key={i}
-                className={`awards-dot${idx === i ? ' active' : ''}`}
-                onClick={() => setIdx(i)}
-                aria-label={`Go to slide ${i + 1}`}
-              />
-            ))}
-          </div>
-          <button className="awards-arrow" onClick={next} aria-label="Next">&#8594;</button>
-        </div>
-
       </div>
     </section>
   );
@@ -9880,6 +10333,23 @@ function EnrollmentInsights() {
               </div>
             ))}
           </div>
+
+          {/* Download CTA */}
+          <div className="enroll-cta-row">
+            <a
+              href="/koenig-microsoft-enrollment-report-2025.pdf"
+              download
+              className="enroll-download-btn"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Download Full Report
+            </a>
+            <span className="enroll-cta-note">2024–25 · PDF · Free</span>
+          </div>
         </div>
 
         {/* RIGHT — donut chart */}
@@ -9911,125 +10381,1367 @@ function EnrollmentInsights() {
 
 // ── HOW IT WORKS SECTION ──
 const HIW_STEPS = [
+  { icon: "🧭", num: "01", title: "Tell Us Your Goal",       desc: "Share where you are and where you want to be. Use our course finder, talk to a training advisor, or start with one of our curated Microsoft career pathways.", dots: 1 },
+  { icon: "📋", num: "02", title: "Pick Your Format & Date", desc: "Choose 1-on-1, Public Batch, or Flexi. Select dates from guaranteed schedules that fit your life. Lock in your spot with flexible payment options.", dots: 2 },
+  { icon: "🎓", num: "03", title: "Train with a Real Expert",desc: "A Microsoft Certified Trainer (MCT) teaches you live with official MOC courseware. Hands-on labs mirror real enterprise environments. Sessions recorded for review.", dots: 3 },
+  { icon: "🚀", num: "04", title: "Certify & Advance",       desc: "Pass your exam with dedicated prep and practice tests. Join 1M+ certified professionals who used Koenig to land promotions and salary increases.", dots: 4 },
+];
+
+function HowItWorksSection({ onCTA }) {
+  const [activeStep, setActiveStep] = React.useState(1);
+  const [stepPaused, setStepPaused] = React.useState(false);
+
+  useEffect(() => {
+    if (stepPaused) return;
+    const timer = setInterval(() => {
+      setActiveStep(s => (s + 1) % 4);
+    }, 2200);
+    return () => clearInterval(timer);
+  }, [stepPaused]);
+
+  return (
+    <section className="hiw2-sec">
+      <div className="hiw2-inner">
+
+        {/* Header */}
+        <div className="hiw2-header">
+          <span className="hiw2-pill">Simple Process</span>
+          <h2 className="hiw2-h2">How It <span>Works</span></h2>
+          <p className="hiw2-sub">From choosing your path to getting certified — four steps that have worked for over a million professionals.</p>
+        </div>
+
+        {/* Steps grid */}
+        <div className="hiw2-steps-wrap">
+          {/* Connecting line — desktop only */}
+          <div className="hiw2-connector" aria-hidden="true" />
+
+          <div className="hiw2-grid">
+            {HIW_STEPS.map((s, i) => {
+              const isActive = activeStep === i;
+              return (
+                <div
+                  key={i}
+                  className={`hiw2-step${isActive ? " active" : ""}`}
+                  onMouseEnter={() => { setActiveStep(i); setStepPaused(true); }}
+                  onMouseLeave={() => setStepPaused(false)}
+                >
+                  {/* Icon circle */}
+                  <div className="hiw2-icon-wrap">
+                    <div className="hiw2-icon-ring">{s.icon}</div>
+                    <span className="hiw2-num-badge">{i + 1}</span>
+                    {isActive && <div className="hiw2-pulse-ring" />}
+                  </div>
+
+                  {/* Card */}
+                  <div className="hiw2-card">
+                    <div className="hiw2-step-label">STEP {s.num}</div>
+                    <h3 className="hiw2-card-title">{s.title}</h3>
+                    <p className="hiw2-card-desc">{s.desc}</p>
+                    {/* Progress dots */}
+                    <div className="hiw2-dots">
+                      {[0, 1, 2, 3].map(d => (
+                        <div
+                          key={d}
+                          className="hiw2-dot"
+                          style={{
+                            width: d < s.dots ? 16 : 8,
+                            background: d < s.dots ? "var(--blue)" : "#CAEFFF",
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="hiw2-cta-row">
+          <button className="hiw2-btn-primary" onClick={onCTA}>
+            Start Your Journey
+            <span className="hiw2-btn-arrow">→</span>
+          </button>
+          <button className="hiw2-btn-outline" onClick={onCTA}>
+            Talk to an Advisor
+          </button>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+
+/* ─── COMPARISON TABLE DATA ─── */
+const COMPARE_CATS = [
   {
-    num: "01", icon: "🔍",
-    title: "Choose Your Course",
-    desc: "Browse 100+ Microsoft certification courses — Azure Administrator (AZ-104), Azure AI Engineer (AI-102), Security Administrator (SC-300), Power BI (PL-300), and more. Filter by role, level, or exam code. Your advisor helps map the fastest path to your goal.",
-    tags: ["AZ-104", "SC-300", "PL-300", "AI-102", "DP-600"],
+    cat: "Trainer Quality & Credentials",
+    rows: [
+      { label: "MCT-Certified Trainers", koenig:"yes", alp:"partial", legacy:"partial", selfPaced:"no", free:"no" },
+      { label: "Live Instructor-Led Classes", koenig:"yes", alp:"yes", legacy:"yes", selfPaced:"no", free:"no" },
+      { label: "1-on-1 Private Training", koenig:"yes", alp:"no", legacy:"no", selfPaced:"no", free:"no" },
+    ],
   },
   {
-    num: "02", icon: "📅",
-    title: "Pick Your Schedule",
-    desc: "Train on your terms. Choose classroom, live online, 1-on-1 flex, or self-paced. Sessions span time zones — weekday or weekend, morning or evening, we have a slot.",
-    tags: ["Classroom", "Live Online", "1-on-1 Flex", "Self-Paced"],
+    cat: "Microsoft Authorisation",
+    rows: [
+      { label: "Official Microsoft ALP Status", koenig:"yes", alp:"yes", legacy:"partial", selfPaced:"no", free:"yes" },
+      { label: "Official MOC Courseware", koenig:"yes", alp:"yes", legacy:"partial", selfPaced:"no", free:"yes" },
+      { label: "ESI / EA Credits Accepted", koenig:"yes", alp:"yes", legacy:"partial", selfPaced:"no", free:"no" },
+    ],
   },
   {
-    num: "03", icon: "🎓",
-    title: "Learn from Experts",
-    desc: "Train with Microsoft Certified Trainers (MCTs) using official MOC courseware and hands-on Azure labs. Mock exams mirror the real test environment so you walk in prepared.",
-    tags: ["200+ MCTs", "Official MOC", "Hands-on Labs", "Mock Exams"],
+    cat: "Flexibility & Access",
+    rows: [
+      { label: "Flexi / Any-Day Start", koenig:"yes", alp:"no", legacy:"no", selfPaced:"yes", free:"yes" },
+      { label: "On-Site / Fly-Me-A-Trainer", koenig:"yes", alp:"yes", legacy:"yes", selfPaced:"no", free:"no" },
+      { label: "Global Delivery (50+ countries)", koenig:"yes", alp:"partial", legacy:"partial", selfPaced:"yes", free:"yes" },
+    ],
   },
   {
-    num: "04", icon: "🏆",
-    title: "Get Certified",
-    desc: "Sit your Microsoft exam with confidence. Our post-training support and practice tests ensure you're ready. Earn your digital badge and share it on LinkedIn instantly.",
-    tags: ["95% Pass Rate", "Digital Badge", "LinkedIn Ready", "500K+ Alumni"],
-    isLast: true,
+    cat: "Results & Trust",
+    rows: [
+      { label: "Microsoft Exam Pass Rate", koenig:"95%", koenigSub:"vs 60–70% industry avg", alp:"~70–75%", legacy:"Not published", selfPaced:"Not tracked", free:"Variable" },
+      { label: "Entry Price (Fundamentals)", koenig:"~$795", alp:"~$1,500+", legacy:"~$1,400+", selfPaced:"$15–30/mo", free:"Free" },
+      { label: "Verified Student Reviews", koenig:"18,400+ · 4.9★", alp:"Limited", legacy:"Limited", selfPaced:"High volume", free:"N/A" },
+    ],
   },
 ];
 
-function HowItWorksSection() {
-  const secRef = useRef(null);
+const CMP_COLS = [
+  { key:"koenig",    label:"Koenig",              sub:"Official ALP Partner",    isKoenig:true  },
+  { key:"alp",       label:"ALP Provider",        sub:"Other authorised partner",isKoenig:false },
+  { key:"legacy",    label:"Legacy Provider",     sub:"Traditional classroom",   isKoenig:false },
+  { key:"selfPaced", label:"Self-Paced Platform", sub:"On-demand video",         isKoenig:false },
+  { key:"free",      label:"Free Platform",       sub:"Self-study / free tier",  isKoenig:false },
+];
 
-  useEffect(() => {
-    const root = secRef.current;
-    if (!root) return;
+function CmpCell({ value, isKoenig, sub }) {
+  const v = typeof value === "string" ? value.toLowerCase().trim() : "";
+  if (v === "yes") return (
+    <span className="cv-yes" aria-label="Yes">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </span>
+  );
+  if (v === "no") return (
+    <span className="cv-no" aria-label="No">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </span>
+  );
+  if (v === "partial") return <span className="cv-part">Partial</span>;
+  if (isKoenig) return <div><div className="cv-koenig-val">{value}</div>{sub && <div className="cv-koenig-sub">{sub}</div>}</div>;
+  return <span className="cv-other-val">{value}</span>;
+}
 
-    const cards  = root.querySelectorAll('.hiw-reveal');
-    const lines  = root.querySelectorAll('.hiw-line-reveal');
-    const delays = [0, 120, 240, 360];
+// Compute score: count "yes" per column across all rows
+function getScores() {
+  const scores = { koenig:0, alp:0, legacy:0, selfPaced:0, free:0 };
+  COMPARE_CATS.forEach(cat => cat.rows.forEach(row => {
+    Object.keys(scores).forEach(k => { if ((row[k] || "").toLowerCase() === "yes") scores[k]++; });
+  }));
+  return scores;
+}
 
-    const cardObs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('hiw-visible');
-          cardObs.unobserve(e.target);
+function ComparisonTable({ onCTA }) {
+  const scores = getScores();
+  const total = 12;
+  return (
+    <section className="compare-sec" id="compare">
+      <div className="compare-inner">
+        {/* Header */}
+        <motion.div className="compare-header" initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.15}} transition={{duration:0.8,ease:[0.16,1,0.3,1]}}>
+          <div className="compare-eyebrow">
+            <span className="compare-eyebrow-dot" aria-hidden="true"/>
+            The Honest Comparison
+          </div>
+          <div className="compare-title">How Koenig Stacks Up Against <em>Every Alternative</em></div>
+          <p className="compare-sub">Every factor that determines whether you actually pass your Microsoft exam — rated across every training format available.</p>
+        </motion.div>
+
+        {/* Score cards */}
+        <motion.div className="compare-scores" initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.2}} transition={{duration:0.7,delay:0.1}}>
+          {CMP_COLS.map(col => (
+            <div key={col.key} className={`compare-score-card${col.isKoenig ? " is-koenig" : ""}`}>
+              <div className="compare-score-name">{col.label}</div>
+              <div className="compare-score-sub">{col.sub}</div>
+              <div className="compare-score-num">{scores[col.key]}<span style={{fontSize:14,fontWeight:500,opacity:0.6}}>/{total}</span></div>
+              <div className="compare-score-label">{col.isKoenig ? "criteria met ✓" : "criteria met"}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Table */}
+        <motion.div className="compare-table-wrap" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.05}} transition={{duration:0.8,delay:0.15,ease:[0.16,1,0.3,1]}}>
+          <table className="compare-table" role="table">
+            <thead>
+              <tr className="compare-thead">
+                <th>Criteria</th>
+                {CMP_COLS.map(col => (
+                  <th key={col.key} className={col.isKoenig ? "cth-koenig" : ""}>
+                    {col.label}
+                    <span className="cth-sub">{col.sub}</span>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {COMPARE_CATS.map((cat, ci) => (
+                <React.Fragment key={ci}>
+                  <tr className="compare-cat-row">
+                    <td colSpan={6}>{cat.cat}</td>
+                  </tr>
+                  {cat.rows.map((row, ri) => (
+                    <tr key={ri} className="compare-data-row">
+                      <td>{row.label}</td>
+                      {CMP_COLS.map(col => (
+                        <td key={col.key} className={col.isKoenig ? "td-koenig" : ""}>
+                          <CmpCell value={row[col.key]} isKoenig={col.isKoenig} sub={col.isKoenig ? row.koenigSub : undefined} />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </motion.div>
+
+        <p className="compare-footnote">Data sourced from public pricing pages and review platforms. Accurate as of March 2026. Partial = available in select regions only.</p>
+
+        <motion.div className="compare-cta-strip" initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.3}} transition={{duration:0.7,delay:0.2}}>
+          <button className="compare-cta-btn" onClick={onCTA}>Start Training with Koenig →</button>
+          <span className="compare-cta-note">Flexi schedule · MCT trainers · 95% pass rate</span>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ── PRICING TIERS ──
+const PRICING_TIERS = [
+  {
+    id: "fundamentals",
+    name: "FUNDAMENTALS",
+    level: "Entry Level",
+    levelColor: "#10b981",
+    price: 795,
+    period: "per person · USD",
+    courses: "AZ-900 · AI-900 · SC-900 · DP-900 · MS-900",
+    desc: "Build your cloud foundation with Microsoft's entry-level certifications across Azure, AI, Security, and M365.",
+    features: [
+      "MCT-certified live instruction",
+      "Official Microsoft MOC courseware",
+      "Flexi scheduling — start any day",
+      "Exam prep materials & mock tests",
+      "AZ-900, AI-900, SC-900, DP-900, MS-900",
+    ],
+    cardDesc: "Perfect for IT pros entering cloud or preparing for their first Microsoft cert",
+    cta: "Enrol in Fundamentals",
+    isPopular: false,
+  },
+  {
+    id: "associate",
+    name: "ASSOCIATE",
+    level: "Most Popular",
+    levelColor: "#0694D1",
+    price: 1095,
+    period: "per person · USD",
+    courses: "AZ-104 · AZ-204 · SC-300 · AI-102 · DP-203 · PL-300",
+    desc: "Role-based certifications for Azure admins, cloud engineers, security analysts, and data professionals.",
+    features: [
+      "Everything in Fundamentals",
+      "Private 1-on-1 sessions available",
+      "Hands-on Azure lab environment",
+      "MCT-led progress checkpoints",
+      "95% first-attempt exam pass rate",
+      "AZ-104, AZ-204, SC-300, AI-102",
+    ],
+    cardDesc: "Ideal for working IT professionals targeting Azure Administrator, Security, or AI Engineer roles",
+    cta: "Talk to an Advisor",
+    isPopular: true,
+  },
+  {
+    id: "expert",
+    name: "EXPERT",
+    level: "Advanced Level",
+    levelColor: "#f59e0b",
+    price: 1595,
+    period: "per person · USD",
+    courses: "AZ-305 · AZ-400 · AZ-500 · SC-100 · AZ-700",
+    desc: "Expert-level architect and engineering certifications for senior cloud professionals.",
+    features: [
+      "Everything in Associate",
+      "Dedicated MCT solutions architect",
+      "Deep-dive lab scenarios",
+      "Architecture design reviews",
+      "AZ-305, AZ-400, AZ-500, SC-100",
+    ],
+    cardDesc: "For senior engineers and architects targeting the most advanced Microsoft certifications",
+    cta: "Enrol in Expert Track",
+    isPopular: false,
+  },
+];
+
+function PricingTiersSection({ onCTA }) {
+  const sectionRef = React.useRef(null);
+  const confettiFired = React.useRef(false);
+
+  React.useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !confettiFired.current) {
+          confettiFired.current = true;
+          confetti({
+            particleCount: 80,
+            spread: 90,
+            origin: { x: 0.5, y: 0.55 },
+            colors: ["#0694D1","#50e6ff","#10b981","#f59e0b","#fff","#093148"],
+            ticks: 250,
+            gravity: 1.1,
+            decay: 0.94,
+            startVelocity: 32,
+            shapes: ["circle"],
+          });
         }
-      }),
-      { rootMargin: '0px 0px -80px 0px', threshold: 0.15 }
+      },
+      { threshold: 0.3 }
     );
-
-    const lineObs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('hiw-visible');
-          lineObs.unobserve(e.target);
-        }
-      }),
-      { rootMargin: '0px 0px -60px 0px', threshold: 0.5 }
-    );
-
-    cards.forEach((el, i) => {
-      el.style.animationDelay = (delays[i] ?? 0) + 'ms';
-      cardObs.observe(el);
-    });
-    lines.forEach((el) => {
-      el.style.animationDelay = '60ms';
-      lineObs.observe(el);
-    });
-
-    return () => { cardObs.disconnect(); lineObs.disconnect(); };
+    observer.observe(el);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section className="hiw-sec" ref={secRef}>
-
-
-      {/* Header */}
-      <div className="hiw-header hiw-reveal">
-        <div className="sec-title">
-          <TextShimmer as="span" duration={2.5} spread={2} style={{display:"block"}}>How to Get Microsoft Certified</TextShimmer>
+    <section className="pricing-sec" id="pricing" ref={sectionRef}>
+      <div className="pricing-inner">
+        <div className="pricing-trust-strip">
+          <span>Microsoft Partner of the Year FY24</span>
+          <span className="pts-dot" aria-hidden="true">·</span>
+          <span>95% Exam Pass Rate</span>
+          <span className="pts-dot" aria-hidden="true">·</span>
+          <span>500,000+ Certified</span>
+          <span className="pts-dot" aria-hidden="true">·</span>
+          <span>50+ Countries</span>
         </div>
-        <div className="sec-sub" style={{margin:"12px auto 0", textAlign:"center", maxWidth:520}}>
-          From choosing a Microsoft certification track to passing your exam — four guided steps with your MCT every stage of the way.
-        </div>
-      </div>
+        <motion.h2 className="sec-title pricing-h2" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.3}} transition={{duration:0.7}}>
+          Transparent Pricing. <em>No Surprises.</em>
+        </motion.h2>
+        <p className="pricing-sub">{"Choose the certification level that matches your career goal.\nAll courses are MCT-led with official Microsoft courseware and flexi scheduling."}</p>
 
-      {/* Vertical steps */}
-      <div className="hiw-steps-wrap">
-        {HIW_STEPS.map((s, i) => (
-          <React.Fragment key={i}>
-            <div className={`hiw-card-border hiw-reveal${s.isLast ? ' hiw-last' : ''}`}>
-              <div className="hiw-card-inner">
-                {/* Step badge */}
-                <div className="hiw-step-badge">{s.num}</div>
-                {/* Body */}
-                <div className="hiw-card-body">
-                  <div className="hiw-card-head">
-                    <div className="hiw-card-icon">{s.icon}</div>
-                    <div className="hiw-card-title">{s.title}</div>
-                  </div>
-                  <div className="hiw-card-desc">{s.desc}</div>
-                  <div className="hiw-card-tags">
-                    {s.tags.map((t) => (
-                      <span key={t} className="hiw-card-tag">{t}</span>
-                    ))}
-                  </div>
+        <div className="pricing-grid" style={{marginTop: 52}}>
+          {PRICING_TIERS.map((tier, i) => (
+            <motion.div
+              key={tier.id}
+              className={`pricing-card${tier.isPopular ? " pricing-featured" : ""} pricing-card-side`}
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{
+                y: tier.isPopular ? -20 : 0,
+                opacity: 1,
+                x: i === 2 ? -20 : i === 0 ? 20 : 0,
+                scale: (i === 0 || i === 2) ? 0.95 : 1,
+              }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 1.4, type: "spring", stiffness: 90, damping: 28, delay: 0.3 }}
+              style={{ transformOrigin: i === 0 ? "right center" : i === 2 ? "left center" : "center" }}
+            >
+              {tier.isPopular && (
+                <div className="pricing-badge">
+                  <Star className="pricing-badge-star" />
+                  <span>Most Popular</span>
                 </div>
-              </div>
-            </div>
+              )}
 
-            {/* Connector between steps */}
-            {!s.isLast && (
-              <div className="hiw-connector-v hiw-line-reveal">
-                <div className="hiw-connector-line"/>
-                <div className="hiw-connector-dot"/>
-                <div className="hiw-connector-line"/>
+              {/* Level pill */}
+              <div className="pricing-level-pill" style={{
+                color: tier.isPopular ? "rgba(255,255,255,0.9)" : tier.levelColor,
+                background: tier.isPopular ? "rgba(255,255,255,0.15)" : `${tier.levelColor}14`,
+                borderColor: tier.isPopular ? "rgba(255,255,255,0.3)" : `${tier.levelColor}40`,
+              }}>
+                <span style={{width:5,height:5,borderRadius:"50%",background:tier.isPopular?"#fff":tier.levelColor,display:"inline-block"}}/>
+                {tier.level}
               </div>
-            )}
-          </React.Fragment>
+
+              <div className="pricing-name">{tier.name}</div>
+
+              <div className="pricing-amount-row">
+                <span className="pricing-amount">
+                  <NumberFlow
+                    value={tier.price}
+                    format={{ style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 }}
+                    transformTiming={{ duration: 600, easing: "ease-out" }}
+                    willChange
+                  />
+                </span>
+                <span className="pricing-amount-period">/ {tier.period}</span>
+              </div>
+              <p className="pricing-billed">billed per enrolment · exam fee separate</p>
+
+              <p className="pricing-desc">{tier.desc}</p>
+
+              {/* Course codes strip */}
+              <div style={{fontSize:10,fontWeight:700,letterSpacing:"0.06em",
+                color: tier.isPopular ? "rgba(255,255,255,0.65)" : "#8faabf",
+                background: tier.isPopular ? "rgba(255,255,255,0.1)" : "rgba(6,148,209,0.05)",
+                border: `1px solid ${tier.isPopular ? "rgba(255,255,255,0.15)" : "rgba(6,148,209,0.12)"}`,
+                borderRadius:7, padding:"5px 10px", marginBottom:16, fontFamily:"monospace",
+              }}>
+                {tier.courses}
+              </div>
+
+              <ul className="pricing-features">
+                {tier.features.map(f => (
+                  <li key={f}>
+                    <Check className="pf-check" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <hr className="pricing-hr" />
+
+              <button className="pricing-cta-btn" onClick={onCTA}>{tier.cta}</button>
+              <p className="pricing-card-desc">{tier.cardDesc}</p>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Enterprise strip */}
+        <motion.div
+          initial={{opacity:0, y:24}}
+          whileInView={{opacity:1, y:0}}
+          viewport={{once:true, amount:0.4}}
+          transition={{duration:0.7, delay:0.4}}
+          style={{
+            marginTop: 32,
+            background: "linear-gradient(135deg, #071e2e 0%, #093148 100%)",
+            borderRadius: 20,
+            padding: "28px 36px",
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            flexWrap: "wrap", gap: 20,
+            boxShadow: "0 8px 40px rgba(6,148,209,0.12)",
+            border: "1px solid rgba(6,148,209,0.2)",
+          }}
+        >
+          <div>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
+              <span style={{fontSize:10,fontWeight:700,letterSpacing:"0.12em",textTransform:"uppercase",
+                color:"#50e6ff",background:"rgba(80,230,255,0.1)",border:"1px solid rgba(80,230,255,0.25)",
+                borderRadius:20,padding:"3px 10px"}}>
+                ENTERPRISE
+              </span>
+              <span style={{fontSize:11,color:"rgba(255,255,255,0.45)",fontWeight:500}}>Custom Pricing · Teams of 5+</span>
+            </div>
+            <div style={{fontSize:20,fontWeight:800,color:"#fff",marginBottom:4,letterSpacing:"-0.02em"}}>
+              Upskill your entire team at scale
+            </div>
+            <div style={{fontSize:13,color:"rgba(255,255,255,0.55)",lineHeight:1.55}}>
+              Microsoft EA / ESI credits accepted — may reduce cost to <strong style={{color:"#50e6ff"}}>$0</strong>. Dedicated account manager, Fly-Me-A-Trainer, custom LMS integration &amp; multi-country rollouts.
+            </div>
+          </div>
+          <div style={{display:"flex",gap:12,flexWrap:"wrap",flexShrink:0}}>
+            <button onClick={onCTA} style={{
+              padding:"11px 24px",borderRadius:10,background:"#0694D1",border:"none",
+              color:"#fff",fontSize:14,fontWeight:700,cursor:"pointer",fontFamily:"inherit",
+              boxShadow:"0 4px 16px rgba(6,148,209,0.35)",whiteSpace:"nowrap",
+            }}>
+              Request Enterprise Quote →
+            </button>
+            <button onClick={onCTA} style={{
+              padding:"11px 22px",borderRadius:10,
+              background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.18)",
+              color:"rgba(255,255,255,0.85)",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit",
+              whiteSpace:"nowrap",
+            }}>
+              Talk to Sales
+            </button>
+          </div>
+        </motion.div>
+
+        <p className="pricing-footnote">MCT trainers included · Official Microsoft courseware · Exam fee (~$165) billed separately · Group discounts available · Prices in USD</p>
+      </div>
+    </section>
+  );
+}
+
+// ── LEARNING FORMATS ──
+const LF_FORMATS = [
+  {
+    name: "Classroom Training",
+    badge: "Most Popular",
+    panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
+    desc: "Traditional, instructor-led learning in popular global destinations.",
+    bullets: ["Hands-on lab sessions", "Face-to-face with expert instructors", "Global training centers"],
+    illustration: (
+      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
+        {/* Room background */}
+        <rect width="260" height="176" fill="url(#cls-bg)"/>
+        <defs>
+          <linearGradient id="cls-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#0a2e48"/><stop offset="1" stopColor="#072540"/>
+          </linearGradient>
+        </defs>
+        {/* Subtle grid floor */}
+        <line x1="0" y1="130" x2="260" y2="130" stroke="rgba(6,148,209,0.12)" strokeWidth="1"/>
+        <line x1="0" y1="155" x2="260" y2="155" stroke="rgba(6,148,209,0.08)" strokeWidth="1"/>
+        {/* Whiteboard */}
+        <rect x="30" y="18" width="200" height="80" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5"/>
+        <rect x="40" y="28" width="180" height="60" rx="2" fill="rgba(6,148,209,0.05)"/>
+        {/* Board content - code lines */}
+        <rect x="50" y="35" width="80" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
+        <rect x="50" y="44" width="110" height="3" rx="1.5" fill="rgba(255,255,255,0.2)"/>
+        <rect x="60" y="53" width="90" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
+        <rect x="60" y="62" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
+        <rect x="50" y="71" width="50" height="3" rx="1.5" fill="rgba(6,148,209,0.4)"/>
+        {/* Presenter */}
+        <circle cx="215" cy="55" r="10" fill="rgba(6,148,209,0.25)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+        <path d="M207 75c0-4.4 3.6-8 8-8h0c4.4 0 8 3.6 8 8" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        {/* Desk row */}
+        <rect x="20" y="128" width="220" height="6" rx="2" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
+        {/* Seated students */}
+        {[50,110,170].map(x => (
+          <g key={x}>
+            <circle cx={x} cy="118" r="8" fill="rgba(6,148,209,0.3)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+            <rect x={x-12} y="128" width="24" height="4" rx="1" fill="rgba(6,148,209,0.1)"/>
+          </g>
+        ))}
+        {/* Laptop screens on desk */}
+        {[50,110,170].map(x => (
+          <rect key={`lap-${x}`} x={x-8} y="110" width="16" height="10" rx="1" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        ))}
+        {/* Ceiling lights */}
+        <ellipse cx="130" cy="4" rx="40" ry="6" fill="rgba(6,148,209,0.08)"/>
+        <line x1="130" y1="4" x2="130" y2="18" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
+        <rect x="110" y="8" width="40" height="5" rx="2" fill="rgba(255,255,255,0.06)" stroke="rgba(6,148,209,0.2)" strokeWidth="0.8"/>
+        {/* Certificate icon bottom-right */}
+        <rect x="218" y="140" width="28" height="22" rx="3" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.4)" strokeWidth="1"/>
+        <path d="M223 152l2.5 2.5 5-5" stroke="#0694d1" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="237" cy="150" r="3" fill="rgba(6,148,209,0.3)"/>
+      </svg>
+    ),
+    icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>),
+  },
+  {
+    name: "Live Online Classes",
+    badge: "Best Value",
+    panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
+    desc: "Flexible virtual learning with expert instructors from the comfort of your own space.",
+    bullets: ["Live instructor-led sessions", "Interactive Q&A & labs", "Train from anywhere"],
+    illustration: (
+      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
+        <defs>
+          <linearGradient id="loc-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#0a3d5c"/><stop offset="1" stopColor="#072d44"/>
+          </linearGradient>
+        </defs>
+        <rect width="260" height="176" fill="url(#loc-bg)"/>
+        {/* Laptop body */}
+        <rect x="45" y="30" width="170" height="105" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(6,148,209,0.35)" strokeWidth="1.5"/>
+        {/* Screen */}
+        <rect x="55" y="40" width="150" height="85" rx="4" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.25)" strokeWidth="1"/>
+        {/* Video grid 2x2 */}
+        <rect x="60" y="45" width="68" height="36" rx="3" fill="rgba(6,148,209,0.18)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        <rect x="132" y="45" width="68" height="36" rx="3" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        <rect x="60" y="85" width="68" height="36" rx="3" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        <rect x="132" y="85" width="68" height="36" rx="3" fill="rgba(6,148,209,0.18)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        {/* Avatars in video tiles */}
+        {[[94,63],[166,63],[94,103],[166,103]].map(([cx,cy],i) => (
+          <g key={i}>
+            <circle cx={cx} cy={cy-4} r="7" fill={i===0||i===3 ? "rgba(6,148,209,0.5)" : "rgba(255,255,255,0.15)"} stroke="rgba(6,148,209,0.4)" strokeWidth="0.8"/>
+            <path d={`M${cx-8} ${cy+10}c0-4.4 3.6-8 8-8s8 3.6 8 8`} stroke="rgba(6,148,209,0.35)" strokeWidth="1" fill="none"/>
+          </g>
+        ))}
+        {/* Live badge on top-right tile */}
+        <rect x="170" y="49" width="24" height="10" rx="5" fill="#ef4444"/>
+        <text x="182" y="57" textAnchor="middle" fontSize="6" fill="white" fontFamily="sans-serif">LIVE</text>
+        {/* Mic icon bottom */}
+        <rect x="110" y="132" width="40" height="5" rx="2" fill="rgba(6,148,209,0.2)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
+        {/* Keyboard */}
+        <rect x="30" y="140" width="200" height="28" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
+        {[40,60,80,100,120,140,160,180,200].map(x => (
+          <rect key={x} x={x} y="148" width="12" height="8" rx="1.5" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.12)" strokeWidth="0.5"/>
+        ))}
+        {/* WiFi signal */}
+        <path d="M228 25c-5-5-12-8-20-8s-15 3-20 8" stroke="rgba(6,148,209,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <path d="M223 30c-3.5-3.5-8-5.5-15-5.5s-11.5 2-15 5.5" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+        <circle cx="208" cy="35" r="2.5" fill="#0694d1"/>
+      </svg>
+    ),
+    icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="2" y1="16" x2="22" y2="16"/></svg>),
+  },
+  {
+    name: "Fly-Me-A-Trainer (FMAT)",
+    badge: "Fastest",
+    panelBg: "linear-gradient(145deg,#0c4a72,#093148)",
+    desc: "Flexible on-site learning for larger groups. Fly an expert to your location anywhere in the world.",
+    bullets: ["Expert trainer at your site", "Custom schedule & pace", "Any location worldwide"],
+    illustration: (
+      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
+        <defs>
+          <linearGradient id="fmat-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#0c4a72"/><stop offset="1" stopColor="#093148"/>
+          </linearGradient>
+        </defs>
+        <rect width="260" height="176" fill="url(#fmat-bg)"/>
+        {/* Globe */}
+        <circle cx="130" cy="95" r="55" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.3)" strokeWidth="1.5"/>
+        <ellipse cx="130" cy="95" rx="30" ry="55" fill="none" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
+        <ellipse cx="130" cy="95" rx="55" ry="18" fill="none" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
+        <ellipse cx="130" cy="95" rx="55" ry="36" fill="none" stroke="rgba(6,148,209,0.1)" strokeWidth="0.8"/>
+        <line x1="75" y1="95" x2="185" y2="95" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
+        {/* Continents (simplified) */}
+        <ellipse cx="110" cy="82" rx="14" ry="10" fill="rgba(6,148,209,0.25)" opacity="0.7"/>
+        <ellipse cx="148" cy="100" rx="12" ry="9" fill="rgba(6,148,209,0.2)" opacity="0.7"/>
+        <ellipse cx="118" cy="108" rx="8" ry="6" fill="rgba(6,148,209,0.18)" opacity="0.7"/>
+        {/* Flight path */}
+        <path d="M75 120 Q130 30 185 70" stroke="#0694d1" strokeWidth="1.5" strokeDasharray="5 3" fill="none" opacity="0.7"/>
+        {/* Plane */}
+        <g transform="translate(155,58) rotate(-35)">
+          <path d="M0 0L-12 5L-10 0L-12 -5Z" fill="#0694d1" opacity="0.9"/>
+          <path d="M-8 -2L-14 -8L-16 -6L-10 0Z" fill="rgba(6,148,209,0.6)"/>
+          <path d="M-8 2L-14 8L-16 6L-10 0Z" fill="rgba(6,148,209,0.6)"/>
+        </g>
+        {/* Location pins */}
+        <path d="M82 118c0-5.5 4.5-10 10-10s10 4.5 10 10c0 7-10 15-10 15s-10-8-10-15z" fill="rgba(6,148,209,0.3)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+        <circle cx="92" cy="118" r="3" fill="#0694d1"/>
+        <path d="M168 62c0-4 3-7 7-7s7 3 7 7c0 5-7 11-7 11s-7-6-7-11z" fill="#0694d1" opacity="0.7" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+        <circle cx="175" cy="62" r="2" fill="#fff" opacity="0.8"/>
+      </svg>
+    ),
+    icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 19-7z"/></svg>),
+  },
+  {
+    name: "Flexi (Self-Paced Learning)",
+    badge: "Most Flexible",
+    panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
+    desc: "Self-paced learning with edited lectures, courseware, hands-on labs, and optional doubt clearing sessions.",
+    bullets: ["Edited video lectures", "Hands-on labs & courseware", "Optional doubt clearing sessions"],
+    illustration: (
+      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
+        <defs>
+          <linearGradient id="flexi-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#0a3d5c"/><stop offset="1" stopColor="#072d44"/>
+          </linearGradient>
+        </defs>
+        <rect width="260" height="176" fill="url(#flexi-bg)"/>
+        {/* Central clock */}
+        <circle cx="130" cy="85" r="50" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.3)" strokeWidth="1.5"/>
+        <circle cx="130" cy="85" r="42" fill="none" stroke="rgba(6,148,209,0.12)" strokeWidth="1"/>
+        {/* Clock ticks */}
+        {[0,30,60,90,120,150,180,210,240,270,300,330].map(deg => {
+          const r1 = 36, r2 = 42;
+          const rad = (deg - 90) * Math.PI / 180;
+          const long = deg % 90 === 0;
+          return <line key={deg} x1={130+r1*Math.cos(rad)} y1={85+r1*Math.sin(rad)} x2={130+r2*Math.cos(rad)} y2={85+r2*Math.sin(rad)} stroke="rgba(6,148,209,0.4)" strokeWidth={long?1.5:0.8} strokeLinecap="round"/>;
+        })}
+        {/* Clock hands */}
+        <line x1="130" y1="85" x2="130" y2="60" stroke="#0694d1" strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="130" y1="85" x2="148" y2="90" stroke="rgba(6,148,209,0.7)" strokeWidth="2" strokeLinecap="round"/>
+        <circle cx="130" cy="85" r="3.5" fill="#0694d1"/>
+        {/* Progress arc */}
+        <path d="M130 43a42 42 0 0 1 36.4 21" stroke="#0694d1" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7"/>
+        {/* Floating cards left */}
+        <rect x="18" y="40" width="70" height="42" rx="6" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="1"/>
+        <rect x="26" y="50" width="40" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
+        <rect x="26" y="58" width="54" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
+        <rect x="26" y="64" width="44" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
+        <rect x="26" y="72" width="24" height="4" rx="2" fill="rgba(6,148,209,0.3)"/>
+        {/* Floating cards right */}
+        <rect x="172" y="100" width="70" height="42" rx="6" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="1"/>
+        <rect x="180" y="110" width="40" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
+        <rect x="180" y="118" width="54" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
+        <rect x="180" y="124" width="44" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
+        <path d="M180 132l2.5 2.5 5-5" stroke="#0694d1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+        {/* Stars */}
+        {[[45,155],[90,165],[145,165],[200,155]].map(([x,y],i) => (
+          <text key={i} x={x} y={y} fontSize="12" fill="rgba(6,148,209,0.5)" textAnchor="middle">★</text>
+        ))}
+      </svg>
+    ),
+    icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>),
+  },
+];
+
+// hex tile SVG pattern (inline data URI)
+const HEX_PATTERN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V17L28 1L56 17V50L28 66Z' stroke='%230694d1' stroke-opacity='0.10' stroke-width='1' fill='none'/%3E%3Cpath d='M28 100L0 84V50L28 66L56 50V84L28 100Z' stroke='%230694d1' stroke-opacity='0.10' stroke-width='1' fill='none'/%3E%3C/svg%3E\")";
+
+function LearningFormatsSection({ onCTA }) {
+  return (
+    <section className="lfr-sec-outer" style={{ position:"relative", overflow:"hidden", background:"linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%)" }}>
+
+      {/* Inline styles for flip mechanism — isolated class names to avoid conflicts */}
+      <style>{`
+        .lfr-sec-outer { padding: clamp(40px,7vw,60px) clamp(16px,4vw,50px); }
+        .lfr-inner { transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.4,0.2,0.2,1); }
+        .lfr-wrap:hover .lfr-inner { transform: rotateY(180deg); }
+        .lfr-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+        .lfr-back { transform: rotateY(180deg); }
+        @keyframes lfrRipple { 0%{transform:translate(-50%,-50%) scale(0.25);opacity:0.55} 100%{transform:translate(-50%,-50%) scale(2.8);opacity:0} }
+        .lfr-ring { position:absolute; border-radius:50%; pointer-events:none; border:1px solid rgba(6,148,209,0.35); animation:lfrRipple 5s ease-out infinite; }
+        .lfr-ring.d1{animation-delay:0s} .lfr-ring.d2{animation-delay:1.6s} .lfr-ring.d3{animation-delay:3.2s}
+        @keyframes lfrBtnGlow { 0%,100%{box-shadow:0 0 0 0 rgba(6,148,209,0),0 4px 14px rgba(6,148,209,0.3)} 50%{box-shadow:0 0 22px 7px rgba(6,148,209,0.5),0 4px 14px rgba(6,148,209,0.3)} }
+        .lfr-btn-glow { animation:lfrBtnGlow 2.8s ease-in-out infinite; }
+        @media(max-width:1024px){ .lfr-grid{grid-template-columns:repeat(2,1fr)!important} }
+        @media(max-width:640px){ .lfr-grid{grid-template-columns:1fr!important} .lfr-wrap{height:380px!important} }
+        @media(max-width:480px){ .lfr-wrap{height:340px!important} }
+      `}</style>
+
+      {/* Glow orbs */}
+      <div style={{ position:"absolute", inset:0, pointerEvents:"none" }}>
+        <div style={{ position:"absolute", top:-80, left:"25%", width:380, height:380, borderRadius:"50%", opacity:0.25, background:"radial-gradient(circle,#0694d1,transparent 70%)", filter:"blur(60px)" }} />
+        <div style={{ position:"absolute", bottom:0, right:"25%", width:320, height:320, borderRadius:"50%", opacity:0.2, background:"radial-gradient(circle,#076d9d,transparent 70%)", filter:"blur(55px)" }} />
+        <div style={{ position:"absolute", top:"50%", left:40, transform:"translateY(-50%)", width:200, height:200, borderRadius:"50%", opacity:0.15, background:"radial-gradient(circle,#00a4ef,transparent 70%)", filter:"blur(45px)" }} />
+        <div style={{ position:"absolute", top:"33%", right:40, width:180, height:180, borderRadius:"50%", opacity:0.15, background:"radial-gradient(circle,#0694d1,transparent 70%)", filter:"blur(40px)" }} />
+        {["d1","d2","d3"].map(d => (
+          <div key={d} className={`lfr-ring ${d}`} style={{ top:"50%", left:"50%", width:420, height:420 }} />
         ))}
       </div>
+
+      <div style={{ position:"relative", maxWidth:1280, margin:"0 auto" }}>
+        {/* Header */}
+        <motion.div style={{ textAlign:"center", marginBottom:35 }} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.2}} transition={{duration:0.7}}>
+          <span style={{ display:"inline-block", background:"rgba(6,148,209,0.18)", color:"#0694d1", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", padding:"6px 16px", borderRadius:20, marginBottom:12 }}>
+            Learning Formats
+          </span>
+          <h2 style={{ fontSize:"clamp(22px,2.8vw,36px)", fontWeight:800, color:"#fff", lineHeight:1.2, marginBottom:12 }}>
+            Learning That{" "}
+            <span style={{ background:"linear-gradient(90deg,#0694D1,#38bdf8)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
+              Fits Your Life
+            </span>
+          </h2>
+          <p style={{ fontSize:14, color:"rgba(255,255,255,0.55)", lineHeight:1.65, maxWidth:560, margin:"0 auto" }}>
+            Four formats. One quality standard. Every option comes with the same expert instructors, official courseware, and money-back guarantee.
+          </p>
+        </motion.div>
+
+        {/* 4-column flip card grid */}
+        <div className="lfr-grid" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:20 }}>
+          {LF_FORMATS.map((f, i) => (
+            <motion.div
+              key={i}
+              className="lfr-wrap"
+              style={{ perspective:"1000px", height:400, cursor:"pointer" }}
+              initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.1}} transition={{duration:0.55,delay:i*0.1}}
+            >
+              <div className="lfr-inner" style={{ position:"relative", width:"100%", height:"100%" }}>
+
+                {/* ── FRONT ── */}
+                <div
+                  className="lfr-face"
+                  style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", overflow:"hidden", borderRadius:16, background:f.panelBg, border:"1px solid rgba(6,148,209,0.22)" }}
+                >
+                  {/* Illustrated image panel */}
+                  <div style={{ position:"relative", height:176, width:"100%", flexShrink:0, overflow:"hidden" }}>
+                    {f.illustration}
+                    <span style={{ position:"absolute", left:12, top:12, zIndex:2, fontSize:11, fontWeight:400, padding:"4px 12px", borderRadius:20, background:"rgba(9,49,72,0.55)", backdropFilter:"blur(6px)", color:"#fff" }}>
+                      {f.badge}
+                    </span>
+                  </div>
+                  {/* Front text + CTA */}
+                  <div style={{ flex:1, display:"flex", flexDirection:"column", padding:"16px 20px 0" }}>
+                    <h3 style={{ fontSize:15, fontWeight:500, color:"#fff", marginBottom:8, lineHeight:1.3 }}>{f.name}</h3>
+                    <p style={{ fontSize:12.5, color:"rgba(255,255,255,0.6)", lineHeight:1.65, flex:1, fontWeight:300 }}>{f.desc}</p>
+                    <div style={{ padding:"20px 0" }}>
+                      <button
+                        className="lfr-btn-glow"
+                        onClick={onCTA}
+                        style={{ display:"block", width:"100%", padding:10, borderRadius:12, border:"none", background:"linear-gradient(135deg,#0694d1,#076d9d)", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", textAlign:"center", fontFamily:"inherit" }}
+                      >
+                        Learn More →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── BACK ── */}
+                <div
+                  className="lfr-face lfr-back"
+                  style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", borderRadius:16, padding:20, background:f.panelBg, border:"1px solid rgba(6,148,209,0.35)" }}
+                >
+                  {/* Icon + title row */}
+                  <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+                    <div style={{ width:40, height:40, borderRadius:12, background:"rgba(6,148,209,0.18)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      {f.icon}
+                    </div>
+                    <h3 style={{ fontSize:14, fontWeight:700, color:"#fff", lineHeight:1.3 }}>{f.name}</h3>
+                  </div>
+                  {/* Divider */}
+                  <div style={{ height:1, background:"rgba(6,148,209,0.25)", marginBottom:16 }} />
+                  {/* Bullet list */}
+                  <ul style={{ listStyle:"none", padding:0, margin:"0 0 auto", display:"flex", flexDirection:"column", gap:10 }}>
+                    {f.bullets.map(b => (
+                      <li key={b} style={{ display:"flex", alignItems:"center", gap:10, fontSize:13, color:"rgba(255,255,255,0.78)", lineHeight:1.4 }}>
+                        <svg width="17" height="17" viewBox="0 0 17 17" fill="none" style={{ flexShrink:0 }}>
+                          <circle cx="8.5" cy="8.5" r="8" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+                          <path d="M5.5 8.5l2 2 4-4" stroke="#0694d1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                        {b}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* Back CTA */}
+                  <button
+                    className="lfr-btn-glow"
+                    onClick={onCTA}
+                    style={{ marginTop:20, display:"block", width:"100%", padding:10, borderRadius:12, border:"none", background:"linear-gradient(135deg,#0694d1,#076d9d)", color:"#fff", fontSize:13, fontWeight:700, cursor:"pointer", textAlign:"center", fontFamily:"inherit" }}
+                  >
+                    Learn More →
+                  </button>
+                </div>
+
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── UPCOMING BATCHES ──
+const MS_BATCHES = [
+  { name:"Azure Solutions Architect Expert", code:"AZ-305", date:"Mar 3, 2026",  days:5, format:"Live Online",          tz:"IST / GST / GMT",  seats:2, level:"expert" },
+  { name:"Microsoft Azure Administrator",    code:"AZ-104", date:"Mar 8, 2026",  days:5, format:"Live Online",          tz:"IST / EST / GMT",  seats:5, level:"assoc"  },
+  { name:"Azure Security Technologies",      code:"AZ-500", date:"Mar 12, 2026", days:4, format:"Classroom — Dubai",   tz:"IST / GST",        seats:3, level:"assoc"  },
+  { name:"Azure Fundamentals",               code:"AZ-900", date:"Mar 17, 2026", days:3, format:"Live Online",          tz:"All timezones",    seats:8, level:"fund"   },
+  { name:"Microsoft 365 Administrator",      code:"MS-102", date:"Mar 19, 2026", days:5, format:"Live Online",          tz:"IST / GST",        seats:4, level:"assoc"  },
+  { name:"Azure DevOps Engineer Expert",     code:"AZ-400", date:"Mar 24, 2026", days:5, format:"Classroom — London",  tz:"GMT",              seats:2, level:"expert" },
+];
+
+function UpcomingBatchesSection({ onCTA }) {
+  return (
+    <section className="batches-sec">
+      <div className="batches-inner">
+        <div className="batches-hd">
+          <motion.div initial={{opacity:0,y:18}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.2}} transition={{duration:0.65}}>
+            <div className="batches-eyebrow">Guaranteed Schedules</div>
+            <h2 className="batches-h2">Upcoming Batches — <em>March 2026</em></h2>
+            <p className="batches-sub">Every batch listed here is guaranteed to run. No cancellations.</p>
+          </motion.div>
+          <motion.button className="batches-view-all" onClick={onCTA} initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}} viewport={{once:true,amount:0.2}} transition={{duration:0.65,delay:0.1}}>
+            View Full Schedule
+            <span className="batches-view-all-arrow">→</span>
+          </motion.button>
+        </div>
+        <div className="batches-grid">
+          {MS_BATCHES.map((s, i) => {
+            const online = s.format === "Live Online";
+            const urgent = s.seats <= 3;
+            return (
+              <motion.div key={i} className="batch-card" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.1}} transition={{duration:0.5,delay:i*0.08}} onClick={onCTA}>
+                {/* Row 1 — badges + seats */}
+                <div className="batch-card-row1">
+                  <div className="batch-badges">
+                    <span className="batch-vendor-badge">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                      Microsoft
+                    </span>
+                    <span className={`batch-format-badge ${online ? "batch-format-online" : "batch-format-class"}`}>
+                      {online
+                        ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+                        : <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                      }
+                      {online ? "Live Online" : "Classroom"}
+                    </span>
+                  </div>
+                  <span className={`batch-seats ${urgent ? "batch-seats-low" : "batch-seats-ok"}`} style={urgent ? {animation:"livePulse 1.5s infinite"} : {}}>
+                    {s.seats} seats left
+                  </span>
+                </div>
+                {/* Row 2 — course name */}
+                <div className="batch-name">{s.name}</div>
+                {/* Row 3 — meta */}
+                <div className="batch-meta">
+                  <span className="batch-meta-item">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    {s.date}
+                  </span>
+                  <span>·</span>
+                  <span className="batch-meta-item">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {s.days * 8} Hrs ({s.days} days)
+                  </span>
+                  <span>·</span>
+                  <span className="batch-meta-item" style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:120}}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    {s.tz}
+                  </span>
+                </div>
+                {/* Row 4 — footer */}
+                <div className="batch-footer">
+                  <div>
+                    <div className="batch-location-label">Location</div>
+                    <div className="batch-location-val">
+                      {online
+                        ? <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="2" y1="16" x2="22" y2="16"/></svg>
+                        : <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      }
+                      {s.format}
+                    </div>
+                  </div>
+                  <button className="batch-reserve-btn" onClick={e=>{e.stopPropagation();onCTA();}}>Reserve My Seat →</button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── WEBINARS ──
+const MS_WEBINARS = [
+  { speaker:"Rahul Sharma",        initials:"RS", avatarBg:"linear-gradient(135deg,#0694D1,#50e6ff)",  title:"Create Smart Bots with Microsoft Power Virtual Agents for Enterprise Teams",  date:"Mar 7, 2026",  time:"7:00 PM IST" },
+  { speaker:"Omar Abdullah",       initials:"OA", avatarBg:"linear-gradient(135deg,#093148,#0694d1)", title:"DevOps Pipelines with Azure DevOps — CI/CD Best Practices for 2026",             date:"Mar 21, 2026", time:"6:00 PM GST" },
+  { speaker:"Mayur Kotoky",        initials:"MK", avatarBg:"linear-gradient(135deg,#076D9D,#4DBFEF)", title:"Microsoft Copilot Studio: Build Enterprise AI Agents Without Code",              date:"Mar 28, 2026", time:"7:00 PM IST" },
+  { speaker:"Priya Nair",          initials:"PN", avatarBg:"linear-gradient(135deg,#0694D1,#093148)", title:"AZ-305 Exam Deep Dive: Azure Solutions Architect Expert Prep Session",           date:"Apr 3, 2026",  time:"7:00 PM IST" },
+  { speaker:"Anjali Singh",        initials:"AS", avatarBg:"linear-gradient(135deg,#0a2c47,#0694D1)", title:"Microsoft Defender XDR & Sentinel: Mastering Modern Security Operations",       date:"Apr 9, 2026",  time:"5:00 PM GST" },
+  { speaker:"David Chen",          initials:"DC", avatarBg:"linear-gradient(135deg,#0694D1,#076D9D)", title:"Power BI for Azure Data Engineers: From Raw Data to Executive Dashboards",       date:"Apr 15, 2026", time:"7:00 PM IST" },
+];
+
+function WebinarsSection({ onCTA }) {
+  const [start, setStart] = React.useState(0);
+  const perPage = 3;
+  const total = Math.ceil(MS_WEBINARS.length / perPage);
+  const atEnd = start + perPage >= MS_WEBINARS.length;
+
+  return (
+    <section className="webinars-sec">
+      {/* Glow blobs */}
+      <div style={{position:"absolute",inset:0,pointerEvents:"none"}}>
+        <div style={{position:"absolute",left:"-128px",top:0,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(6,148,209,0.18) 0%,transparent 70%)"}} />
+        <div style={{position:"absolute",right:"-80px",bottom:0,width:350,height:350,borderRadius:"50%",background:"radial-gradient(circle,rgba(77,191,239,0.2) 0%,transparent 70%)"}} />
+      </div>
+
+      <div className="webinars-inner">
+        <motion.div className="webinars-center-hd" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.2}} transition={{duration:0.7}}>
+          <h2 className="webinars-h2">Join Our Live <em>Expert Webinars</em></h2>
+          <p className="webinars-sub">Free live sessions led by certified instructors — register and attend from anywhere</p>
+        </motion.div>
+
+        {/* Cards — 3 per page */}
+        <div className="webinars-grid">
+          {MS_WEBINARS.slice(start, start + perPage).map((w, i) => (
+            <div key={`${start}-${i}`} className="webinar-card" style={{animation:`cardFadeUp 0.4s cubic-bezier(0.22,1,0.36,1) ${i*0.08}s both`}}>
+              {/* Speaker panel */}
+              <div className="webinar-speaker-panel" style={{ backgroundImage: HEX_PATTERN, backgroundSize:"56px 100px" }}>
+                {/* Vendor badge — MS 4-square logo */}
+                <div className="webinar-vendor-badge">
+                  {/* 4-square logo */}
+                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+                    <rect x="0"  y="0"  width="16" height="16" fill="#f25022"/>
+                    <rect x="18" y="0"  width="16" height="16" fill="#7fba00"/>
+                    <rect x="0"  y="18" width="16" height="16" fill="#00a4ef"/>
+                    <rect x="18" y="18" width="16" height="16" fill="#ffb900"/>
+                  </svg>
+                  {/* Text */}
+                  <span style={{ fontSize:10, fontWeight:600, color:"#555", fontFamily:"'Segoe UI',Arial,sans-serif", letterSpacing:"0.01em", lineHeight:1 }}>Microsoft</span>
+                </div>
+                {/* Gradient overlay */}
+                <div className="webinar-panel-grad" />
+                {/* Avatar */}
+                <div className="webinar-avatar" style={{background:w.avatarBg}}>{w.initials}</div>
+                <p className="webinar-speaker-name">{w.speaker}</p>
+              </div>
+
+              {/* Content */}
+              <div className="webinar-card-body">
+                <h3 className="webinar-title">{w.title}</h3>
+                <div className="webinar-meta">
+                  <span className="webinar-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    {w.date}
+                  </span>
+                  <span className="webinar-sep">|</span>
+                  <span className="webinar-meta-item">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    {w.time}
+                  </span>
+                </div>
+                <button className="webinar-register-btn" onClick={onCTA}>Register Now</button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Arrow navigation */}
+        <div className="webinars-nav">
+          <button
+            className={`webinars-nav-btn ${start === 0 ? "inactive" : "active"}`}
+            onClick={() => setStart(s => Math.max(0, s - perPage))}
+            disabled={start === 0}
+            aria-label="Previous"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={start === 0 ? "#D1D5DB" : "#fff"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <span className="webinars-nav-count">{Math.floor(start / perPage) + 1} / {total}</span>
+          <button
+            className={`webinars-nav-btn ${atEnd ? "inactive" : "active"}`}
+            onClick={() => setStart(s => s + perPage < MS_WEBINARS.length ? s + perPage : s)}
+            disabled={atEnd}
+            aria-label="Next"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={atEnd ? "#D1D5DB" : "#fff"} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        {/* View All CTA */}
+        <div className="webinars-view-all">
+          <button className="webinars-view-all-btn" onClick={onCTA}>
+            View All Webinars
+            <span className="webinars-view-all-arrow">→</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ── REFERRAL SECTION ──
+const REFERRAL_STEPS = [
+  {
+    step: "1",
+    when: "Takes 60 seconds",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+    ),
+    title: "Get your unique link",
+    desc: "Enter your email — we instantly generate a personal tracking link. No account required.",
+    reward: null,
+  },
+  {
+    step: "2",
+    when: "Any time",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+      </svg>
+    ),
+    title: "Share with a colleague",
+    desc: "Send it to any IT pro thinking about Azure, M365, AI, or Security certs. No limit on referrals.",
+    reward: null,
+  },
+  {
+    step: "3",
+    when: "They decide when",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+      </svg>
+    ),
+    title: "They enrol with Koenig",
+    desc: "They book using your link. Automatically tracked — they also get $100 off their course.",
+    reward: { label: "They save", amount: "$100 off", color: "#16a34a" },
+  },
+  {
+    step: "4",
+    when: "Within 30 days",
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    ),
+    title: "You get paid",
+    desc: "$150 transferred directly to you once enrolment is confirmed. Bonuses stack as you refer more.",
+    reward: { label: "You earn", amount: "$150 cash", color: "#f59e0b" },
+  },
+];
+
+function ReferralSection({ onCTA }) {
+  const [email, setEmail] = React.useState("");
+  const [done, setDone] = React.useState(false);
+  const [refs, setRefs] = React.useState(3);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    if (window.dataLayer) window.dataLayer.push({ event: "referral_link_requested", email });
+    setDone(true);
+  };
+
+  const earnings = refs * 150;
+  const sliderPct = ((refs - 1) / 9) * 100;
+
+  const MILESTONES = [
+    { refs: 1, reward: "$150 cash", label: "1 referral" },
+    { refs: 3, reward: "$500 + gift", label: "3 referrals" },
+    { refs: 5, reward: "Free course", label: "5 referrals — course free" },
+  ];
+
+  return (
+    <section className="referral-sec" id="referral">
+      <div className="referral-inner">
+
+        {/* ── Programme badge ── */}
+        <motion.div
+          className="referral-badge-wrap"
+          initial={{ opacity: 0, y: -12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="referral-badge">
+            <div className="referral-badge-icon">
+              {/* Handshake / referral icon */}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+            </div>
+            <div className="referral-badge-text">
+              <span className="referral-badge-title">Koenig Referral Programme</span>
+              <span className="referral-badge-sub">Official · Verified · Instant Payout</span>
+            </div>
+            <div className="referral-badge-verified">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              Active
+            </div>
+          </div>
+        </motion.div>
+
+        {/* ── Centered header ── */}
+        <motion.div
+          className="referral-center-hd"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.7 }}
+        >
+          <h2 className="referral-h2">
+            Earn <em>$150 cash</em> for every<br />colleague you certify
+          </h2>
+          <p className="referral-sub">
+            Recommend Koenig's Microsoft training to a colleague. When they enrol, you get paid — no cap, no expiry, no hoops.
+          </p>
+          <div className="referral-stat-row">
+            {[
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, text: "$150 per referral" },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, text: "Paid within 30 days" },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, text: "No cap on referrals" },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>, text: "Any Microsoft course" },
+            ].map((s, i) => (
+              <div key={i} className="referral-stat-pill">
+                {s.icon}
+                {s.text}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* ── 2-col: get link + calculator ── */}
+        <div className="referral-main-row">
+          {/* LEFT — Get your link */}
+          <motion.div
+            className="referral-link-card"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            <div className="referral-link-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+            </div>
+            <div className="referral-link-headline">Get your referral link</div>
+            <div className="referral-link-sub">Enter your work email and we'll send your personal tracking link instantly. No account, no signup — just share and earn.</div>
+            {done ? (
+              <div className="referral-success-wrap">
+                <div className="referral-success-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div>
+                  <div className="referral-success-text">Your link is on its way!</div>
+                  <div className="referral-success-sub">Check your inbox — usually arrives in under a minute.</div>
+                </div>
+              </div>
+            ) : (
+              <form className="referral-form" onSubmit={handleSubmit}>
+                <input type="email" className="referral-input" placeholder="your@work.com" value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
+                <button type="submit" className="referral-submit-btn">Send My Link →</button>
+              </form>
+            )}
+            <div className="referral-trust-row">
+              {[
+                { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, label: "Instant link" },
+                { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, label: "Auto-tracked" },
+                { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>, label: "30-day payout" },
+              ].map(p => (
+                <span key={p.label} className="referral-trust-badge">
+                  {p.icon}
+                  {p.label}
+                </span>
+              ))}
+            </div>
+            <p className="referral-corp-note">Training a whole team? <button className="referral-corp-link" onClick={onCTA}>Ask about corporate partner rates →</button></p>
+          </motion.div>
+
+          {/* RIGHT — Earnings Calculator (dark card) */}
+          <motion.div
+            className="referral-calc-card"
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+          >
+            <div className="referral-calc-label">Earnings calculator</div>
+            <div className="referral-calc-headline">How much could you earn?</div>
+            <div className="referral-calc-display">
+              <span className="referral-calc-currency">$</span>
+              <span className="referral-calc-amount">{earnings.toLocaleString()}</span>
+            </div>
+            <div className="referral-calc-refs">
+              For <strong>{refs} referral{refs !== 1 ? "s" : ""}</strong> × $150 each
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="10"
+              value={refs}
+              className="referral-calc-slider"
+              style={{ "--slider-pct": `${sliderPct}%` }}
+              onChange={e => setRefs(Number(e.target.value))}
+            />
+            <div className="referral-calc-labels">
+              <span>1</span>
+              <span>5</span>
+              <span>10</span>
+            </div>
+            <div className="referral-calc-milestones">
+              {MILESTONES.map((m, i) => (
+                <div key={i} className={`referral-calc-milestone${refs >= m.refs ? " active" : ""}`}>
+                  <div className="referral-calc-ms-left">
+                    <span className="referral-calc-ms-dot" />
+                    <span className="referral-calc-ms-label">{m.label}</span>
+                  </div>
+                  <span className="referral-calc-ms-reward">{m.reward}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* ── How it works — 4-step connected flow ── */}
+        <div className="referral-steps-section">
+          <div className="referral-steps-label">How it works</div>
+          <div className="referral-steps-track">
+            {REFERRAL_STEPS.map((s, i) => (
+              <motion.div
+                key={i}
+                className="referral-step-card"
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+              >
+                <div className="referral-step-num-badge">{s.step}</div>
+                <div className="referral-step-title">{s.title}</div>
+                <div className="referral-step-when">{s.when}</div>
+                <div className="referral-step-desc">{s.desc}</div>
+                {s.reward && (
+                  <div
+                    className="referral-step-reward-tag"
+                    style={{ background: s.reward.color + "15", color: s.reward.color, border: `1.5px solid ${s.reward.color}35` }}
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span style={{ fontWeight: 800 }}>{s.reward.amount}</span>
+                    <span style={{ fontWeight: 500, opacity: 0.75 }}>{s.reward.label}</span>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── Reward tiers ── */}
+        <div className="referral-rewards-strip">
+          {[
+            {
+              reward: "$150 cash", label: "Per referral", color: "#0694D1",
+              desc: "Every successful enrolment earns you $150 — paid directly, no minimum threshold.",
+              icon: (
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+              ),
+            },
+            {
+              reward: "$500 + gift", label: "3 referrals", color: "#f59e0b",
+              desc: "Hit 3 successful referrals and earn a $500 cash bonus plus an exclusive Koenig gift.",
+              icon: (
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                </svg>
+              ),
+            },
+            {
+              reward: "Free course", label: "5 referrals", color: "#8b5cf6",
+              desc: "Refer 5 colleagues and earn any Microsoft certification course free — up to $1,595 value.",
+              icon: (
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+              ),
+            },
+          ].map((m, i) => (
+            <motion.div
+              key={i}
+              className="referral-reward-item"
+              style={{ "--rc": m.color }}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: i * 0.12 }}
+            >
+              <div className="referral-reward-icon-wrap" style={{ background: m.color + "14", color: m.color }}>
+                {m.icon}
+              </div>
+              <div className="referral-reward-amount">{m.reward}</div>
+              <div className="referral-reward-label" style={{ background: m.color + "12", color: m.color, border: `1px solid ${m.color}30` }}>
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                {m.label}
+              </div>
+              <div className="referral-reward-desc">{m.desc}</div>
+            </motion.div>
+          ))}
+        </div>
+
+      </div>
+
+      {/* ── Bottom dark CTA strip ── */}
+      <motion.div
+        className="referral-cta-strip"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.2 }}
+        transition={{ duration: 0.7 }}
+      >
+        <div>
+          <div className="referral-cta-question">Ready to start earning?</div>
+          <div className="referral-cta-desc">Join hundreds of IT professionals who earn monthly through the Koenig Referral Programme.</div>
+          <div className="referral-cta-buttons">
+            <button className="referral-cta-btn-primary" onClick={() => { const el = document.getElementById("referral"); if(el) el.querySelector(".referral-input")?.focus(); }}>Get My Referral Link</button>
+            <button className="referral-cta-btn-ghost" onClick={onCTA}>View T&amp;Cs</button>
+          </div>
+        </div>
+        <div className="referral-trust-pills">
+          {[
+            { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, label: "Instant tracking link" },
+            { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>, label: "Verified & secure" },
+            { icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>, label: "30-day bank transfer" },
+          ].map((p, i) => (
+            <div key={i} className="referral-trust-pill">
+              {p.icon}
+              <span>{p.label}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
 
     </section>
   );
@@ -10047,6 +11759,9 @@ export default function App() {
   const [hqDone, setHqDone] = useState(false);
   const [hqType, setHqType] = useState("enterprise"); // "individual" | "enterprise"
   const [heroExpanded, setHeroExpanded] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMsg, setChatMsg] = useState("");
+  const [showBackTop, setShowBackTop] = useState(false);
   const heroVideoRef = useRef(null);
   const toggleVideoMute = () => {
     const v = heroVideoRef.current;
@@ -10079,6 +11794,7 @@ export default function App() {
     const prog = document.getElementById("scroll-progress");
     const onScroll = () => {
       setScrolled(window.scrollY > 40);
+      setShowBackTop(window.scrollY > 600);
       if (prog) {
         const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
         prog.style.width = pct + "%";
@@ -10263,18 +11979,25 @@ export default function App() {
       <section className="hero" id="main-content">
         {/* Backgrounds */}
         <div className="hero-bg">
-          <img className="hero-bg-img" src="https://koenig-website.vercel.app/images/home-baner.png" alt="" fetchpriority="high" decoding="async" />
           <div className="hero-bg-gradient"/>
           <div className="blob1"/>
           <div className="blob2"/>
           <div className="blob3"/>
-          <ParticleCanvas />
         </div>
+        {/* Background Boxes grid — z:4 so logos appear above bg gradients/blobs */}
+        <div className="hero-boxes-wrap" style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 4, pointerEvents: "none" }}>
+          <Boxes />
+        </div>
+        {/* Radial vignette — sits above boxes, dims center so text stays readable */}
+        <div style={{
+          position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none",
+          background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(4,12,24,0.68) 0%, rgba(4,12,24,0.20) 60%, transparent 100%)",
+        }}/>
         <div className="hero-grid"/>
         <div className="hero-sep"/>
 
         {/* ══ TWO-COLUMN CONTENT AREA ══ */}
-        <div className="hero-cols">
+        <div className="hero-cols" style={{ position: "relative", zIndex: 10 }}>
         {/* ══ LEFT COLUMN ══ */}
         <div className="hero-left">
 
@@ -10291,15 +12014,16 @@ export default function App() {
           {/* Headline */}
           <h1 className="hero-h1">
             <span className="h1-plain">Microsoft Certification Training</span>
-            <TextShimmer as="span" className="h1-grad" duration={2.5} spread={3} baseColor="#0694D1" gradColor="#ffffff">by Koenig Solutions</TextShimmer>
+            <span className="h1-grad">by Koenig Solutions</span>
           </h1>
 
           {/* Subtitle */}
           <p className="hero-sub" style={{ marginBottom: heroExpanded ? 10 : 14 }}>
-            <TextShimmer as="strong" duration={2.5} spread={2}>Official Microsoft Authorized Learning Partner.</TextShimmer> MCT-certified instructors, <TextShimmer as="strong" duration={2.5} spread={2}>95% exam pass rate</TextShimmer>, 100+ courses — train online or 1-on-1 in <TextShimmer as="strong" duration={2.5} spread={2}>50+ countries</TextShimmer>.
+            <strong style={{color:"#fff"}}>Official Microsoft Authorized Learning Partner.</strong> MCT-certified instructors, <strong style={{color:"#fff"}}>95% exam pass rate</strong>, 100+ courses — train online or 1-on-1 in <strong style={{color:"#fff"}}>50+ countries</strong>.
+            <span style={{ color: "#fff", display: "block", marginTop: 7, fontSize: 14 }}>Azure job postings grew <strong style={{color:"#fff"}}>40%</strong> last year. Every month without a cert is a month competitors pull ahead.</span>
             {heroExpanded && (
               <span className="hero-sub-more">
-                {" "}Deliver official <TextShimmer as="strong" duration={2.5} spread={2}>Microsoft Official Courseware (MOC)</TextShimmer> for Azure, AI, Security, M365, and Dynamics 365 role tracks. <TextShimmer as="strong" duration={2.5} spread={2}>Flexi scheduling</TextShimmer> lets you start any day — from <TextShimmer as="strong" duration={2.5} spread={2}>AZ-900 Fundamentals</TextShimmer> through <TextShimmer as="strong" duration={2.5} spread={2}>AZ-305 Expert-level</TextShimmer>. Recognized with <TextShimmer as="strong" duration={2.5} spread={2}>Microsoft Partner of the Year</TextShimmer> awards since 2010.
+                {" "}We deliver official <strong style={{color:"#fff"}}>Microsoft Courseware (MOC)</strong> for Azure, AI, Security, M365, and Dynamics 365 role tracks. <strong style={{color:"#fff"}}>Flexi scheduling</strong> means you start any day — from <strong style={{color:"#fff"}}>AZ-900 Fundamentals</strong> through <strong style={{color:"#fff"}}>AZ-305 Expert-level</strong>. Microsoft has recognised Koenig as <strong style={{color:"#fff"}}>Partner of the Year</strong> multiple times, including FY24.
               </span>
             )}
             {" "}
@@ -10315,10 +12039,10 @@ export default function App() {
           {/* Feature rows */}
           <div className="hero-features">
             {[
-              [<><span className="hero-feat-hl">Official Microsoft ALP + ESI Partner</span> — MOC courseware for every role track</>, <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              [<><span className="hero-feat-hl">MCT-certified trainers</span> for Azure Admin, AI Engineer, Security, M365 &amp; more</>, <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              [<><TextShimmer as="span" duration={2.5} spread={2}>500,000+</TextShimmer> IT professionals certified — <TextShimmer as="span" duration={2.5} spread={2}>95%</TextShimmer> Microsoft exam pass rate</>, <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
-              [<><span className="hero-feat-hl">Flexi schedule</span> — start any day, Fundamentals to Expert, <TextShimmer as="span" duration={2.5} spread={2}>50+ countries</TextShimmer></>, <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><strong style={{color:"#fff",fontWeight:700}}>Official Microsoft ALP + ESI Partner</strong> — MOC courseware for every role track</>, <path key="a" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><strong style={{color:"#fff",fontWeight:700}}>MCT-certified trainers</strong> for Azure Admin, AI Engineer, Security, M365 &amp; more</>, <path key="b" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><strong style={{color:"#fff",fontWeight:700}}>500,000+</strong> IT professionals certified — <strong style={{color:"#fff",fontWeight:700}}>95%</strong> Microsoft exam pass rate</>, <path key="c" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
+              [<><strong style={{color:"#fff",fontWeight:700}}>Flexi schedule</strong> — start any day, Fundamentals to Expert, <strong style={{color:"#fff",fontWeight:700}}>50+ countries</strong></>, <path key="d" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>],
             ].map(([text, svgPath],i) => (
               <div key={i} className="hero-feat-row">
                 <div className="hero-feat-icon">
@@ -10331,8 +12055,8 @@ export default function App() {
 
           {/* CTAs */}
           <div className="hero-ctas">
-            <button className="hero-btn-primary magnetic" onClick={() => setModal(true)} aria-label="Start Microsoft certification training — get certified now">
-              Get Certified Now
+            <button className="hero-btn-primary magnetic" onClick={() => setModal(true)} aria-label="Talk to a Koenig Microsoft training advisor">
+              Talk to a Training Advisor
               <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </button>
             <button className="hero-btn-ghost" onClick={() => document.getElementById('cert')?.scrollIntoView({behavior:'smooth'})} aria-label="Browse 100+ Microsoft certification courses">
@@ -10724,9 +12448,20 @@ export default function App() {
       {/* CERT SHOWCASE */}
       <CertShowcase onUnlock={() => setModal(true)} />
 
-      {/* HOW IT WORKS */}
-      <HowItWorksSection />
+      {/* LEARNING FORMATS */}
+      <LearningFormatsSection onCTA={() => setModal(true)} />
 
+      {/* UPCOMING BATCHES */}
+      <UpcomingBatchesSection onCTA={() => setModal(true)} />
+
+      {/* WEBINARS */}
+      <WebinarsSection onCTA={() => setModal(true)} />
+
+      {/* HOW IT WORKS */}
+      <HowItWorksSection onCTA={() => setModal(true)} />
+
+      {/* AWARDS */}
+      <AwardsSlider />
 
       {/* TESTIMONIALS */}
       <section className="test-sec">
@@ -10745,7 +12480,7 @@ export default function App() {
           </motion.div>
 
           {/* REVIEW STATS INLINE */}
-          <div className="review-stats-grid" style={{ marginTop: 40 }}>
+          <div className="review-stats-grid" style={{ marginTop: 24 }}>
             {[
               { icon: <Star strokeWidth={1.8} />, number: "18,400+", label: "Verified Reviews" },
               { icon: <TrendingUp strokeWidth={1.8} />, number: "4.9 / 5", label: "Average Rating" },
@@ -10776,30 +12511,142 @@ export default function App() {
         </div>
       </section>
 
-      {/* AWARDS */}
-      <AwardsSlider />
+      {/* COMPARISON TABLE */}
+      <ComparisonTable onCTA={() => setModal(true)} />
 
-      {/* FAQ + AI CHAT */}
-      <section style={{ background: "#ffffff", borderTop: "1px solid rgba(6,148,209,0.1)", overflow: "visible" }}>
-        <div className="faq-chatbot-wrap">
-          {/* Left — FAQ accordion */}
-          <div>
-            <ScrollFAQAccordion data={FAQ_DATA} />
-          </div>
-          {/* Right — AI chat assistant (always open) */}
-          <div className="faq-chatbot-sticky">
-            <FAQChatBot onOpenLead={() => setModal(true)} />
-          </div>
-        </div>
-      </section>
+      {/* PRICING TIERS */}
+      <PricingTiersSection onCTA={() => setModal(true)} />
+
+      {/* FAQ */}
+      <ScrollFAQAccordion data={FAQ_DATA} />
 
       {/* TOP VENDOR PARTNERS */}
       <VendorStack />
+
+      {/* REFERRAL */}
+      <ReferralSection onCTA={() => setModal(true)} />
 
       {/* GLOBAL PRESENCE */}
       <GlobeSection />
 
 
+
+      {/* ── CHATBOT POPUP ── */}
+      <div style={{
+        position:"fixed", bottom:"7rem", right:"1.25rem", zIndex:500,
+        width:"calc(100vw - 2.5rem)", maxWidth:340,
+        borderRadius:16, background:"#fff",
+        boxShadow:"0 20px 60px rgba(0,0,0,0.18), 0 4px 16px rgba(0,0,0,0.1)",
+        overflow:"hidden",
+        opacity: chatOpen ? 1 : 0,
+        transform: chatOpen ? "translateY(0) scale(1)" : "translateY(20px) scale(0.95)",
+        pointerEvents: chatOpen ? "auto" : "none",
+        transition:"opacity 0.25s cubic-bezier(0.34,1.56,0.64,1), transform 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+      }}>
+        {/* Header */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 16px", background:"#093148" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ width:8, height:8, borderRadius:"50%", background:"#4ade80", display:"inline-block", animation:"chatPing 1.6s ease-out infinite" }} />
+            <div>
+              <p style={{ fontSize:13, fontWeight:700, color:"#fff", margin:0 }}>KOENIG Solutions</p>
+              <p style={{ fontSize:11.5, color:"rgba(255,255,255,0.65)", margin:0 }}>Online · Typically replies instantly</p>
+            </div>
+          </div>
+          <button onClick={() => setChatOpen(false)} aria-label="Close chat" style={{ background:"none", border:"none", cursor:"pointer", color:"rgba(255,255,255,0.7)", display:"flex", alignItems:"center", padding:4 }}>
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+          </button>
+        </div>
+
+        {/* Chat body */}
+        <div style={{ padding:16, background:"#F8F9FA", display:"flex", flexDirection:"column", gap:10 }}>
+          <div style={{ maxWidth:"85%", borderRadius:"16px 16px 16px 4px", padding:"10px 14px", fontSize:13, color:"#fff", background:"#076D9D", lineHeight:1.5 }}>
+            👋 Hello! Welcome to Koenig Solutions.
+          </div>
+          <div style={{ maxWidth:"85%", borderRadius:"16px 16px 16px 4px", padding:"10px 14px", fontSize:13, color:"#fff", background:"#076D9D", lineHeight:1.5 }}>
+            How can I help you today?
+          </div>
+          {/* Quick replies */}
+          <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginTop:4 }}>
+            {["🎓 Browse Courses","💬 Talk to Advisor","📅 Course Schedule","💰 Get a Quote"].map(q => (
+              <button
+                key={q}
+                onClick={() => setModal(true)}
+                style={{ padding:"5px 12px", borderRadius:20, border:"1.5px solid #076D9D", background:"#fff", color:"#076D9D", fontSize:12, fontWeight:500, cursor:"pointer", fontFamily:"inherit", transition:"all 0.15s" }}
+                onMouseEnter={e => { e.currentTarget.style.background="#076D9D"; e.currentTarget.style.color="#fff"; }}
+                onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.color="#076D9D"; }}
+              >{q}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Input footer */}
+        <div style={{ display:"flex", gap:8, padding:"10px 12px", borderTop:"1px solid #e5e7eb", background:"#fff", alignItems:"center" }}>
+          <input
+            type="text"
+            placeholder="Type a message…"
+            aria-label="Chat message"
+            value={chatMsg}
+            onChange={e => setChatMsg(e.target.value)}
+            onKeyDown={e => { if (e.key === "Enter") { setChatMsg(""); setModal(true); } }}
+            style={{ flex:1, borderRadius:20, border:"1.5px solid #d1d5db", padding:"7px 14px", fontSize:13, outline:"none", fontFamily:"inherit", transition:"border-color 0.2s" }}
+            onFocus={e => e.target.style.borderColor="#076D9D"}
+            onBlur={e => e.target.style.borderColor="#d1d5db"}
+          />
+          <button
+            onClick={() => { setChatMsg(""); setModal(true); }}
+            aria-label="Send"
+            style={{ width:36, height:36, borderRadius:"50%", border:"none", background:"#076D9D", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 }}
+          >
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      {/* ── FLOATING CHAT BUTTON ── */}
+      <button
+        onClick={() => setChatOpen(v => !v)}
+        aria-label="Open chat"
+        className="chat-pulse"
+        style={{
+          position:"fixed", bottom:"1.25rem", right:"1.25rem", zIndex:501,
+          width:52, height:52, borderRadius:"50%",
+          background:"#076D9D", border:"none", cursor:"pointer",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          boxShadow:"0 8px 28px rgba(7,109,157,0.45)",
+          transition:"transform 0.2s, box-shadow 0.2s",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.transform="scale(1.1)"; e.currentTarget.style.boxShadow="0 12px 36px rgba(7,109,157,0.55)"; }}
+        onMouseLeave={e => { e.currentTarget.style.transform="scale(1)"; e.currentTarget.style.boxShadow="0 8px 28px rgba(7,109,157,0.45)"; }}
+      >
+        {chatOpen ? (
+          <svg width="22" height="22" viewBox="0 0 20 20" fill="white"><path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"/></svg>
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M20 2H4a2 2 0 00-2 2v18l4-4h14a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>
+        )}
+      </button>
+
+      {/* ── BACK TO TOP ── */}
+      {showBackTop && (
+        <button
+          onClick={() => window.scrollTo({ top:0, behavior:"smooth" })}
+          aria-label="Back to top"
+          className="back-to-top-btn"
+          style={{
+            position:"fixed", bottom:"1.25rem", right:"4.75rem", zIndex:501,
+            width:44, height:44, borderRadius:"50%",
+            background:"#fff", border:"1.5px solid #d1d5db",
+            color:"#093148", fontSize:18, fontWeight:700,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            cursor:"pointer",
+            boxShadow:"0 4px 16px rgba(0,0,0,0.12)",
+            transition:"background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background="#0694D1"; e.currentTarget.style.color="#fff"; e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow="0 8px 24px rgba(6,148,209,0.4)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.color="#093148"; e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,0.12)"; }}
+        >
+          ↑
+        </button>
+      )}
 
       {/* ENQUIRY MODAL */}
       {modal && (
