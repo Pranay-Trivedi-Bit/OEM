@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import { cn } from "../../lib/utils";
 
 const HOVER_COLORS = [
   "rgb(125 211 252)",
@@ -164,7 +163,6 @@ const STEP_J = 5;
 const COLS_PER_ROW = Math.ceil(20 / STEP_J); // 4
 
 export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
-  // 30×20 = 600 cells — performant while maintaining visual coverage
   const rows = new Array(30).fill(1);
   const cols = new Array(20).fill(1);
 
@@ -174,19 +172,28 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
   return (
     <div
       style={{
-        transform:
-          "translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) rotate(0deg) translateZ(0)",
+        position: "absolute",
+        left: "25%",
+        top: "-25%",
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        padding: "1rem",
+        transform: "translate(-40%,-60%) skewX(-48deg) skewY(14deg) scale(0.675) translateZ(0)",
+        zIndex: 0,
       }}
-      className={cn(
-        "absolute left-1/4 p-4 -top-1/4 flex -translate-x-1/2 -translate-y-1/2 w-full h-full z-0",
-        className
-      )}
       {...rest}
     >
       {rows.map((_, i) => (
         <div
           key={`row` + i}
-          className="w-16 h-8 border-l border-slate-700 relative"
+          style={{
+            width: 64,
+            height: 32,
+            borderLeft: "1px solid rgba(6,148,209,0.25)",
+            position: "relative",
+            flexShrink: 0,
+          }}
         >
           {cols.map((_, j) => {
             const isLogoCell = i % STEP_I === 0 && j % STEP_J === 0;
@@ -203,12 +210,23 @@ export const BoxesCore = ({ className, ...rest }: { className?: string }) => {
                   transition: { duration: 0 },
                 }}
                 key={`col` + j}
-                className="w-16 h-8 border-r border-t border-slate-700 relative"
+                style={{
+                  width: 64,
+                  height: 32,
+                  borderRight: "1px solid rgba(6,148,209,0.25)",
+                  borderTop: "1px solid rgba(6,148,209,0.25)",
+                  position: "relative",
+                }}
               >
                 {isLogoCell ? (
                   <div
-                    className="absolute pointer-events-none"
-                    style={{ top: -12, left: -12, opacity: 0.82 }}
+                    style={{
+                      position: "absolute",
+                      pointerEvents: "none",
+                      top: -12,
+                      left: -12,
+                      opacity: 1,
+                    }}
                   >
                     {MS_LOGOS[logoIdx]()}
                   </div>

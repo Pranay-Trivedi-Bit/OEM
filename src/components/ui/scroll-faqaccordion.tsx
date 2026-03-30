@@ -58,6 +58,9 @@ export default function ScrollFAQAccordion({ data = [] }: ScrollFAQAccordionProp
           .faq-resp-sec { padding: 40px 14px; }
           .faq-two-col  { margin-bottom: 32px; }
         }
+        @media(max-width:600px){
+          .faq-cat-filters { display: none; }
+        }
       `}</style>
 
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
@@ -75,17 +78,19 @@ export default function ScrollFAQAccordion({ data = [] }: ScrollFAQAccordionProp
             FAQ
           </span>
           <h2 style={{
-            fontSize: "clamp(22px,3vw,38px)", fontWeight: 800, color: "#071e2e",
-            margin: "0 0 12px", letterSpacing: "-0.02em", lineHeight: 1.2,
+            fontSize: "24px", fontWeight: 800, color: "#071e2e",
+            margin: "0 0 12px", letterSpacing: "-0.015em", lineHeight: 1.4,
           }}>
             Got Questions?{" "}
-            <em style={{
+            <span style={{
               fontStyle: "normal",
-              background: "linear-gradient(90deg, #0694D1, #50e6ff)",
+              background: "linear-gradient(90deg, #0694D1 0%, #50e6ff 45%, #a8d8ff 65%, #0694D1 100%)",
+              backgroundSize: "250% 100%",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
+              animation: "gradText 5s ease infinite",
             }}>
               We've Got Answers.
-            </em>
+            </span>
           </h2>
           <p style={{ fontSize: 15, color: "#6b8299", lineHeight: 1.65, margin: "0 auto", maxWidth: 500 }}>
             Everything you need to know about Microsoft certification training with Koenig Solutions.
@@ -93,7 +98,7 @@ export default function ScrollFAQAccordion({ data = [] }: ScrollFAQAccordionProp
         </div>
 
         {/* Category filters */}
-        <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 40 }}>
+        <div className="faq-cat-filters" style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap", marginBottom: 40 }}>
           {CATEGORIES.map(cat => (
             <button
               key={cat}

@@ -90,10 +90,11 @@ const CSS = `
    xs  12px / 500  (0.04em ls)      — captions, pills
 ══════════════════════════════════════════════════════ */
 html { scroll-behavior: smooth; }
+html { overflow-x: hidden; }
 body {
   font-family: var(--body);
-  font-size: 17px; font-weight: 400; line-height: 1.65;
-  background: #ffffff; color: var(--light-text); overflow-x: clip;
+  font-size: 16px; font-weight: 400; line-height: 1.75;
+  background: #ffffff; color: var(--light-text); overflow-x: hidden;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   text-rendering: optimizeLegibility;
@@ -104,43 +105,43 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--light-text);
 }
 
-/* H1 — Hero / page-level headline */
+/* H1 — 32px, line-height 110% */
 h1 {
-  font-size: clamp(36px, 5vw, 64px);
+  font-size: 32px;
   font-weight: 800;
   letter-spacing: -0.025em;
-  line-height: 1.05;
+  line-height: 1.1;
 }
 
-/* H2 — Section titles */
+/* H2 — 24px, line-height 140% */
 h2 {
-  font-size: clamp(28px, 3.5vw, 44px);
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.018em;
-  line-height: 1.15;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
 }
 
-/* H3 — Card / subsection */
+/* H3 — 20px, line-height 140% */
 h3 {
-  font-size: clamp(20px, 2.2vw, 28px);
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: -0.008em;
-  line-height: 1.25;
+  line-height: 1.4;
 }
 
-/* H4 — Labels, card titles */
+/* H4 — 18px, line-height 140% */
 h4 {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.005em;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
-/* Body paragraph */
+/* Body paragraph — line-height 175% */
 p {
   font-size: 16px;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.75;
   color: var(--light-sub);
 }
 
@@ -168,6 +169,8 @@ p {
   pointer-events: none;
 }
 @keyframes shimmerGrad { 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+@keyframes spin-cw  { from{transform:translate(-50%,-50%) rotate(0deg)}   to{transform:translate(-50%,-50%) rotate(360deg)} }
+@keyframes spin-ccw { from{transform:translate(-50%,-50%) rotate(0deg)}   to{transform:translate(-50%,-50%) rotate(-360deg)} }
 
 /* ── CURSOR GLOW ── */
 #cursor-glow {
@@ -233,6 +236,11 @@ p {
 .reveal-left  { opacity: 0; transform: translateX(-36px); }
 .reveal-right { opacity: 0; transform: translateX(36px); }
 .reveal-scale { opacity: 0; transform: scale(0.9) translateY(16px); }
+@media (max-width: 768px) {
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1 !important; transform: none !important; transition: none !important;
+  }
+}
 
 .reveal,
 .reveal-left,
@@ -605,15 +613,15 @@ p {
   min-height: 100vh; position: relative; overflow: hidden;
   display: flex; flex-direction: column;
   padding: 0;
-  background: #040C18;
+  background: #001523;
 }
 .hero-cols {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr minmax(0, 420px);
+  grid-template-columns: 1.1fr minmax(0, 390px);
   align-items: center;
   gap: 40px;
-  padding: 80px 48px 36px 64px;
+  padding: 80px 32px 36px 64px;
 }
 
 /* ── In-hero stats bar ── */
@@ -621,7 +629,7 @@ p {
   position: relative; z-index: 11;
   display: grid; grid-template-columns: repeat(5, 1fr);
   border-top: 1px solid rgba(255,255,255,0.08);
-  background: rgba(4,12,24,0.72);
+  background: rgba(0,21,35,0.80);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -650,6 +658,50 @@ p {
   font-size: 10px; color: rgba(255,255,255,0.28);
   margin-top: 2px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
+
+/* ── Mobile tech hamburger ── */
+.hero-tech-menu-wrap {
+  display: none;
+  position: relative;
+  background: rgba(4,12,24,0.85);
+  border-top: 1px solid rgba(6,148,209,0.15);
+}
+.hero-tech-hamburger {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 12px 16px;
+  background: transparent; border: none; cursor: pointer;
+  font-family: inherit; color: #fff; font-size: 13.5px; font-weight: 600;
+}
+.hero-tech-ham-lines {
+  display: flex; flex-direction: column; gap: 4px; flex-shrink: 0;
+}
+.hero-tech-ham-lines span {
+  display: block; height: 2px; border-radius: 2px; background: #0694D1;
+  transition: width 0.2s;
+}
+.hero-tech-ham-lines span:nth-child(1) { width: 18px; }
+.hero-tech-ham-lines span:nth-child(2) { width: 14px; }
+.hero-tech-ham-lines span:nth-child(3) { width: 10px; }
+.hero-tech-ham-label { flex: 1; text-align: left; color: rgba(255,255,255,0.85); }
+.hero-tech-dropdown {
+  background: #061e30;
+  border-top: 1px solid rgba(6,148,209,0.15);
+  max-height: 320px; overflow-y: auto;
+  animation: statSlideUp 0.22s ease both;
+}
+.hero-tech-opt {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 11px 16px;
+  background: transparent; border: none;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer; font-family: inherit; text-align: left;
+  transition: background 0.15s;
+}
+.hero-tech-opt:active, .hero-tech-opt:hover { background: rgba(6,148,209,0.12); }
+.hero-tech-opt:last-child { border-bottom: none; }
+.hero-tech-opt-icon { flex-shrink: 0; display: flex; align-items: center; }
+.hero-tech-opt-name { flex: 1; font-size: 13.5px; font-weight: 600; color: rgba(255,255,255,0.9); }
+.hero-tech-opt-arrow { font-size: 12px; color: rgba(6,148,209,0.7); }
 
 /* ── Hero banner image + gradient overlay ── */
 .hero-bg {
@@ -731,8 +783,8 @@ p {
 /* ── Headline ── */
 .hero-h1 {
   font-family: var(--display);
-  font-size: clamp(36px, 4.5vw, 52px);
-  font-weight: 800; line-height: 1.08;
+  font-size: 32px;
+  font-weight: 800; line-height: 1.1;
   letter-spacing: -0.025em; color: var(--white);
   margin-bottom: 10px;
   animation: fadeUp 0.6s 0.1s ease both;
@@ -778,6 +830,7 @@ p {
   font-size: 13.5px; color: rgba(255,255,255,1); font-weight: 500;
   line-height: 1.4;
 }
+.hero-feat-text { flex: 1; min-width: 0; }
 .hero-feat-hl { color: #ffffff; font-weight: 700; }
 .hero-feat-hl-blue { color: #38bdf8; font-weight: 700; }
 .hero-feat-icon {
@@ -867,13 +920,9 @@ p {
 }
 .proof-partner-img {
   height: 58px; width: auto; object-fit: contain;
-  filter: brightness(1.15) saturate(1.1) drop-shadow(0 2px 8px rgba(6,148,209,0.4));
-  transition: filter 0.25s, transform 0.25s;
+  transition: transform 0.25s;
 }
-.proof-badge-card:hover .proof-partner-img {
-  filter: brightness(1.25) saturate(1.2) drop-shadow(0 4px 14px rgba(6,148,209,0.55));
-  transform: scale(1.04);
-}
+.proof-badge-card:hover .proof-partner-img { transform: scale(1.06); }
 .proof-badge-label {
   font-size: 9.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
   color: rgba(6,148,209,0.85); text-align: center; line-height: 1.3;
@@ -1034,6 +1083,8 @@ p {
 .proof-divider { width: 1px; height: 28px; background: rgba(255,255,255,0.12); }
 
 @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+@keyframes statSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes numGlow { 0%{color:#4DBFEF;text-shadow:0 0 10px rgba(6,148,209,0.7)} 100%{color:#fff;text-shadow:none} }
 
 /* ── LEAD FORM (revamped) ── */
 .lead-form-wrap { flex-shrink: 0; width: 440px; position: relative; z-index: 1; animation: fadeUp 0.8s 0.15s ease both; }
@@ -1127,13 +1178,13 @@ p {
 
 /* ── Buttons ── */
 .lf-btn-primary {
-  width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
+  width: 100%; padding: 13px; border-radius: var(--r8); border: none; cursor: pointer;
   font-family: var(--body); font-size: 14px; font-weight: 700; letter-spacing: 0.3px;
-  background: linear-gradient(135deg, #0694D1, #076d9d);
-  color: var(--white); transition: all 0.25s; display: flex; align-items: center; justify-content: center; gap: 8px;
-  box-shadow: 0 4px 20px rgba(6,148,209,0.3);
+  background: var(--blue);
+  color: var(--white); transition: transform 0.2s, box-shadow 0.2s, background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 16px rgba(6,148,209,0.3);
 }
-.lf-btn-primary:hover { background: linear-gradient(135deg, #0578b3, #065a82); transform: translateY(-1px); box-shadow: 0 8px 28px rgba(6,148,209,0.4); }
+.lf-btn-primary:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .lf-btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 .lf-btn-back { background: transparent; border: 1.5px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.5); font-family: var(--body); font-size: 12px; font-weight: 600; padding: 9px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
 .lf-btn-back:hover { border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.75); }
@@ -1187,9 +1238,9 @@ p {
   color: #0694D1; background: rgba(6,148,209,0.1); border: 1px solid rgba(6,148,209,0.22);
 }
 .preview-title {
-  font-family: var(--display); font-size: clamp(28px, 4vw, 48px);
-  font-weight: 800; color: var(--light-text); line-height: 1.15;
-  letter-spacing: -0.03em; margin-bottom: 12px;
+  font-family: var(--display); font-size: 24px;
+  font-weight: 800; color: var(--light-text); line-height: 1.4;
+  letter-spacing: -0.015em; margin-bottom: 12px;
 }
 .preview-sub {
   font-size: 15px; color: var(--light-sub); max-width: 480px;
@@ -1236,7 +1287,7 @@ p {
 /* ── WHY KOENIG (Features) ── */
 .features-sec { background: var(--light-bg); padding: 72px 48px; }
 .sec-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: var(--blue); margin-bottom: 14px; }
-.sec-title { font-family: var(--display); font-weight: 700; font-size: clamp(28px, 3.5vw, 44px); color: var(--light-text); letter-spacing: -0.018em; line-height: 1.15; margin-bottom: 16px; }
+.sec-title { font-family: var(--display); font-weight: 700; font-size: 24px; color: var(--light-text); letter-spacing: -0.015em; line-height: 1.4; margin-bottom: 16px; }
 /* ── GLOBAL BLUE EM SHIMMER ── */
 @keyframes em-shimmer {
   0%   { background-position: 200% center; }
@@ -1622,7 +1673,7 @@ p {
 .hiw2-inner { max-width: 1200px; margin: 0 auto; position: relative; }
 .hiw2-header { text-align: center; margin-bottom: 52px; }
 .hiw2-pill { display: inline-block; background: rgba(6,148,209,0.1); color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 14px; }
-.hiw2-h2 { font-size: clamp(24px,3vw,38px); font-weight: 800; color: var(--ink); margin-bottom: 10px; line-height: 1.2; letter-spacing: -0.02em; }
+.hiw2-h2 { font-size: 24px; font-weight: 800; color: var(--ink); margin-bottom: 10px; line-height: 1.4; letter-spacing: -0.015em; }
 .hiw2-h2 span { background: linear-gradient(90deg, var(--blue), #50e6ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 .hiw2-sub { font-size: 15px; color: #7a9ab0; max-width: 520px; margin: 0 auto; line-height: 1.65; }
 .hiw2-steps-wrap { position: relative; margin-bottom: 52px; }
@@ -1646,12 +1697,12 @@ p {
 .hiw2-dots { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .hiw2-dot { border-radius: 20px; height: 8px; transition: all 0.3s ease; }
 .hiw2-cta-row { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
-.hiw2-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--ink), var(--blue)); color: #fff; font-size: 14px; font-weight: 700; padding: 12px 28px; border-radius: 14px; border: none; cursor: pointer; font-family: var(--body); transition: transform 0.2s, box-shadow 0.2s; }
-.hiw2-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.3); }
+.hiw2-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: var(--blue); color: #fff; font-size: 14px; font-weight: 700; padding: 12px 28px; border-radius: var(--r8); border: none; cursor: pointer; font-family: var(--body); transition: transform 0.2s, box-shadow 0.2s, background 0.2s; box-shadow: 0 4px 16px rgba(6,148,209,0.3); }
+.hiw2-btn-primary:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .hiw2-btn-arrow { display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.18); transition: transform 0.2s; }
 .hiw2-btn-primary:hover .hiw2-btn-arrow { transform: translateX(4px); }
-.hiw2-btn-outline { display: inline-flex; align-items: center; background: transparent; border: 2px solid var(--blue); color: var(--blue); font-size: 14px; font-weight: 700; padding: 11px 26px; border-radius: 14px; cursor: pointer; font-family: var(--body); transition: background 0.2s, color 0.2s; }
-.hiw2-btn-outline:hover { background: var(--blue); color: #fff; }
+.hiw2-btn-outline { display: inline-flex; align-items: center; background: transparent; border: 1.5px solid var(--blue); color: var(--blue); font-size: 14px; font-weight: 700; padding: 11px 26px; border-radius: var(--r8); cursor: pointer; font-family: var(--body); transition: background 0.2s, color 0.2s, box-shadow 0.2s; }
+.hiw2-btn-outline:hover { background: rgba(6,148,209,0.06); color: var(--blue); }
 @media (max-width: 900px) {
   .hiw2-sec { padding: 64px 24px; }
   .hiw2-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -1809,6 +1860,36 @@ p {
 .cert-mode-divider { width: 1px; background: rgba(6,148,209,0.15); align-self: stretch; margin: 4px 0; flex-shrink: 0; }
 
 /* ── Cert Search Bar ── */
+/* ── In-panel search bar ── */
+.cert-panel-search {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1.5px solid rgba(6,148,209,0.35);
+  border-radius: 9px;
+  flex-shrink: 0;
+  width: 200px;
+  box-shadow: 0 1px 6px rgba(6,148,209,0.08);
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.cert-panel-search:focus-within {
+  border-color: #0694D1;
+  box-shadow: 0 0 0 3px rgba(6,148,209,0.14);
+}
+.cert-panel-search-input {
+  flex: 1; min-width: 0;
+  font-size: 12px; font-weight: 500; color: var(--light-text);
+  background: transparent; border: none; outline: none;
+  font-family: inherit;
+}
+.cert-panel-search-input::placeholder { color: #a0b4c0; font-weight: 400; }
+.cert-panel-search-clear {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(0,0,0,0.07); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--light-sub); transition: background 0.15s, color 0.15s;
+}
+.cert-panel-search-clear:hover { background: rgba(6,148,209,0.15); color: var(--blue); }
 .certs-search-wrap {
   position: relative; display: flex; align-items: center;
   max-width: 640px; margin-top: 24px;
@@ -1995,17 +2076,17 @@ p {
   transition: all 0.2s; border: none; letter-spacing: 0.1em;
 }
 .csa-enquire {
-  background: linear-gradient(135deg, #0694D1, #0578b3);
+  background: var(--blue);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(6,148,209,0.35);
+  box-shadow: 0 4px 16px rgba(6,148,209,0.3);
 }
-.csa-enquire:hover { box-shadow: 0 6px 20px rgba(6,148,209,0.5); transform: translateY(-1px); }
+.csa-enquire:hover { background: #057ab5; box-shadow: 0 8px 24px rgba(6,148,209,0.4); transform: translateY(-1px); }
 .csa-brochure {
-  background: #fff;
-  color: var(--light-text);
-  border: 1.5px solid rgba(6,148,209,0.3) !important;
+  background: transparent;
+  color: var(--blue);
+  border: 1.5px solid var(--blue) !important;
 }
-.csa-brochure:hover { background: rgba(6,148,209,0.06); color: var(--blue); border-color: var(--blue) !important; transform: translateY(-1px); }
+.csa-brochure:hover { background: rgba(6,148,209,0.06); color: var(--blue); transform: translateY(-1px); }
 
 /* TOP INFO PANEL — two-row layout */
 .cert-info-panel {
@@ -2040,14 +2121,14 @@ p {
 }
 .cert-info-desc { font-size: 12.5px; color: var(--light-sub); line-height: 1.55; }
 .cert-info-enroll {
-  flex-shrink: 0; padding: 11px 26px; border-radius: 10px;
-  background: linear-gradient(135deg, #0694D1, #0578b3);
+  flex-shrink: 0; padding: 11px 26px; border-radius: var(--r8);
+  background: var(--blue);
   border: none; color: #fff; font-family: inherit;
   font-size: 14px; font-weight: 700; cursor: pointer; letter-spacing: 0.15px;
-  box-shadow: 0 4px 14px rgba(6,148,209,0.3);
-  transition: box-shadow 0.2s, transform 0.2s; white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(6,148,209,0.3);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s; white-space: nowrap;
 }
-.cert-info-enroll:hover { box-shadow: 0 6px 20px rgba(6,148,209,0.48); transform: translateY(-1px); }
+.cert-info-enroll:hover { background: #057ab5; box-shadow: 0 8px 24px rgba(6,148,209,0.4); transform: translateY(-1px); }
 
 /* Row 2: feature pills + level tabs */
 .cert-info-row2 {
@@ -2066,8 +2147,82 @@ p {
   font-size: 10px; color: #059669; font-weight: 800;
 }
 
+/* ── Mobile hamburger sidebar ── */
+.cert-sidebar-hamburger {
+  display: none; /* hidden on desktop */
+  width: 100%; align-items: center; gap: 10px;
+  padding: 10px 14px; border: none; background: #fff;
+  border-bottom: 1px solid var(--light-border);
+  cursor: pointer; font-family: inherit; text-align: left;
+}
+.cert-sidebar-hamburger-logo { flex-shrink: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+.cert-sidebar-hamburger-label { font-size: 13px; font-weight: 700; color: var(--light-text); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cert-sidebar-hamburger-count { font-size: 11px; font-weight: 700; color: var(--blue); background: rgba(6,148,209,0.1); border: 1px solid rgba(6,148,209,0.25); border-radius: 20px; padding: 2px 9px; flex-shrink: 0; }
+.cert-sidebar-hamburger-icon { color: var(--light-sub); flex-shrink: 0; transition: transform 0.2s; }
+.cert-sidebar-hamburger-icon.open { transform: rotate(180deg); }
+/* Dropdown */
+.cert-sidebar-dropdown {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+  background: #fff; border-bottom: 1px solid var(--light-border);
+  box-shadow: 0 8px 32px rgba(6,148,209,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  max-height: 340px; overflow-y: auto;
+}
+.cert-sidebar-dropdown-label {
+  padding: 10px 14px 6px; font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--light-sub);
+  border-bottom: 1px solid var(--light-border);
+}
+.cert-sidebar-dropdown-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 14px; border: none; background: transparent;
+  cursor: pointer; font-family: inherit; text-align: left;
+  transition: background 0.15s; border-bottom: 1px solid rgba(6,148,209,0.06);
+}
+.cert-sidebar-dropdown-item:hover { background: rgba(6,148,209,0.05); }
+.cert-sidebar-dropdown-item.active { background: rgba(6,148,209,0.08); }
+.cert-sidebar-dropdown-logo { flex-shrink: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.cert-sidebar-dropdown-name { flex: 1; font-size: 13px; font-weight: 600; color: var(--light-text); }
+.cert-sidebar-dropdown-item.active .cert-sidebar-dropdown-name { color: var(--blue); font-weight: 700; }
+.cert-sidebar-dropdown-count { font-size: 11px; font-weight: 700; color: var(--light-sub); background: var(--light-bg); border-radius: 12px; padding: 2px 8px; }
+.cert-sidebar-dropdown-item.active .cert-sidebar-dropdown-count { color: var(--blue); background: rgba(6,148,209,0.1); }
+
+@media (max-width: 900px) {
+  .cert-sidebar-hamburger { display: flex; }
+  .cert-sidebar { position: relative; flex-direction: column; padding: 0; overflow: visible; }
+  .cert-sidebar-scroll { display: none; }
+  .cert-sidebar-bottom { display: none; }
+  .cert-sidebar::after { display: none; }
+}
+
+/* ── Mobile pagination ── */
+.cert-mobile-pagination {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  padding: 16px 0 8px; flex-shrink: 0;
+}
+.cert-mpag-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1.5px solid rgba(6,148,209,0.3);
+  background: #fff; color: var(--blue); font-size: 20px; font-weight: 700; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; font-family: inherit;
+}
+.cert-mpag-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.cert-mpag-btn:not(:disabled):hover { background: var(--blue); color: #fff; border-color: var(--blue); box-shadow: 0 4px 12px rgba(6,148,209,0.3); }
+.cert-mpag-info { font-size: 13px; font-weight: 700; color: var(--light-text); min-width: 80px; text-align: center; }
+
 /* Level filter — horizontal pill tabs */
 .cert-level-tabs { display: flex; gap: 5px; flex-shrink: 0; }
+.cert-level-select {
+  display: none;
+  flex-shrink: 0;
+  appearance: none; -webkit-appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230694D1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border: 1.5px solid rgba(6,148,209,0.3); border-radius: var(--r8);
+  color: var(--light-text); font-family: var(--body); font-size: 13px; font-weight: 600;
+  padding: 7px 32px 7px 12px; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.cert-level-select:focus { outline: none; border-color: var(--blue); }
 .cert-level-tab {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 700;
@@ -2089,6 +2244,32 @@ p {
 }
 .cert-level-tab:not(.active) .cert-level-tab-count { background: var(--light-border); color: var(--light-sub); }
 
+/* ── In-panel level filter bar ── */
+.cert-panel-level-bar {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  padding: 10px 16px;
+  background: #f8fafc;
+  border-bottom: 1px solid rgba(6,148,209,0.1);
+  flex-shrink: 0;
+}
+.cert-panel-lv-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+  border: 1.5px solid transparent; cursor: pointer; font-family: inherit;
+  transition: all 0.18s; background: #fff; color: var(--light-sub);
+}
+.cert-panel-lv-btn[data-lv="all"]     { --lc: #0694D1; }
+.cert-panel-lv-btn[data-lv="popular"] { --lc: #e11d48; }
+.cert-panel-lv-btn[data-lv="fund"]    { --lc: #059669; }
+.cert-panel-lv-btn[data-lv="assoc"]   { --lc: #0578b3; }
+.cert-panel-lv-btn[data-lv="expert"]  { --lc: #d97706; }
+.cert-panel-lv-btn:hover { color: var(--lc); border-color: var(--lc); }
+.cert-panel-lv-btn.active { color: #fff; background: var(--lc); border-color: var(--lc); }
+.cert-panel-lv-count {
+  font-size: 10px; font-weight: 800;
+  background: rgba(255,255,255,0.25); padding: 1px 6px; border-radius: 10px;
+}
+.cert-panel-lv-btn:not(.active) .cert-panel-lv-count { background: rgba(6,148,209,0.08); color: var(--light-sub); }
 /* keep old selectors inert */
 .cert-info-divider-v { display: none; }
 .cert-info-divider { display: none; }
@@ -2118,17 +2299,30 @@ p {
 /* sticky filter header */
 .cert-panel-sticky {
   flex-shrink: 0;
-  padding: 14px 24px 13px;
+  padding: 10px 16px;
   background: #fff;
   border-bottom: 1px solid var(--light-border);
-  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 10px; flex-wrap: nowrap;
 }
+/* sort dropdown */
+.cert-sort-select {
+  appearance: none; -webkit-appearance: none;
+  font-size: 12px; font-weight: 600; font-family: inherit;
+  color: var(--light-text); background: #f4f8fc;
+  border: 1.5px solid rgba(6,148,209,0.2); border-radius: 8px;
+  padding: 5px 28px 5px 10px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230694D1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 8px center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.cert-sort-select:hover { border-color: rgba(6,148,209,0.5); }
+.cert-sort-select:focus { outline: none; border-color: #0694D1; box-shadow: 0 0 0 3px rgba(6,148,209,0.12); }
 /* scroll-for-more hint badge */
 .cert-scroll-hint {
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 11px; font-weight: 700; color: var(--blue);
   background: rgba(6,148,209,0.08); border: 1px solid rgba(6,148,209,0.2);
-  border-radius: 20px; padding: 3px 10px; margin-left: auto; flex-shrink: 0;
+  border-radius: 20px; padding: 3px 10px; flex-shrink: 0;
   animation: hint-bounce 2s ease-in-out infinite;
 }
 .cert-scroll-hint svg { flex-shrink: 0; }
@@ -2140,7 +2334,7 @@ p {
 .cert-panel-scroll {
   flex: 1;
   overflow-y: scroll;
-  padding: 20px 22px 64px;
+  padding: 12px 16px 64px;
   scrollbar-width: auto;
   scrollbar-color: rgba(6,148,209,0.45) rgba(6,148,209,0.07);
 }
@@ -2162,14 +2356,14 @@ p {
 .cert-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 10px;
 }
 .cert-card {
   background: #fff;
   border: 1.5px solid rgba(6,148,209,0.12);
-  border-radius: 16px; padding: 16px 16px 14px; cursor: pointer;
+  border-radius: 12px; padding: 10px 12px 10px; cursor: pointer;
   transition: all 0.25s; display: flex;
-  flex-direction: column; position: relative; overflow: hidden;
+  flex-direction: column; position: relative; overflow: visible;
   gap: 0;
   box-shadow: 0 2px 8px rgba(6,148,209,0.05);
 }
@@ -2209,15 +2403,15 @@ p {
 .cert-badge {
   display: inline-flex; align-items: center; font-size: 8.5px; font-weight: 700;
   letter-spacing: 0.4px; text-transform: uppercase; padding: 2px 7px;
-  border-radius: 4px; margin-bottom: 7px; width: fit-content;
+  border-radius: 4px; margin-bottom: 3px; width: fit-content;
 }
 .cert-badge.fund   { background: rgba(16,185,129,0.08); color: #059669; border: 1px solid rgba(16,185,129,0.2); }
 .cert-badge.assoc  { background: rgba(6,148,209,0.08);  color: #0578b3; border: 1px solid rgba(6,148,209,0.2); }
 .cert-badge.expert { background: rgba(245,158,11,0.08); color: #d97706; border: 1px solid rgba(245,158,11,0.2); }
 /* enrolled + rating row */
 .cert-meta-row {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 8px; flex-wrap: wrap;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 3px; flex-wrap: wrap;
 }
 .cert-enrolled {
   font-size: 10px; color: var(--light-sub); font-weight: 600;
@@ -2230,11 +2424,50 @@ p {
 }
 .cert-rating-star { font-size: 10px; }
 .cert-name {
-  font-size: 13.5px; font-weight: 800; color: #071e2e;
-  margin-bottom: 5px; line-height: 1.4; flex: 1; letter-spacing: -0.01em;
+  font-size: 12px; font-weight: 800; color: #071e2e;
+  margin-bottom: 3px; line-height: 1.35; flex: 1; letter-spacing: -0.01em;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  transition: color 0.18s;
+  position: relative;
 }
-.cert-code-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.cert-card:hover .cert-name {
+  color: #0694D1;
+}
+/* Tooltip showing full name on hover */
+.cert-name-wrap {
+  position: relative;
+  flex: 1;
+}
+.cert-name-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 100;
+  background: #071e2e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(6,148,209,0.35);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  max-width: 260px;
+  white-space: normal;
+  pointer-events: none;
+}
+.cert-name-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%; left: 16px;
+  border: 5px solid transparent;
+  border-top-color: #071e2e;
+}
+.cert-name-wrap.show-tip .cert-name-tooltip {
+  display: block;
+}
+.cert-code-row { display: flex; align-items: center; gap: 5px; margin-bottom: 5px; flex-wrap: wrap; }
 .cert-code {
   display: inline-block; font-size: 9.5px; font-family: 'SFMono-Regular', 'Consolas', monospace;
   color: #0694D1; background: rgba(6,148,209,0.1); border: 1px solid rgba(6,148,209,0.28);
@@ -2281,8 +2514,8 @@ p {
   border-radius: 6px; padding: 5px 8px; margin-bottom: 2px; line-height: 1.4;
 }
 .cert-footer {
-  display: flex; flex-direction: column; gap: 8px; margin-top: auto;
-  border-top: 1px solid rgba(6,148,209,0.08); padding-top: 10px;
+  display: flex; flex-direction: column; gap: 5px; margin-top: auto;
+  border-top: 1px solid rgba(6,148,209,0.08); padding-top: 6px;
 }
 .cert-price-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -2308,22 +2541,22 @@ p {
 .cert-actions { display: flex; gap: 7px; }
 .cert-btn-brochure {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 6px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 600;
-  background: #fff; color: #7a9ab0;
-  border: 1px solid rgba(6,148,209,0.18); cursor: pointer;
-  transition: all 0.18s; white-space: nowrap; font-family: inherit;
+  padding: 6px 8px; border-radius: var(--r8); font-size: 10.5px; font-weight: 700;
+  background: transparent; color: var(--blue);
+  border: 1.5px solid var(--blue); cursor: pointer;
+  transition: background 0.18s, box-shadow 0.18s; white-space: nowrap; font-family: inherit;
 }
 .cert-btn-brochure { flex: 0 0 auto !important; padding: 6px 9px !important; display: inline-flex !important; align-items: center; gap: 4px; }
-.cert-btn-brochure:hover { background: rgba(6,148,209,0.05); border-color: var(--blue); color: var(--blue); }
+.cert-btn-brochure:hover { background: rgba(6,148,209,0.06); }
 .cert-btn-details {
   flex: 1; display: flex; align-items: center; justify-content: center;
-  padding: 6px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 600;
+  padding: 6px 8px; border-radius: var(--r8); font-size: 10.5px; font-weight: 700;
   background: var(--blue); color: #fff;
   border: none; cursor: pointer;
-  transition: all 0.18s; white-space: nowrap; font-family: inherit;
-  box-shadow: 0 2px 6px rgba(6,148,209,0.25);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s; white-space: nowrap; font-family: inherit;
+  box-shadow: 0 2px 8px rgba(6,148,209,0.3);
 }
-.cert-btn-details:hover { background: var(--blue-dark); box-shadow: 0 4px 12px rgba(6,148,209,0.4); transform: translateY(-1px); }
+.cert-btn-details:hover { background: #057ab5; box-shadow: 0 4px 14px rgba(6,148,209,0.4); transform: translateY(-1px); }
 
 
 /* ══════════════════════════════
@@ -2543,7 +2776,7 @@ p {
 .lgm-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: #50e6ff; animation: lgm-pulse 2s ease-in-out infinite; }
 @keyframes lgm-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.4)} }
 .lgm-title {
-  font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; line-height: 1.18;
+  font-size: 24px; font-weight: 800; line-height: 1.4;
   color: var(--white); margin-bottom: 16px;
 }
 .lgm-title em { font-style: normal; color: #50e6ff; }
@@ -2773,7 +3006,7 @@ p {
 .enroll-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 72px; }
 .enroll-left { flex: 1; min-width: 0; }
 .enroll-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
-.enroll-title { font-family: var(--display); font-size: clamp(28px,3vw,40px); font-weight: 800; color: var(--light-text); line-height: 1.1; margin-bottom: 10px; }
+.enroll-title { font-family: var(--display); font-size: 24px; font-weight: 800; color: var(--light-text); line-height: 1.4; margin-bottom: 10px; }
 .enroll-title em { font-style: normal; color: var(--blue); }
 .enroll-sub { font-size: 14px; color: var(--light-sub); line-height: 1.65; margin-bottom: 28px; max-width: 380px; }
 .enroll-legend { display: flex; flex-direction: column; gap: 10px; }
@@ -2792,8 +3025,8 @@ p {
 .enroll-legend-bar { height: 100%; border-radius: 2px; transition: width 1s ease; }
 .enroll-legend-pct { font-size: 12px; font-weight: 700; color: var(--light-sub); min-width: 36px; text-align: right; }
 .enroll-cta-row { display: flex; align-items: center; gap: 14px; margin-top: 28px; }
-.enroll-download-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; background: var(--blue); border-radius: 10px; color: #fff; font-size: 13.5px; font-weight: 700; text-decoration: none; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-family: var(--body); }
-.enroll-download-btn:hover { background: #0480ba; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.3); }
+.enroll-download-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; background: var(--blue); border-radius: var(--r8); color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; font-family: var(--body); box-shadow: 0 4px 16px rgba(6,148,209,0.3); }
+.enroll-download-btn:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .enroll-cta-note { font-size: 12px; color: var(--light-sub); font-weight: 500; }
 .enroll-right { flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 .enroll-donut-wrap { position: relative; }
@@ -2823,9 +3056,35 @@ p {
 .enroll-radar-legend { display: flex; align-items: center; gap: 16px; flex-shrink: 0; padding-top: 4px; }
 .enroll-radar-legend-item { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--light-text); }
 .enroll-radar-chart { padding: 8px 24px 24px; }
+/* ── Enrollment section responsive ── */
+@media (max-width: 900px) {
+  .enroll-sec { padding: 64px 28px; }
+  .enroll-inner { gap: 48px; }
+  .enroll-right { width: 100%; justify-content: center; }
+}
 @media (max-width: 700px) {
   .enroll-radar-header { flex-direction: column; gap: 12px; padding: 20px; }
   .enroll-radar-chart { padding: 8px 8px 16px; }
+  .enroll-radar-legend { flex-wrap: wrap; gap: 10px; }
+  .enroll-radar-title { font-size: 18px; }
+}
+@media (max-width: 640px) {
+  .enroll-sec { padding: 56px 20px; }
+  .enroll-inner { flex-direction: column; gap: 36px; align-items: stretch; }
+  .enroll-right { order: -1; }
+  .enroll-title { font-size: 22px; }
+  .enroll-sub { font-size: 13px; max-width: 100%; }
+  .enroll-legend-item { padding: 8px 10px; }
+  .enroll-legend-name { font-size: 12px; }
+  .enroll-cta-row { flex-direction: column; align-items: stretch; gap: 10px; }
+  .enroll-download-btn { justify-content: center; }
+  .enroll-radar-wrap { margin-top: 32px; border-radius: 14px; }
+}
+@media (max-width: 480px) {
+  .enroll-sec { padding: 48px 16px; }
+  .enroll-title { font-size: 20px; }
+  .enroll-legend-bar-wrap { display: none; }
+  .enroll-legend-pct { margin-left: auto; }
 }
 
 /* ── LEARNING FORMATS ── */
@@ -3008,8 +3267,42 @@ p {
   transition: color 0.3s;
 }
 .review-stats-item:hover .review-stats-label { color: var(--blue); }
+/* Wrapper is transparent on desktop — grid lays out normally */
+.review-stats-grid-wrap { width: 100%; }
 @media (max-width: 768px) {
   .review-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  /* Hide duplicated items on tablet — only needed for mobile loop */
+  .review-stats-grid .review-stats-item:nth-child(n+5) { display: none; }
+}
+@media (max-width: 600px) {
+  /* Wrap grid in a sliding marquee on mobile */
+  .review-stats-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    max-width: 100%;
+    overflow: visible;
+    animation: reviewSlide 12s linear infinite;
+    width: max-content;
+  }
+  .review-stats-grid-wrap {
+    overflow: hidden;
+    width: 100%;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+  .review-stats-item {
+    flex: 0 0 140px;
+    min-width: 140px;
+    padding: 14px 10px;
+    border-radius: 12px;
+    transform: none !important;
+  }
+  .review-stats-item:hover { transform: none; }
+  @keyframes reviewSlide {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 }
 
 /* ── ANIMATED TESTIMONIALS ── */
@@ -3171,6 +3464,15 @@ p {
   display: flex; gap: 28px; margin-top: 28px;
   flex-wrap: wrap;
 }
+@media (max-width: 600px) {
+  .globe-sec { overflow: visible; }
+  .globe-content { opacity: 1 !important; transform: none !important; }
+  .globe-stats { flex-wrap: nowrap; gap: 0; justify-content: space-between; }
+  .globe-stat { flex: 1; align-items: center; }
+  .globe-stat-num { font-size: 20px; }
+  .globe-stat-lbl { font-size: 10px; letter-spacing: 0.5px; }
+  .globe-divider { display: block; }
+}
 .globe-stat { display: flex; flex-direction: column; gap: 4px; }
 .globe-stat-num { font-size: 32px; font-weight: 800; color: var(--light-text); line-height: 1; }
 .globe-stat-num span { color: var(--blue); }
@@ -3221,8 +3523,11 @@ p {
 }
 
 /* Country chips — single horizontal wrap row */
+.globe-country-slider-outer { margin-top: 20px; }
+.globe-country-slider-wrap { display: contents; }
+.globe-country-slider-wrap .globe-country-grid:nth-child(2) { display: none; }
 .globe-country-grid {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px;
+  display: flex; flex-wrap: wrap; gap: 6px;
 }
 .globe-country-row {
   display: inline-flex; align-items: center; gap: 6px;
@@ -3254,8 +3559,8 @@ p {
 .companies-inner { max-width: 1260px; margin: 0 auto; text-align: center; }
 .companies-headline-wrap { text-align: center; margin-bottom: 52px; padding: 0 24px; }
 .companies-headline {
-  font-family: var(--display); font-weight: 800; font-size: clamp(26px,3vw,42px);
-  color: var(--white); letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.15;
+  font-family: var(--display); font-weight: 800; font-size: 24px;
+  color: var(--white); letter-spacing: -0.015em; margin-bottom: 10px; line-height: 1.4;
 }
 .companies-headline em { font-style: normal; color: var(--blue); }
 .companies-headline-sub { font-size: 15px; color: rgba(255,255,255,0.38); margin-bottom: 20px; font-weight: 400; }
@@ -3329,7 +3634,7 @@ p {
   padding: 12px 28px; border-radius: var(--r8); border: none; cursor: pointer;
   transition: all 0.25s;
 }
-.companies-cta-btn:hover { background: #057ab5; transform: translateY(-2px); box-shadow: 0 16px 36px rgba(6,148,209,0.4); }
+.companies-cta-btn:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 
 /* ── DISPLAY CARDS ── */
 .dc-stack {
@@ -3447,14 +3752,14 @@ p {
 
 /* Left text side */
 .cert-showcase-label { font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--blue); margin-bottom:14px; }
-.cert-showcase-title { font-family:var(--display); font-size:32px; letter-spacing:-0.5px; color:var(--light-text); line-height:1.05; margin-bottom:16px; }
+.cert-showcase-title { font-family:var(--display); font-size:24px; letter-spacing:-0.015em; color:var(--light-text); line-height:1.4; margin-bottom:16px; }
 .cert-showcase-title em { font-style:normal; color:var(--blue); }
 .cert-showcase-desc { font-size:15px; color:var(--light-sub); line-height:1.7; margin-bottom:28px; max-width:440px; }
 
 /* Credly badge grid */
 .credly-badges-label { font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--light-sub); margin-bottom:14px; }
 .credly-badges-grid {
-  display: grid; grid-template-columns: repeat(5, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 12px; margin-top: 4px;
 }
 .credly-badge-item {
@@ -3479,13 +3784,12 @@ p {
 }
 .cert-unlock-btn {
   display:inline-flex; align-items:center; gap:10px;
-  background: linear-gradient(135deg, var(--blue), #076d9d);
+  background: var(--blue);
   color:#fff; font-family:var(--body); font-size:14px; font-weight:700;
-  padding:13px 28px; border-radius:10px; border:none; cursor:pointer;
-  box-shadow:0 8px 28px rgba(6,148,209,0.35); transition:all 0.25s;
+  padding:13px 28px; border-radius:var(--r8); border:none; cursor:pointer;
+  box-shadow:0 4px 16px rgba(6,148,209,0.3); transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
-.cert-unlock-btn:hover { transform:translateY(-2px); box-shadow:0 16px 40px rgba(6,148,209,0.5); }
-.cert-unlock-note { font-size:11px; color:var(--light-sub); margin-top:10px; }
+.cert-unlock-btn:hover { background:#057ab5; transform:translateY(-1px); box-shadow:0 8px 24px rgba(6,148,209,0.4); }
 
 /* Certificate real image (right side) */
 .cert-preview-wrap { position:relative; }
@@ -3815,7 +4119,7 @@ p {
   padding: 80px 48px; text-align: center; position: relative; overflow: hidden;
 }
 .bottom-cta::before { content:''; position:absolute; inset:0; background: radial-gradient(ellipse 800px 400px at 50% 100%, rgba(6,148,209,0.12), transparent); }
-.cta-title { font-family: var(--display); font-weight: 800; font-size: clamp(38px, 4.5vw, 64px); color: var(--white); letter-spacing: -0.5px; margin-bottom: 16px; position: relative; z-index:1; }
+.cta-title { font-family: var(--display); font-weight: 800; font-size: 32px; color: var(--white); letter-spacing: -0.025em; margin-bottom: 16px; position: relative; z-index:1; line-height: 1.1; }
 .cta-title span { color: var(--blue); }
 .cta-sub { font-size: 18px; color: rgba(255,255,255,0.6); margin-bottom: 40px; position: relative; z-index:1; }
 .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; z-index:1; }
@@ -3836,7 +4140,7 @@ p {
 
 /* ── DOWNLOAD BROCHURE FAB ── */
 .dl-brochure-fab {
-  position: fixed; bottom: 28px; right: 28px; z-index: 300;
+  position: fixed; bottom: 88px; right: 20px; z-index: 300;
   display: flex; align-items: center; gap: 10px;
   background: linear-gradient(135deg, var(--blue) 0%, #076d9d 100%);
   color: var(--white); font-family: var(--body); font-weight: 700; font-size: 15px; letter-spacing: 0.3px;
@@ -3851,6 +4155,7 @@ p {
   box-shadow: 0 20px 48px rgba(6,148,209,0.55), 0 4px 16px rgba(0,0,0,0.4);
 }
 .dl-brochure-fab:active { transform: translateY(-1px) scale(1.01); }
+@media (max-width: 768px) { .dl-brochure-fab { display: none; } }
 .dl-brochure-icon {
   width: 28px; height: 28px; border-radius: 50%;
   background: rgba(255,255,255,0.15);
@@ -3887,7 +4192,7 @@ p {
 .certpath-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
 .certpath-head { text-align: center; margin-bottom: 48px; }
 .certpath-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
-.certpath-title { font-family: var(--display); font-size: clamp(28px, 3.5vw, 42px); font-weight: 700; letter-spacing: -0.02em; color: #fff; line-height: 1.1; margin-bottom: 14px; }
+.certpath-title { font-family: var(--display); font-size: 24px; font-weight: 700; letter-spacing: -0.015em; color: #fff; line-height: 1.4; margin-bottom: 14px; }
 .certpath-title em { font-style: normal; }
 .certpath-sub { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 580px; margin: 0 auto; line-height: 1.65; }
 
@@ -3914,6 +4219,22 @@ p {
   box-shadow: 0 4px 20px rgba(6,148,209,0.25);
 }
 .certpath-tab-logo { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.certpath-tab-select {
+  display: none;
+  width: 100%; max-width: 340px; margin: 0 auto 28px;
+  appearance: none; -webkit-appearance: none;
+  background: rgba(255,255,255,0.06) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%230694D1' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
+  border: 1.5px solid rgba(6,148,209,0.4); border-radius: var(--r8);
+  color: #fff; font-family: var(--body); font-size: 14px; font-weight: 600;
+  padding: 11px 40px 11px 16px; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.certpath-tab-select option { background: #071e2e; color: #fff; }
+.certpath-tab-select:focus { outline: none; border-color: var(--blue); }
+@media (max-width: 600px) {
+  .certpath-tabs { display: none; }
+  .certpath-tab-select { display: block; }
+}
 
 /* Panel */
 .certpath-panel {
@@ -3947,6 +4268,49 @@ p {
 .certpath-tech-grid {
   display: flex; gap: 12px; justify-content: center;
   flex-wrap: wrap; margin-bottom: 52px;
+}
+/* ── Certpath mobile hamburger ── */
+.certpath-hamburger {
+  display: none;
+  width: 100%; align-items: center; gap: 10px;
+  padding: 12px 16px; border: none;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(6,148,209,0.35);
+  border-radius: var(--r8);
+  cursor: pointer; font-family: inherit; text-align: left;
+  margin-bottom: 24px; position: relative;
+}
+.certpath-hamburger-logo { flex-shrink: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.certpath-hamburger-label { font-size: 14px; font-weight: 700; color: #fff; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.certpath-hamburger-icon { color: rgba(255,255,255,0.5); flex-shrink: 0; margin-left: auto; transition: transform 0.2s; }
+.certpath-hamburger-icon.open { transform: rotate(180deg); }
+.certpath-hamburger-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 200;
+  background: #0d2a3f; border: 1.5px solid rgba(6,148,209,0.35);
+  border-radius: var(--r8);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  max-height: 320px; overflow-y: auto;
+}
+.certpath-hamburger-dropdown-label {
+  padding: 10px 16px 6px; font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.certpath-hamburger-item {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 10px 16px; border: none; background: transparent;
+  cursor: pointer; font-family: inherit; text-align: left;
+  transition: background 0.15s; border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.certpath-hamburger-item:last-child { border-bottom: none; }
+.certpath-hamburger-item:hover { background: rgba(6,148,209,0.1); }
+.certpath-hamburger-item.active { background: rgba(6,148,209,0.15); }
+.certpath-hamburger-item-logo { flex-shrink: 0; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.certpath-hamburger-item-name { flex: 1; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+.certpath-hamburger-item.active .certpath-hamburger-item-name { color: var(--blue); font-weight: 700; }
+@media (max-width: 600px) {
+  .certpath-tech-grid { display: none; }
+  .certpath-hamburger { display: flex; }
 }
 .certpath-tech-card {
   display: flex; flex-direction: column; align-items: center; gap: 10px;
@@ -4123,10 +4487,10 @@ p {
   display: inline-flex; align-items: center; gap: 8px;
   background: var(--blue); color: #fff;
   font-family: var(--body); font-size: 14px; font-weight: 700;
-  padding: 13px 32px; border-radius: 10px; border: none; cursor: pointer;
-  box-shadow: 0 6px 24px rgba(6,148,209,0.4); transition: all 0.2s;
+  padding: 13px 32px; border-radius: var(--r8); border: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(6,148,209,0.3); transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 }
-.certpath-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(6,148,209,0.55); }
+.certpath-cta-btn:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 
 @media (max-width: 860px) {
   .certpath-body { grid-template-columns: 1fr; gap: 32px; }
@@ -4138,34 +4502,63 @@ p {
   .certpath-sec { padding: 64px 20px; }
   .certpath-cta-btn { width: 100%; justify-content: center; }
   .certpath-cta-row { padding: 0; }
+  /* Tech grid: scrollable horizontal strip */
+  .certpath-tech-grid {
+    flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start;
+    padding: 0 0 10px; gap: 10px; margin-bottom: 36px;
+    scrollbar-width: none; -webkit-overflow-scrolling: touch;
+  }
+  .certpath-tech-grid::-webkit-scrollbar { display: none; }
+  .certpath-tech-card { flex-shrink: 0; min-width: 90px; }
+  /* Logo block: horizontal on tablet */
+  .certpath-info-logo-block { flex-direction: row; text-align: left; padding: 16px; gap: 16px; align-items: center; }
+  .certpath-info-logo-sub { max-width: 100%; }
 }
 @media (max-width: 600px) {
-  .certpath-tech-card { min-width: 88px; padding: 16px 12px 12px; }
-  .certpath-tech-card-logo { width: 38px; height: 38px; }
-  .certpath-info-stats { grid-template-columns: 1fr 1fr; }
-  .certpath-flow { padding-left: 32px; }
-  .certpath-flow::before { left: 15px; }
-  .certpath-tl-dot { width: 30px; height: 30px; font-size: 9px; left: -32px; }
-  .certpath-flow-card { padding: 10px 12px; gap: 8px; }
-  .cfc-code { font-size: 11px; }
-  .cfc-name { font-size: 11px; }
+  .certpath-tech-card { min-width: 76px; padding: 14px 10px 10px; }
+  .certpath-tech-card-logo { width: 34px; height: 34px; }
+  .certpath-tech-card-name { font-size: 10px; }
+  /* Info panel: compact horizontal stats row */
+  .certpath-info-logo-block { padding: 12px; gap: 12px; }
+  .certpath-info-logo-name { font-size: 14px; }
+  .certpath-info-logo-sub { font-size: 11px; }
+  .certpath-info-stats { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .certpath-info-stat { padding: 10px 6px; border-radius: 8px; }
+  .certpath-info-stat-num { font-size: 16px; }
+  .certpath-info-stat-lbl { font-size: 9px; }
+  /* Timeline flow */
+  .certpath-flow { padding-left: 36px; }
+  .certpath-flow::before { left: 17px; }
+  .certpath-tl-dot { width: 32px; height: 32px; font-size: 9px; left: -36px; }
+  .certpath-flow-card { padding: 10px 10px; gap: 7px; flex-wrap: nowrap; }
+  .cfc-lvl-badge { display: none; }
+  .cfc-code { font-size: 11px; font-weight: 900; flex-shrink: 0; }
+  .cfc-name { font-size: 12px; }
+  .cfc-price { display: none; }
   .cfc-dur { display: none; }
+  .certpath-legend { gap: 10px; }
+  .certpath-legend-item { font-size: 10px; }
+  /* CTA full width */
+  .certpath-cta-row { margin-top: 32px; }
+  .certpath-cta-btn { width: 100%; justify-content: center; }
 }
 @media (max-width: 480px) {
   .certpath-sec { padding: 48px 14px; }
-  .certpath-flow { padding-left: 28px; }
-  .certpath-flow::before { left: 13px; }
-  .certpath-tl-dot { width: 26px; height: 26px; font-size: 8px; left: -28px; }
-  .certpath-flow-card { padding: 8px 10px; gap: 6px; border-radius: 8px; }
+  .certpath-tech-card { min-width: 68px; padding: 12px 8px 8px; }
+  .certpath-tech-card-logo { width: 30px; height: 30px; }
+  .certpath-tech-card-name { font-size: 9.5px; }
+  .certpath-flow { padding-left: 32px; }
+  .certpath-flow::before { left: 15px; }
+  .certpath-tl-dot { width: 28px; height: 28px; font-size: 8.5px; left: -32px; }
+  .certpath-flow-card { padding: 9px 10px; gap: 6px; border-radius: 8px; }
   .certpath-flow-card:hover { transform: none; }
-  .cfc-lvl-badge { display: none; }
-  .cfc-price { font-size: 10px; }
-  .certpath-info-stat-num { font-size: 16px; }
-  .certpath-info-stat-lbl { font-size: 9px; }
-  .certpath-head { margin-bottom: 40px; }
-  .certpath-legend { gap: 12px; margin-bottom: 20px; }
-  .certpath-tabs { gap: 6px; }
-  .certpath-tab { padding: 8px 10px; font-size: 12px; gap: 5px; }
+  .cfc-code { font-size: 10.5px; }
+  .cfc-name { font-size: 11.5px; }
+  .certpath-head { margin-bottom: 28px; }
+  .certpath-legend { gap: 8px; margin-bottom: 16px; }
+  .certpath-info-logo-block { flex-direction: column; text-align: center; padding: 14px; }
+  .certpath-info-logo-sub { max-width: 100%; }
+  .certpath-hamburger { margin-bottom: 20px; }
 }
 
 /* ── ROI & CAREER OUTCOMES — mirrored layout of edge-sec ── */
@@ -4183,8 +4576,8 @@ p {
 }
 .roi-eyebrow::before { content: ""; display: block; width: 20px; height: 2px; background: var(--blue); border-radius: 2px; }
 .roi-left-heading {
-  font-size: clamp(26px, 2.8vw, 40px); font-weight: 700;
-  color: #212835; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em;
+  font-size: 24px; font-weight: 700;
+  color: #212835; line-height: 1.4; margin-bottom: 14px; letter-spacing: -0.015em;
 }
 .roi-left-heading em { font-style: normal; }
 .roi-left-sub { font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px; }
@@ -4194,7 +4587,7 @@ p {
   padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
   transition: all 0.2s; font-family: var(--body);
 }
-.roi-left-cta:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6,148,209,0.35); }
+.roi-left-cta:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 /* Right — stat strip + scrolling items */
 .roi-right { order: 1; display: flex; flex-direction: column; gap: 0; }
 .roi-stat-strip {
@@ -4239,6 +4632,16 @@ p {
 }
 @media (max-width: 600px) {
   .roi-inner { padding: 0 16px; }
+  .roi-left {
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+  .roi-left-heading { text-align: center; }
+  .roi-eyebrow { justify-content: center; }
+  .roi-left-sub { max-width: 100%; text-align: center; }
+  .roi-left-cta { align-self: center; }
+  .roi-stat-strip { justify-content: center; width: 100%; }
+
 }
 
 /* ── KOENIG EDGE SECTION (upGrad sticky-left style) ── */
@@ -4259,8 +4662,8 @@ p {
   background: var(--blue); border-radius: 2px;
 }
 .edge-left-heading {
-  font-size: clamp(26px, 2.8vw, 40px); font-weight: 700;
-  color: #212835; line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.02em;
+  font-size: 24px; font-weight: 700;
+  color: #212835; line-height: 1.4; margin-bottom: 14px; letter-spacing: -0.015em;
 }
 .edge-left-heading em { font-style: normal; }
 .edge-left-sub { font-size: 15px; color: #586274; line-height: 1.75; margin-bottom: 32px; max-width: 300px; }
@@ -4270,7 +4673,7 @@ p {
   padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer;
   transition: all 0.2s;
 }
-.edge-left-cta:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6,148,209,0.35); }
+.edge-left-cta:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .edge-left-count {
   margin-top: 36px; padding-top: 24px; border-top: 1px solid #ebebeb;
   display: flex; gap: 0; align-items: stretch;
@@ -4308,7 +4711,16 @@ p {
   .edge-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
   .edge-left { position: static; }
 }
-@media (max-width: 600px) { .edge-sec { padding: 48px 0 36px; } .edge-item { padding: 16px; } }
+@media (max-width: 600px) {
+  .edge-sec { padding: 48px 0 36px; }
+  .edge-left { text-align: center; }
+  .edge-eyebrow { justify-content: center; }
+  .edge-left-sub { max-width: 100%; }
+  .edge-left-cta { display: flex; margin: 0 auto; }
+  .edge-left-count { justify-content: center; }
+  .edge-item { flex-direction: row; align-items: flex-start; text-align: left; padding: 16px; }
+  .edge-item-body { text-align: left; }
+}
 
 /* ── RESPONSIVE ── */
 @media (max-width: 1100px) {
@@ -4327,16 +4739,15 @@ p {
 }
 @media (max-width: 900px) {
   .certs-layout { grid-template-columns: 1fr; height: auto; }
-  .cert-sidebar { flex-direction: row; flex-wrap: nowrap; padding: 10px 12px; gap: 6px; border-right: none; border-bottom: 1px solid var(--light-border); overflow-x: auto; overflow-y: visible; scrollbar-width: thin; scrollbar-color: rgba(6,148,209,0.3) transparent; }
-  .cert-sidebar::after { display: none; }
-  .cert-sidebar-scroll { display: flex; flex-direction: row; flex-wrap: nowrap; gap: 6px; padding: 0; overflow: visible; flex: unset; width: 100%; }
   .cert-sidebar-label { display: none; }
   .cert-sidebar-divider { display: none; }
-  .cert-sidebar-item { width: auto; flex: 0 0 auto; border-left: none; border-bottom: 2px solid transparent; border-radius: 8px; padding: 8px 14px; }
-  .cert-sidebar-item.active { border-bottom-color: var(--blue); border-left-color: transparent; }
-  .cert-sidebar-bottom { display: none; }
   .csi-sublabel { display: none; }
   .cert-grid { grid-template-columns: 1fr 1fr; }
+  /* Release fixed height constraints so content shows naturally */
+  .cert-right { height: auto; overflow: visible; }
+  .cert-panel { overflow: visible; height: auto; }
+  .cert-panel::after { display: none; }
+  .cert-panel-scroll { overflow-y: auto; max-height: 540px; }
 }
 @media (max-width: 768px) {
   .nav { padding: 0 20px; }
@@ -4349,9 +4760,20 @@ p {
   .stat-item::before { display: none; }
   .stat-item { border-bottom: 1px solid rgba(6,148,209,0.15); }
   .cert-grid { grid-template-columns: 1fr; }
-  .cert-panel { padding: 20px; }
   .features-grid { grid-template-columns: 1fr; }
   .features-sec, .certs-sec, .test-sec, .bottom-cta { padding: 72px 20px; }
+  /* Responsive toolbar */
+  .cert-panel-sticky { flex-wrap: wrap; gap: 8px; }
+  .cert-panel-search { width: 100%; flex: 1 1 100%; }
+  .cert-panel-scroll { padding: 10px 14px 24px; }
+  /* Info panel on tablet/mobile */
+  .cert-info-row1 { flex-wrap: wrap; gap: 10px; }
+  .cert-info-enroll { margin-left: 0; }
+  .cert-info-row2 { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .cert-level-tabs { flex-wrap: wrap; }
+  /* Mode toggle */
+  .cert-mode-btn { min-width: 120px; padding: 9px 14px; }
+  .cert-mode-text-sub { display: none; }
   .cta-btns { flex-direction: column; align-items: center; }
 }
 
@@ -4384,7 +4806,7 @@ p {
   .cert-showcase-inner { flex-direction: column; gap: 40px; }
   .cert-showcase-right { width: 100%; max-width: 480px; align-self: center; }
   .cert-showcase-sec { padding: 72px 24px; }
-  .credly-badges-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .credly-badges-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .credly-badge-img { width: 52px; height: 52px; }
 
   /* Awards */
@@ -4461,17 +4883,34 @@ p {
 
   /* Hero */
   .hero-cols { padding: 90px 20px 24px; }
-  .hero-h1 { font-size: clamp(22px, 6vw, 32px); }
+  .hero-h1 { font-size: 28px; }
   .hero-features { gap: 8px; }
+  .hero-feat-row { align-items: flex-start; font-size: 13px; gap: 8px; text-align: left; word-spacing: normal; word-break: normal; hyphens: none; }
+  .hero-feat-row strong { white-space: normal; }
+  .hero-feat-icon { margin-top: 2px; flex-shrink: 0; }
+
+  /* Tech hamburger — hidden on mobile */
+  .hero-tech-menu-wrap { display: none; }
+
+  /* Stats bar — mobile entrance animation */
+  .hero-stats-bar:not(.stats-animated) .hero-stat-item { opacity: 0; }
+  .hero-stats-bar.stats-animated .hero-stat-item { animation: statSlideUp 0.55s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-stats-bar.stats-animated .hero-stat-item:nth-child(1) { animation-delay: 0.00s; }
+  .hero-stats-bar.stats-animated .hero-stat-item:nth-child(2) { animation-delay: 0.10s; }
+  .hero-stats-bar.stats-animated .hero-stat-item:nth-child(3) { animation-delay: 0.20s; }
+  .hero-stats-bar.stats-animated .hero-stat-item:nth-child(4) { animation-delay: 0.30s; }
+  .hero-stats-bar.stats-animated .hero-stat-item:nth-child(5) { animation-delay: 0.40s; }
+  .hero-stat-number .num-counting { color: #4DBFEF; }
+  .hero-stat-number .num-done { animation: numGlow 0.5s ease forwards; }
   .proof-partner-badges { gap: 6px; }
   .proof-partner-img { height: 44px; }
 
   /* Cert showcase left column */
   .cert-showcase-left { padding: 0; }
   .cert-showcase-title { font-size: clamp(22px, 5vw, 32px); }
-  .credly-badges-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
-  .credly-badge-item { padding: 10px 4px 8px; border-radius: 10px; }
-  .credly-badge-img { width: 44px; height: 44px; }
+  .credly-badges-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .credly-badge-item { padding: 10px 6px 8px; border-radius: 10px; }
+  .credly-badge-img { width: 52px; height: 52px; }
 
   /* LGM mid-page */
   .lgm-title { font-size: clamp(24px, 5vw, 36px); }
@@ -4489,6 +4928,7 @@ p {
   .hero-stats-bar { grid-template-columns: repeat(2, 1fr); }
   .hero-stat-item { padding: 14px 12px; gap: 8px; }
   .hero-stat-item:nth-child(2n) { border-right: none; }
+  .hero-stat-item:last-child:nth-child(odd) { grid-column: 1 / -1; border-right: none; justify-content: center; }
   .hero-stat-number { font-size: 18px; }
   .hero-stat-src { display: none; }
   .hero-h1 { font-size: clamp(20px, 7.5vw, 28px); }
@@ -4513,9 +4953,22 @@ p {
   .feat-desc { font-size: 13px; }
 
   /* Cert paths */
-  .certs-sec { padding: 56px 16px; }
-  .cert-panel { padding: 16px; }
+  .certs-sec { padding: 48px 14px; }
   .cert-name { font-size: 13px; }
+  .cert-panel-scroll { max-height: none; padding: 10px 12px 20px; overflow-y: visible; }
+  .cert-panel-sticky { padding: 8px 12px; gap: 6px; }
+  .cert-sidebar-item { padding: 6px 12px; }
+  .csi-icon { width: 30px; height: 30px; }
+  .cert-grid { gap: 8px; }
+  /* Info panel compact on small phones */
+  .cert-info-panel { padding: 12px 14px; }
+  .cert-info-logo { width: 36px; height: 36px; }
+  .cert-info-name { font-size: 15px; }
+  .cert-info-desc { display: none; }
+  .cert-info-pills { display: none; }
+  .cert-level-tab { padding: 4px 10px; font-size: 11px; }
+  .cert-mode-btn { padding: 8px 12px; min-width: 100px; }
+  .cert-mode-text-main { font-size: 12px; }
 
   /* Cert showcase */
   .cert-showcase-sec { padding: 56px 16px; }
@@ -4523,6 +4976,9 @@ p {
   .cert-preview-wrap { max-width: 100%; }
   .cert-real-img { max-width: 100%; border-radius: 8px; }
   .dc-card { padding: 14px 16px; }
+  .credly-badges-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .credly-badge-img { width: 48px; height: 48px; }
+  .credly-badge-item { padding: 12px 6px 8px; border-radius: 10px; }
 
   /* Why section */
   .why-sec { padding: 56px 16px; }
@@ -4547,6 +5003,26 @@ p {
   .globe-canvas-wrap > div { width: 260px !important; height: 260px !important; }
   .globe-country-grid { gap: 4px; }
   .globe-country-row { padding: 4px 8px; font-size: 10.5px; }
+
+  /* Country grid → marquee slider on mobile */
+  .globe-country-slider-outer {
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  }
+  .globe-country-slider-wrap {
+    display: flex; flex-direction: row; flex-wrap: nowrap;
+    width: max-content; margin-top: 0;
+    animation: countrySlide 18s linear infinite;
+  }
+  .globe-country-slider-wrap .globe-country-grid {
+    flex: 0 0 auto; flex-wrap: nowrap; gap: 6px; padding-right: 6px;
+  }
+  .globe-country-slider-wrap .globe-country-grid:nth-child(2) { display: flex; }
+  @keyframes countrySlide {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
 
   /* Edge */
   .edge-sec { padding: 44px 0 32px; }
@@ -4607,8 +5083,9 @@ p {
 
 /* ── 480px : standard phone ── */
 @media (max-width: 480px) {
-  /* Nav CTA text */
-  .nav-cta { font-size: 11px; padding: 8px 12px; }
+  /* Nav CTA: icon only */
+  .nav-cta { font-size: 11px; padding: 9px 12px; }
+  .nav-cta-text { display: none; }
 
   /* Stats single column feel */
   .stat-number { font-size: 26px; }
@@ -4619,6 +5096,9 @@ p {
   .hero-cols { padding: 84px 14px 16px; }
   .hero-h1 { font-size: clamp(18px, 8.5vw, 26px); }
   .hero-sub { font-size: 13px; }
+  .hero-feat-row { align-items: flex-start; font-size: 13px; gap: 8px; text-align: left; word-spacing: normal; word-break: normal; hyphens: none; }
+  .hero-feat-row strong { white-space: normal; }
+  .hero-feat-icon { margin-top: 2px; flex-shrink: 0; }
   .hero-ctas { flex-direction: column; align-items: stretch; gap: 8px; }
   .hero-btn-primary, .hero-btn-ghost { width: 100%; justify-content: center; }
 
@@ -4647,6 +5127,16 @@ p {
 
   /* Cert grid single col enforced */
   .cert-grid { grid-template-columns: 1fr; }
+  .cert-panel-scroll { max-height: none; overflow-y: visible; padding: 8px 10px 16px; }
+  .cert-panel-sticky { padding: 8px 10px; gap: 6px; }
+  .cert-sidebar-item { padding: 5px 10px; font-size: 12px; }
+  .csi-icon { width: 26px; height: 26px; border-radius: 7px; }
+  .cert-card { border-radius: 10px; }
+  .cert-info-enroll { display: none; }
+  .cert-info-panel { display: none; }
+  .cert-level-tabs { display: none; }
+  .cert-level-select { display: block; }
+  .certs-layout { border-radius: 14px; }
 
   /* Edge section */
   .edge-count-num { font-size: 20px; }
@@ -4686,6 +5176,7 @@ p {
   .hero-cols { padding: 80px 12px 12px; }
   .hero-h1 { font-size: clamp(17px, 9vw, 24px); }
   .hero-sub { font-size: 12.5px; }
+  .hero-feat-row { font-size: 12px; }
 
   /* Hero stats bar: 1-column on very small phones */
   .hero-stats-bar { grid-template-columns: 1fr; }
@@ -4710,9 +5201,9 @@ p {
   /* Globe: smallest canvas */
   .globe-canvas-wrap > div { width: 220px !important; height: 220px !important; }
 
-  /* Section headings: prevent overflow */
-  h2 { font-size: clamp(22px, 7.5vw, 32px); }
-  h3 { font-size: clamp(17px, 5vw, 22px); }
+  /* Section headings on mobile — keep style guide sizes */
+  h2 { font-size: 22px; }
+  h3 { font-size: 18px; }
 
   /* USP table: more compact */
   .usp-table { grid-template-columns: 80px 1fr 1fr; min-width: 280px; }
@@ -4735,6 +5226,7 @@ p {
   @keyframes fadeUp { from { opacity:0; transform:translateY(0); } to { opacity:1; transform:translateY(0); } }
   @keyframes shimmerGrad { 0%,100% { background-position: 0 0; } }
   @keyframes fabSlideIn { from { opacity:1; transform: none; } to { opacity:1; transform: none; } }
+  .hero-stats-bar .hero-stat-item { animation: none !important; opacity: 1 !important; }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -4905,13 +5397,13 @@ p {
 .ced-validity { font-size: 10.5px; color: var(--light-sub); display: flex; align-items: center; gap: 5px; }
 .ced-enroll-btn {
   display: inline-flex; align-items: center; gap: 5px;
-  font-size: 11.5px; font-weight: 600; font-family: inherit;
-  color: var(--blue); background: rgba(6,148,209,0.1);
-  border: 1px solid rgba(6,148,209,0.25); border-radius: 8px;
+  font-size: 11.5px; font-weight: 700; font-family: inherit;
+  color: var(--blue); background: transparent;
+  border: 1.5px solid var(--blue); border-radius: var(--r8);
   padding: 6px 12px; cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s, color 0.2s;
 }
-.ced-enroll-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); transform: translateX(2px); }
+.ced-enroll-btn:hover { background: var(--blue); color: #fff; }
 
 /* Footer info bar */
 .ced-footer-bar {
@@ -5310,7 +5802,7 @@ p {
 .compare-header { text-align: center; margin-bottom: 44px; }
 .compare-eyebrow { display: inline-flex; align-items: center; gap: 7px; background: rgba(6,148,209,0.12); color: var(--blue); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; border: 1px solid rgba(6,148,209,0.22); }
 .compare-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: livePulse 1.5s infinite; display:inline-block; }
-.compare-title { font-size: clamp(28px, 3.5vw, 42px); font-weight: 800; color: #fff; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 14px; }
+.compare-title { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.015em; line-height: 1.4; margin-bottom: 14px; }
 .compare-title em { font-style: normal; }
 .compare-sub { font-size: 15px; color: rgba(255,255,255,0.5); max-width: 500px; margin: 0 auto; line-height: 1.65; }
 /* Score cards */
@@ -5326,7 +5818,8 @@ p {
 .compare-score-card.is-koenig .compare-score-label { color: rgba(74,222,128,0.7); }
 /* Table */
 .compare-table-wrap { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 16px; }
-.compare-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.compare-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.compare-table { width: 100%; min-width: 580px; border-collapse: collapse; font-size: 13.5px; }
 /* Category header rows */
 .compare-cat-row td { background: rgba(6,148,209,0.08); border-bottom: 1px solid rgba(6,148,209,0.15); padding: 10px 20px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
 /* Column headers */
@@ -5353,12 +5846,33 @@ p {
 .cv-other-val { font-size: 12px; font-weight: 500; color: rgba(255,255,255,0.35); }
 /* CTA */
 .compare-cta-strip { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 36px; flex-wrap: wrap; }
-.compare-cta-btn { background: var(--blue); color: white; border: none; cursor: pointer; font-family: var(--body); font-weight: 700; font-size: 15px; padding: 14px 32px; border-radius: var(--r8); transition: transform 0.2s, box-shadow 0.2s; letter-spacing: -0.01em; }
-.compare-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(6,148,209,0.45); }
+.compare-cta-btn { background: var(--blue); color: white; border: none; cursor: pointer; font-family: var(--body); font-weight: 700; font-size: 14px; padding: 13px 32px; border-radius: var(--r8); transition: transform 0.2s, box-shadow 0.2s, background 0.2s; box-shadow: 0 4px 16px rgba(6,148,209,0.3); }
+.compare-cta-btn:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .compare-cta-note { font-size: 13px; color: rgba(255,255,255,0.4); }
 .compare-footnote { text-align: center; font-size: 11.5px; color: rgba(255,255,255,0.2); margin-top: 14px; }
 @media (max-width: 860px) { .compare-sec { padding: 64px 24px; } .compare-scores { grid-template-columns: repeat(3,1fr); } }
-@media (max-width: 600px) { .compare-sec { padding: 48px 16px; } .compare-scores { grid-template-columns: repeat(2,1fr); } .compare-table { font-size: 12px; } }
+@media (max-width: 600px) {
+  .compare-sec { padding: 48px 16px; }
+  .compare-scores { grid-template-columns: repeat(2,1fr); }
+  .compare-table { font-size: 12px; }
+  .compare-table-wrap { overflow: visible; border: none; }
+  /* Both axes scroll inside the box → sticky thead works within this container */
+  .compare-table-scroll {
+    overflow-x: auto;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    max-height: 72vh;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 18px;
+  }
+  .compare-thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--navy);
+  }
+  .compare-thead th.cth-koenig { background: var(--blue); }
+}
 
 /* ══ PRICING TIERS ══ */
 .pricing-sec { background: #f8fafc; padding: 88px 48px; border-top: 1px solid rgba(6,148,209,0.1); }
@@ -5396,15 +5910,48 @@ p {
 .pricing-featured .pf-check { color: rgba(255,255,255,0.9); }
 .pricing-hr { border: none; border-top: 1px solid rgba(6,148,209,0.1); margin: 4px 0 20px; }
 .pricing-featured .pricing-hr { border-color: rgba(255,255,255,0.2); }
-.pricing-cta-btn { width: 100%; padding: 13px 20px; background: #f0f6fb; border: 1.5px solid rgba(6,148,209,0.2); color: var(--blue); border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.15s; margin-top: auto; letter-spacing: -0.01em; }
-.pricing-cta-btn:hover { background: rgba(6,148,209,0.1); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.15); }
-.pricing-featured .pricing-cta-btn { background: #fff; color: var(--blue); border-color: transparent; }
-.pricing-featured .pricing-cta-btn:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.2); transform: translateY(-2px); }
+.pricing-cta-btn { width: 100%; padding: 13px 20px; background: transparent; border: 1.5px solid var(--blue); color: var(--blue); border-radius: var(--r8); font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.2s; margin-top: auto; font-family: var(--body); }
+.pricing-cta-btn:hover { background: rgba(6,148,209,0.06); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(6,148,209,0.2); }
+.pricing-featured .pricing-cta-btn { background: var(--blue); color: #fff; border-color: transparent; box-shadow: 0 4px 16px rgba(6,148,209,0.3); }
+.pricing-featured .pricing-cta-btn:hover { background: #057ab5; box-shadow: 0 8px 24px rgba(6,148,209,0.4); transform: translateY(-1px); }
 .pricing-card-desc { margin-top: 14px; font-size: 12px; text-align: center; color: #a0bccf; line-height: 1.5; }
 .pricing-featured .pricing-card-desc { color: rgba(255,255,255,0.55); }
 .pricing-footnote { text-align: center; font-size: 12px; color: #a0bccf; margin-top: 40px; }
-@media (max-width: 960px) { .pricing-sec { padding: 64px 24px; } .pricing-grid { grid-template-columns: 1fr; max-width: 440px; margin: 0 auto; } .pricing-featured { order: -1; } }
-@media (max-width: 540px) { .pricing-sec { padding: 48px 16px; } }
+@media (max-width: 960px) {
+  .pricing-sec { padding: 64px 24px; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
+  .pricing-featured { order: -1; }
+  .pricing-amount { font-size: 44px; }
+  .pricing-card { padding: 28px 24px 24px; }
+}
+@media (max-width: 600px) {
+  .pricing-sec { padding: 56px 16px; }
+  .pricing-grid { max-width: 100%; align-items: stretch; }
+  .pricing-card-side { transform: none !important; opacity: 1 !important; }
+  .pricing-featured { transform: none !important; }
+  .pricing-amount { font-size: 40px; }
+  .pricing-card { padding: 24px 20px 20px; border-radius: 16px; }
+  .pricing-trust-strip { gap: 8px; font-size: 11px; }
+  .pricing-features li { font-size: 13px; }
+  .pricing-desc { font-size: 13px; }
+  .pricing-sub { font-size: 14px; }
+  .pricing-footnote { font-size: 11px; margin-top: 28px; }
+}
+@media (max-width: 768px) {
+  .enterprise-talk-sales { display: none; }
+}
+@media (max-width: 480px) {
+  .enterprise-talk-sales { display: none; }
+  .pricing-sec { padding: 48px 14px; }
+  .pricing-amount { font-size: 36px; }
+  .pricing-card { padding: 20px 16px 18px; border-radius: 14px; }
+  .pricing-name { margin-bottom: 14px; }
+  .pricing-amount-row { gap: 4px; }
+  .pricing-billed { font-size: 11px; margin-bottom: 14px; }
+  .pricing-features { gap: 8px; }
+  .pricing-features li { font-size: 12.5px; gap: 7px; }
+  .pricing-cta-btn { padding: 12px 16px; font-size: 14px; }
+}
 
 /* ══ REFERRAL SECTION ══ */
 .referral-sec { background: #f0f6fb; padding: 96px 48px 0; border-top: 1px solid rgba(6,148,209,0.1); overflow: hidden; position: relative; }
@@ -5423,7 +5970,7 @@ p {
 
 /* ── Centered header ── */
 .referral-center-hd { text-align: center; margin-bottom: 56px; }
-.referral-h2 { font-size: clamp(28px,3.4vw,44px); font-weight: 800; color: var(--ink); line-height: 1.18; letter-spacing: -0.025em; margin-bottom: 14px; }
+.referral-h2 { font-size: 24px; font-weight: 800; color: var(--ink); line-height: 1.4; letter-spacing: -0.015em; margin-bottom: 14px; }
 .referral-h2 em { font-style: normal; background: linear-gradient(90deg, var(--blue) 0%, #50e6ff 50%, var(--blue) 100%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: shimmerText 3s linear infinite; }
 @keyframes shimmerText { to { background-position: 200% center; } }
 .referral-sub { font-size: 15px; color: #5a7a90; line-height: 1.65; max-width: 540px; margin: 0 auto 24px; }
@@ -5485,8 +6032,11 @@ p {
 .referral-steps-section { margin-bottom: 48px; }
 .referral-steps-label { font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #b0c8d8; display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
 .referral-steps-label::after { content:''; flex: 1; height: 1px; background: rgba(6,148,209,0.12); }
-.referral-steps-track { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
-.referral-steps-track::before { content:''; position:absolute; top:32px; left:calc(12.5% + 16px); right:calc(12.5% + 16px); height:2px; background:linear-gradient(90deg, rgba(6,148,209,0.3) 0%, rgba(6,148,209,0.15) 100%); border-radius:2px; z-index:0; }
+.referral-steps-track { display: flex; align-items: flex-start; gap: 0; position: relative; }
+.referral-step-card { flex: 1; }
+.referral-step-arrow { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 48px; padding-top: 18px; }
+.referral-step-arrow svg { color: #0694D1; }
+@keyframes arrowPulse { 0%,100%{opacity:0.35;transform:translateX(0)} 50%{opacity:1;transform:translateX(4px)} }
 .referral-step-card { background: #fff; border: 1.5px solid rgba(6,148,209,0.1); border-radius: 18px; padding: 24px 20px 20px; margin: 0 8px; position: relative; transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s; z-index: 1; }
 .referral-step-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(6,148,209,0.12); border-color: rgba(6,148,209,0.3); }
 .referral-step-num-badge { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #0694D1 0%, #093148 100%); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(6,148,209,0.35); border: 3px solid #fff; position: relative; z-index: 1; }
@@ -5512,8 +6062,8 @@ p {
 .referral-cta-question { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
 .referral-cta-desc { font-size: 14px; color: rgba(255,255,255,0.55); margin-bottom: 20px; }
 .referral-cta-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
-.referral-cta-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: var(--blue); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; font-family: var(--body); }
-.referral-cta-btn-primary:hover { background: #0480ba; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
+.referral-cta-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: var(--blue); border: none; border-radius: var(--r8); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s, transform 0.2s, box-shadow 0.2s; font-family: var(--body); box-shadow: 0 4px 16px rgba(6,148,209,0.3); }
+.referral-cta-btn-primary:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 .referral-cta-btn-ghost { display: inline-flex; align-items: center; gap: 8px; padding: 13px 24px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: rgba(255,255,255,0.85); font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: var(--body); }
 .referral-cta-btn-ghost:hover { background: rgba(255,255,255,0.15); }
 .referral-trust-pills { display: flex; flex-direction: column; gap: 10px; }
@@ -5524,15 +6074,17 @@ p {
 @media (max-width: 900px) {
   .referral-sec { padding: 64px 24px 0; }
   .referral-main-row { grid-template-columns: 1fr; }
-  .referral-steps-track { grid-template-columns: 1fr 1fr; gap: 16px; }
-  .referral-steps-track::before { display: none; }
+  .referral-steps-track { flex-wrap: wrap; gap: 12px; }
+  .referral-step-card { flex: 1 1 calc(50% - 40px); min-width: 140px; }
+  .referral-step-arrow { display: none; }
   .referral-rewards-strip { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
   .referral-cta-strip { grid-template-columns: 1fr; padding: 36px 28px; }
   .referral-trust-pills { flex-direction: row; flex-wrap: wrap; }
 }
 @media (max-width: 540px) {
   .referral-sec { padding: 48px 16px 0; }
-  .referral-steps-track { grid-template-columns: 1fr; }
+  .referral-steps-track { flex-direction: column; }
+  .referral-step-card { flex: none; width: 100%; }
   .referral-form { flex-direction: column; }
   .referral-cta-buttons { flex-direction: column; }
   .referral-calc-amount { font-size: 52px; }
@@ -5542,7 +6094,7 @@ p {
 .lf-sec { background:linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%); padding:60px 50px; border-top:1px solid rgba(6,148,209,0.12); position:relative; overflow:hidden; }
 .lf-inner { max-width:1120px; margin:0 auto; position:relative; z-index:1; }
 .lf-eyebrow { display:inline-block; background:rgba(6,148,209,0.18); color:#0694D1; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:6px 16px; border-radius:20px; margin-bottom:12px; }
-.lf-h2 { font-size:clamp(22px,2.8vw,36px); font-weight:800; color:#fff; line-height:1.2; margin-bottom:12px; }
+.lf-h2 { font-size:24px; font-weight:800; color:#fff; line-height:1.4; margin-bottom:12px; }
 .lf-h2 em { font-style:normal; background:linear-gradient(90deg,#0694D1,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .lf-sub { font-size:14px; color:rgba(255,255,255,0.55); line-height:1.65; max-width:560px; margin:0 auto; }
 .lf-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
@@ -5606,10 +6158,16 @@ p {
 .batch-footer { display:flex; align-items:center; justify-content:space-between; border-top:1px solid #CAEFFF; padding-top:12px; }
 .batch-location-label { font-size:11px; color:#8faabf; }
 .batch-location-val { display:flex; align-items:center; gap:4px; font-size:13px; font-weight:700; color:#071e2e; margin-top:2px; }
-.batch-reserve-btn { padding:8px 16px; background:#093148; border:none; border-radius:8px; color:#fff; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background 0.2s,box-shadow 0.2s; box-shadow:0 2px 8px rgba(9,49,72,0.2); }
-.batch-reserve-btn:hover { background:#0694D1; box-shadow:0 4px 16px rgba(6,148,209,0.35); }
+.batch-reserve-btn { padding:8px 16px; background:var(--blue); border:none; border-radius:var(--r8); color:#fff; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap; transition:background 0.2s,box-shadow 0.2s,transform 0.2s; box-shadow:0 2px 8px rgba(6,148,209,0.25); }
+.batch-reserve-btn:hover { background:#057ab5; box-shadow:0 6px 20px rgba(6,148,209,0.4); transform:translateY(-1px); }
 @media(max-width:900px){ .batches-sec{padding:60px 24px} .batches-grid{grid-template-columns:1fr 1fr} }
-@media(max-width:600px){ .batches-sec{padding:48px 16px} .batches-grid{grid-template-columns:1fr} .batches-hd{flex-direction:column} }
+@media(max-width:600px){
+  .batches-sec{padding:48px 16px}
+  .batches-grid{grid-template-columns:1fr}
+  .batches-hd{flex-direction:column}
+  .batch-footer{flex-wrap:wrap; gap:8px;}
+  .batch-reserve-btn{white-space:normal; width:100%; text-align:center;}
+}
 
 /* ══ WEBINARS ══ */
 .webinars-sec { background:linear-gradient(160deg,#EBF8FE 0%,#F5FBFF 50%,#EAF6FD 100%); padding:60px 50px; border-top:1px solid #CAEFFF; border-bottom:1px solid #CAEFFF; position:relative; overflow:hidden; }
@@ -5631,8 +6189,8 @@ p {
 .webinar-meta { display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:#5a7a90; flex-wrap:wrap; }
 .webinar-meta-item { display:flex; align-items:center; gap:4px; }
 .webinar-sep { color:#c5d8e5; }
-.webinar-register-btn { display:block; width:100%; padding:10px; border-radius:50px; border:2px solid #0694D1; background:transparent; color:#0694D1; font-size:13.5px; font-weight:600; cursor:pointer; font-family:inherit; transition:background 0.2s,color 0.2s; }
-.webinar-register-btn:hover { background:#0694D1; color:#fff; }
+.webinar-register-btn { display:block; width:100%; padding:10px; border-radius:var(--r8); border:none; background:var(--blue); color:#fff; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background 0.2s,box-shadow 0.2s,transform 0.2s; box-shadow:0 4px 16px rgba(6,148,209,0.3); }
+.webinar-register-btn:hover { background:#057ab5; box-shadow:0 8px 24px rgba(6,148,209,0.4); transform:translateY(-1px); }
 .webinars-nav { display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:24px; }
 .webinars-nav-btn { width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:none; transition:all 0.2s; }
 .webinars-nav-btn.active { background:#093148; box-shadow:0 4px 14px rgba(9,49,72,0.25); cursor:pointer; }
@@ -5748,24 +6306,28 @@ const FEATURES = [
 const CERT_TABS = ["Azure", "AI & Copilot", "Power Platform", "Security", "Microsoft 365", "Dynamics 365", "Data & Analytics", "DevOps & Dev", "GitHub", "Windows Server"];
 
 // Official Microsoft technology logos — fully inline SVG, no external deps
+let _azGradN = 0;
 const TECH_LOGOS = {
-  "Azure": ({ size = 28 }) => (
-    <svg width={size} height={size} viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="lg-az1" x1="0%" y1="0%" x2="50%" y2="100%">
-          <stop offset="0%" stopColor="#114a8b"/>
-          <stop offset="100%" stopColor="#0669bc"/>
-        </linearGradient>
-        <linearGradient id="lg-az2" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#3ccbf4"/>
-          <stop offset="100%" stopColor="#2892df"/>
-        </linearGradient>
-      </defs>
-      <path fill="url(#lg-az1)" d="M33.34 6.54h26.03L33.4 89.46a4.15 4.15 0 0 1-3.93 2.8H8.15a4.15 4.15 0 0 1-3.93-5.49L27.4 9.35a4.15 4.15 0 0 1 3.94-2.81z"/>
-      <path fill="#0078d4" d="M71.17 60.89H29.01a1.91 1.91 0 0 0-1.3 3.31l27.1 25.27a4.17 4.17 0 0 0 2.84 1.13h23.86z"/>
-      <path fill="url(#lg-az2)" d="M68.6 9.35a4.15 4.15 0 0 0-3.93-2.81H33.63a4.15 4.15 0 0 1 3.93 2.81l23.18 77.42a4.15 4.15 0 0 1-3.93 5.49h31.04a4.15 4.15 0 0 0 3.93-5.49z"/>
-    </svg>
-  ),
+  "Azure": ({ size = 28 }) => {
+    const gid = `az-g-${_azGradN++}`;
+    return (
+      <svg width={size} height={size} viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id={`${gid}-1`} x1="0%" y1="0%" x2="50%" y2="100%">
+            <stop offset="0%" stopColor="#114a8b"/>
+            <stop offset="100%" stopColor="#0669bc"/>
+          </linearGradient>
+          <linearGradient id={`${gid}-2`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3ccbf4"/>
+            <stop offset="100%" stopColor="#2892df"/>
+          </linearGradient>
+        </defs>
+        <path fill={`url(#${gid}-1)`} d="M33.34 6.54h26.03L33.4 89.46a4.15 4.15 0 0 1-3.93 2.8H8.15a4.15 4.15 0 0 1-3.93-5.49L27.4 9.35a4.15 4.15 0 0 1 3.94-2.81z"/>
+        <path fill="#0078d4" d="M71.17 60.89H29.01a1.91 1.91 0 0 0-1.3 3.31l27.1 25.27a4.17 4.17 0 0 0 2.84 1.13h23.86z"/>
+        <path fill={`url(#${gid}-2)`} d="M68.6 9.35a4.15 4.15 0 0 0-3.93-2.81H33.63a4.15 4.15 0 0 1 3.93 2.81l23.18 77.42a4.15 4.15 0 0 1-3.93 5.49h31.04a4.15 4.15 0 0 0 3.93-5.49z"/>
+      </svg>
+    );
+  },
   "Power Platform": ({ size = 28 }) => (
     <svg width={size} height={size} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <rect x="1" y="1" width="13" height="13" rx="2" fill="#742774"/>
@@ -5870,143 +6432,1144 @@ const CERT_META = {
   "GitHub": { sublabel: "Source Control & Actions", desc: "Master GitHub — the world's leading developer platform now under Microsoft — from foundations and Actions automation to Advanced Security and Copilot.", pills: ["8 Courses", "GH Foundations → GHAS", "Developer & SecOps"] },
   "Windows Server": { sublabel: "Hybrid Infrastructure", desc: "Administer Windows Server on-premises and hybrid Azure environments — core infrastructure, Active Directory, Hyper-V, and advanced hybrid services.", pills: ["8 Courses", "AZ-800 → AZ-801", "IT Administrator"] },
 };
-
 const CERTS = {
   "Azure": [
-    { name: "Microsoft Azure Fundamentals", code: "AZ-900", dur: "3 days", level: "fund" },
-    { name: "Azure Data Fundamentals", code: "DP-900", dur: "2 days", level: "fund" },
-    { name: "Azure AI Fundamentals", code: "AI-900", dur: "2 days", level: "fund" },
-    { name: "Microsoft Azure Administrator", code: "AZ-104", dur: "5 days", level: "assoc" },
-    { name: "Azure Virtual Desktop Specialty", code: "AZ-140", dur: "4 days", level: "assoc" },
-    { name: "Azure Network Engineer Associate", code: "AZ-700", dur: "3 days", level: "assoc" },
-    { name: "Azure Security Technologies", code: "AZ-500", dur: "4 days", level: "assoc" },
-    { name: "Azure Database Administrator Associate", code: "DP-300", dur: "4 days", level: "assoc" },
-    { name: "Azure IoT Developer Specialty", code: "AZ-220", dur: "4 days", level: "assoc" },
-    { name: "SAP on Azure Workloads Specialty", code: "AZ-120", dur: "4 days", level: "assoc" },
-    { name: "Azure Stack Hub Operator Associate", code: "AZ-600", dur: "4 days", level: "assoc" },
-    { name: "Administering Windows Server Hybrid Core", code: "AZ-800", dur: "4 days", level: "assoc" },
-    { name: "Designing Azure Infrastructure Solutions", code: "AZ-305", dur: "4 days", level: "expert" },
-    { name: "Configuring Windows Server Hybrid Advanced", code: "AZ-801", dur: "4 days", level: "expert" },
-    { name: "Azure Solutions Architect Expert (Full Path)", code: "AZ-104+305", dur: "9 days", level: "expert" },
+    { name: "Microsoft Cloud Workshop: Microservices Architecture", code: "Microsoft Cloud", dur: "1 day", level: "expert", url: "https://www.koenig-solutions.com/microservices-architecture-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: App Modernization", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/app-modernization-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Building a Resilient IaaS Architecture", code: "Microsoft Cloud", dur: "1 day", level: "expert", url: "https://www.koenig-solutions.com/building-a-resilient-iaas" },
+    { name: "Microsoft Cloud Workshop: IoT and the Smart City", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/iot-and-the-smart-city-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Serverless Architecture", code: "Microsoft Cloud", dur: "1 day", level: "expert", url: "https://www.koenig-solutions.com/serverless-architecture-microsoft-cloud-workshop" },
+    { name: "55621A - Mastering GitHub Copilot for Developers", code: "55621A - Master", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-copilot-course" },
+    { name: "AI Driven Development Using GitHub Copilot", code: "AI Driven Devel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/github-copilot-online" },
+    { name: "AZ 900 Exam Prep", code: "AZ 900 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az-900-certification" },
+    { name: "Deploy and Manage Containers Using Azure Kubernetes Service", code: "AZ-1001", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-kubernetes-service-deployment-az-1001-course" },
+    { name: "Configure Secure Access to Your Workloads Using Networking with Azure Virtual Network", code: "AZ-1002", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-virtual-network-secure-access-configuration-course-az1002" },
+    { name: "Secure Storage for Azure Files and Azure Blob Storage", code: "AZ-1003", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-secure-storage-course-az1003" },
+    { name: "Deploy and Configure Azure Monitor", code: "AZ-1004", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/deploy-configure-azure-monitor-course-az1004" },
+    { name: "- Configuring Azure Virtual Desktop for the Enterprise", code: "AZ-1005", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/configuring-azure-virtual-desktop-course" },
+    { name: "Migrate and Modernize SAP in the Microsoft Cloud", code: "AZ-1006---A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az-1006-microsoft-course" },
+    { name: "Deploy and Administer Linux Virtual Machines on Microsoft Azure", code: "AZ-1007", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az1007-deploy-administer-linux-vms-microsoft-azure" },
+    { name: "Deploy and Manage Azure Arc-Enabled Servers", code: "AZ-1010", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az-1010-deploy-manage-azure-arc-enabled-servers-course" },
+    { name: "Exam Prep", code: "AZ-104", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az-104-certification" },
+    { name: "Microsoft Azure Administrator", code: "AZ-104T00-A", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-administrator-training" },
+    { name: "Planning and Deploying SAP on Azure", code: "AZ-120T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-azure-sap-workloads-training" },
+    { name: "Configuring and Operating Microsoft Azure Virtual Desktop", code: "AZ-140T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-azure-certification" },
+    { name: "Deploy Cloud-Native Apps Using Azure Container Apps", code: "AZ-2003", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-container-apps-deployment-course-az-2003" },
+    { name: "Automate Azure Load Testing by Using GitHub Actions", code: "AZ-2006", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-actions-training" },
+    { name: "Get started with AI-assisted development", code: "AZ-2007", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-copilot-training" },
+    { name: "Developing Solutions for Microsoft Azure", code: "AZ-204T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-solutions-microsoft-azure-training" },
+    { name: "- Exam Prep", code: "AZ-305", dur: "1 day", level: "expert", url: "https://www.koenig-solutions.com/microsoft-certified-azure-solutions-architect-expert" },
+    { name: "Designing Microsoft Azure Infrastructure Solutions", code: "AZ-305T00", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-azure-infrastructure-az305-training" },
+    { name: "Designing and Implementing Microsoft DevOps Solutions", code: "AZ-400T00-A", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/az-400-devops-solutions-training" },
+    { name: "Secure cloud resources with Microsoft security technologies", code: "AZ-500T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-security-technologies-training" },
+    { name: "Designing and Implementing Microsoft Azure Networking Solutions", code: "AZ-700T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/az-700t00-training" },
+    { name: "Administering Windows Server Hybrid Core Infrastructure", code: "AZ-800T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-hybrid-administrator-associate-certification-az800-training" },
+    { name: "Configuring Windows Server Hybrid Advanced Services", code: "AZ-801T00", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/windows-server-hybrid-administrator-associate-certification-az801-training" },
+    { name: "Introduction to Microsoft Azure", code: "AZ-900T00-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-azure-fundamentals-training" },
+    { name: "Accelerating Development with AI: Practical Workflows for Java, .NET, and Python", code: "Accelerating De", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-development-course" },
+    { name: "Architect API Integration Services", code: "Architect API I", dur: "20 days", level: "expert", url: "https://www.koenig-solutions.com/architect-api-integration-training" },
+    { name: "Architecting Cloud-Native .NET Apps for Azure", code: "Architecting Cl", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/azure-architecture-certification" },
+    { name: "Azure AD Graph", code: "Azure AD Graph", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ad-graph-course" },
+    { name: "Azure AI-3016 Develop generative AI apps in Azure AI Foundry portal", code: "Azure AI-3016 D", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/generative-ai-azure" },
+    { name: "Azure API Management", code: "Azure API Manag", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-api-management-course" },
+    { name: "Azure Automation", code: "Azure Automatio", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/master-azure-automation-language-course-for-success" },
+    { name: "Azure DevOps with Identity Solutions", code: "Azure DevOps wi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-devops-training" },
+    { name: "Azure Development for Python Professionals", code: "Azure Developme", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-developer-associate" },
+    { name: "Azure Infrastructure as Code (IaC) Workshop", code: "Azure Infrastru", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-devops-infrastructure-as-code" },
+    { name: "Azure Infrastructure with Security", code: "Azure Infrastru", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-security-training" },
+    { name: "Azure Integration Services", code: "Azure Integrati", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-integration-services-training" },
+    { name: "Azure Migrate (Apps + Data)", code: "Azure Migrate (", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-migrate-training" },
+    { name: "Azure Networking Workshop", code: "Azure Networkin", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-networking-training" },
+    { name: "Azure SQL Data Warehouse Performance Tuning and Optimization", code: "Azure SQL Data ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-sql-data-warehouse-performance-tuning-and-optimization" },
+    { name: "Azure Serverless", code: "Azure Serverles", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-functions-training" },
+    { name: "Azure Service Fabric", code: "Azure Service F", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-fabric-certification" },
+    { name: "Azure and Microsoft Security Services", code: "Azure and Micro", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-security-certification" },
+    { name: "Azure for App Developers & Architects", code: "Azure for App D", dur: "2 days", level: "expert", url: "https://www.koenig-solutions.com/azure-developer-certification" },
+    { name: "Azure for Developers", code: "Azure for Devel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-for-developers-language-course" },
+    { name: "Bicep with Essential Training", code: "Bicep with Esse", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/bicep-essential-training-language-course" },
+    { name: "Bootcamp for Azure Administration", code: "Bootcamp for Az", dur: "15 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-admin-bootcamp-training" },
+    { name: "Building Advanced Analytic Solutions on Azure Using Synapse", code: "Building Advanc", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-analytics-solutions-azure" },
+    { name: "Building CI/CD Pipelines in Azure DevOps from YAML", code: "Building CI/CD ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-devops-certification-cost" },
+    { name: "CosmosDB in a Day", code: "CosmosDB in a D", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/cosmosdb-training" },
+    { name: "Migrate SQL Workloads to Azure", code: "DP-050T00", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/migrate-sql-workloads-azure-training-course-certification" },
+    { name: "Migrate NoSQL Workloads to Azure Cosmos DB", code: "DP-060T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrate-nosql-workloads-azure-cosmos-db-training-course" },
+    { name: "Migrate Open Source Data Workloads to Azure", code: "DP-070T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrate-open-source-data-workloads-azure-training-course" },
+    { name: "Implementing a Data Analytics Solution with Azure Synapse Analytics", code: "DP-3012-A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dp-3012-microsoft-course" },
+    { name: "Getting Started With Cosmos DB NoSQL Development", code: "DP-3015-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/cosmos-db-security-best-practices" },
+    { name: "Develop Data-Driven Applications with Azure SQL Database", code: "DP-3020", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sql-certification-course" },
+    { name: "- Configure and Migrate to Azure Database for PostgreSQL", code: "DP-3021", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-database-training" },
+    { name: "Designing and Implementing Cloud-Native Applications Using Microsoft Azure Cosmos DB", code: "DP-420T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-cosmos-db-developer-training" },
+    { name: "Microsoft Fabric Analytics Engineer", code: "DP-600T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/data-analytics-online-training" },
+    { name: "Implementing a Lakehouse with Microsoft Fabric", code: "DP-601T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-fabric-implementing-lakehouse-dp-601t00-course" },
+    { name: "- Implementing Real-Time Analytics with Microsoft Fabric", code: "DP-603T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/real-time-analytics-microsoft-synapse-dp-603t00-course" },
+    { name: "Develop AI-enabled Database Solutions", code: "DP-800T00-A", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-database-training" },
+    { name: "Building and Modernizing AI Apps on Azure", code: "DW-201", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dw-201-building-modernizing-ai-apps-azure-workshop" },
+    { name: "Data Protection and Governance: Make Nonprofit Data Accessible, Understandable, and Usable", code: "Data Protection", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/gdpr-data-protection-training" },
+    { name: "Developing Containerized Apps with Azure", code: "Developing Cont", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/az-305-training" },
+    { name: "Digitally Transform with Modern Analytics", code: "Digitally Trans", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/digitally-transform-modern-analytics-course" },
+    { name: "GitHub Fundamentals - Administration Basics and Product Features", code: "GH-100", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/github-training-online" },
+    { name: "Automate Your Workflow with GitHub Actions", code: "GH-200", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-actions-certification" },
+    { name: "GitHub Copilot for DigiSafari", code: "GitHub Copilot ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/github-copilot-certification" },
+    { name: "GitHub Essentials for Developers", code: "GitHub Essentia", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/git-certification" },
+    { name: "GitHub for Youth", code: "GitHub for Yout", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-basics-for-beginners" },
+    { name: "IaC Using Terraform and GitHub Integration", code: "IaC Using Terra", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/terraform-online-course" },
+    { name: "Implementing Azure Database for MySQL", code: "Implementing Az", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/mysql-training" },
+    { name: "Implementing Data Governance Using Microsoft Purview", code: "Implementing Da", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-purview-data-catalog" },
+    { name: "Implementing Hybrid Infrastructure", code: "Implementing Hy", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az800-course" },
+    { name: "M55609A - Designing, Architecting, and Deploying Azure Enterprise Solutions", code: "M55609A - Desig", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/azure-solution-architect-certification" },
+    { name: "M55610A - Planning and Implementing Microsoft Sentinel (SIEM & SOAR)", code: "M55610A - Plann", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/planning-implementing-microsoft-sentinel-siem-soar-course" },
+    { name: "M55622A - Azure Administration for AWS SysOps", code: "M55622A - Azure", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/m55622a-azure-administration-aws-sysops-course" },
+    { name: "Microsoft Azure Administration and Networking Masterclass", code: "Microsoft Azure", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/azure-admin-certification" },
+    { name: "Microsoft Azure Advanced Administration", code: "Microsoft Azure", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-advanced-administration-training" },
+    { name: "Microsoft Azure Big Data Analytics", code: "Microsoft Azure", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-big-data-analytics-solutions-training" },
+    { name: "Microsoft Azure Data Explorer with Advanced KQL", code: "Microsoft Azure", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-data-explorer-kql-training" },
+    { name: "Microsoft Azure IoT Developer", code: "Microsoft Azure", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/az-220-microsoft-azure-iot-developer-training" },
+    { name: "Microsoft Azure Technical Workshop: Implement a Data Lakehouse Analytics Solution with Azure Databricks", code: "Microsoft Azure", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-databricks-certification" },
+    { name: "Microsoft Azure Virtual Training Day: Mastering Reliability, Security, and Performance on Azure", code: "Microsoft Azure", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-certification" },
+    { name: "Microsoft Azure Virtual Training Day: Migrate Linux and PostgreSQL to Azure", code: "Microsoft Azure", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-virtual-training-day" },
+    { name: "Microsoft Data Science Bootcamp for Freshers", code: "Microsoft Data ", dur: "11 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-data-science-bootcamp" },
+    { name: "Microsoft Entra", code: "Microsoft Entra", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-entra-training" },
+    { name: "Microsoft Purview", code: "Microsoft Purvi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-purview-training" },
+    { name: "Migrating Workloads to Azure", code: "Migrating Workl", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/migrating-workloads-to-azure" },
+    { name: "Modernize .NET Apps", code: "Modernize .NET ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/net-architecture-course" },
+    { name: "Modernize Enterprise Applications (MOC – AZ-204)", code: "Modernize Enter", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-204" },
+    { name: "Modernizing Web Applications and Data", code: "Modernizing Web", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/modernizing-web-applications-training" },
+    { name: "Operationalize Cloud Analytics Solutions with Microsoft Azure", code: "Operationalize ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-analytics-certification" },
+    { name: "Workshop on Azure Identity", code: "Workshop on Azu", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-identity-course-workshop" },
   ],
   "AI & Copilot": [
-    { name: "Azure AI Fundamentals", code: "AI-900", dur: "2 days", level: "fund" },
-    { name: "Copilot for Microsoft 365 User Adoption", code: "MS-4004", dur: "1 day", level: "fund" },
-    { name: "Copilot for Microsoft 365 Admin Deployment", code: "MS-4006", dur: "1 day", level: "fund" },
-    { name: "Understanding Microsoft AI", code: "AI-3000", dur: "1 day", level: "fund" },
-    { name: "Azure AI Engineer Associate", code: "AI-102", dur: "5 days", level: "assoc" },
-    { name: "Azure AI Studio — GenAI App Development", code: "AI-3016", dur: "3 days", level: "assoc" },
-    { name: "Microsoft Copilot Studio", code: "AI-3004", dur: "2 days", level: "assoc" },
-    { name: "Azure OpenAI & Responsible AI", code: "AI-050", dur: "2 days", level: "assoc" },
-    { name: "Build NLP with Azure AI Language", code: "AI-3003", dur: "2 days", level: "assoc" },
-    { name: "Azure AI Document Intelligence", code: "AI-3002", dur: "2 days", level: "assoc" },
-    { name: "Azure AI Search & Retrieval Augmented Gen.", code: "AI-3018", dur: "2 days", level: "assoc" },
-    { name: "Designing & Implementing AI Solutions", code: "AI-305", dur: "3 days", level: "expert" },
-  ],
-  "Power Platform": [
-    { name: "Power Platform Fundamentals", code: "PL-900", dur: "2 days", level: "fund" },
-    { name: "Dashboard in a Day (Power BI)", code: "DIAD", dur: "1 day", level: "fund" },
-    { name: "Power Apps Canvas Apps — PL-7001", code: "PL-7001", dur: "1 day", level: "fund" },
-    { name: "Power Automate Process Flows — PL-7002", code: "PL-7002", dur: "1 day", level: "fund" },
-    { name: "Power BI Data Analyst", code: "PL-300", dur: "3 days", level: "assoc" },
-    { name: "Power Platform App Maker Associate", code: "PL-100", dur: "3 days", level: "assoc" },
-    { name: "Power Platform Functional Consultant", code: "PL-200", dur: "4 days", level: "assoc" },
-    { name: "Power Automate RPA Developer", code: "PL-500", dur: "3 days", level: "assoc" },
-    { name: "Microsoft Fabric Analytics Engineer", code: "DP-600", dur: "4 days", level: "assoc" },
-    { name: "Power Platform Developer Associate", code: "PL-400", dur: "4 days", level: "assoc" },
-    { name: "Power Virtual Agents & Copilot Studio", code: "PL-3005", dur: "2 days", level: "assoc" },
-    { name: "Power Platform Solution Architect Expert", code: "PL-600", dur: "4 days", level: "expert" },
-  ],
-  "Security": [
-    { name: "Security, Compliance & Identity Fundamentals", code: "SC-900", dur: "2 days", level: "fund" },
-    { name: "Security Operations Analyst Associate", code: "SC-200", dur: "4 days", level: "assoc" },
-    { name: "Identity & Access Administrator Associate", code: "SC-300", dur: "4 days", level: "assoc" },
-    { name: "Information Protection & Compliance Admin", code: "SC-400", dur: "4 days", level: "assoc" },
-    { name: "Information Protection Administrator", code: "SC-401", dur: "3 days", level: "assoc" },
-    { name: "Azure Security Technologies", code: "AZ-500", dur: "4 days", level: "assoc" },
-    { name: "Microsoft Sentinel SIEM Deployment", code: "SC-5008", dur: "2 days", level: "assoc" },
-    { name: "Microsoft Defender XDR", code: "SC-5001", dur: "1 day", level: "assoc" },
-    { name: "Implement Security with Defender for Cloud", code: "SC-5002", dur: "1 day", level: "assoc" },
-    { name: "GitHub Advanced Security (GHAS)", code: "SC-5006", dur: "2 days", level: "assoc" },
-    { name: "Microsoft Entra — Identity Governance", code: "SC-5007", dur: "2 days", level: "assoc" },
-    { name: "Microsoft Cybersecurity Architect Expert", code: "SC-100", dur: "4 days", level: "expert" },
-    { name: "Designing Zero Trust Security Architecture", code: "SC-ZTA", dur: "2 days", level: "expert" },
-  ],
-  "Microsoft 365": [
-    { name: "Microsoft 365 Fundamentals", code: "MS-900", dur: "2 days", level: "fund" },
-    { name: "Copilot for M365 User Adoption", code: "MS-4004", dur: "1 day", level: "fund" },
-    { name: "Copilot for M365 Admin Deployment", code: "MS-4006", dur: "1 day", level: "fund" },
-    { name: "Teams Administrator Associate", code: "MS-700", dur: "4 days", level: "assoc" },
-    { name: "Messaging Administrator Associate", code: "MS-203", dur: "4 days", level: "assoc" },
-    { name: "Endpoint Administrator — Intune", code: "MD-102", dur: "5 days", level: "assoc" },
-    { name: "Collaboration Communications Systems Eng.", code: "MS-721", dur: "3 days", level: "assoc" },
-    { name: "Troubleshoot Microsoft Teams", code: "MS-740", dur: "3 days", level: "assoc" },
-    { name: "Employee Experience — Microsoft Viva", code: "MS-080", dur: "2 days", level: "assoc" },
-    { name: "SharePoint Administrator", code: "MS-SharePoint", dur: "3 days", level: "assoc" },
-    { name: "Viva & Microsoft Adoption Specialist", code: "MC-700", dur: "2 days", level: "assoc" },
-    { name: "Microsoft 365 Administrator Expert", code: "MS-102", dur: "5 days", level: "expert" },
-  ],
-  "Dynamics 365": [
-    { name: "Dynamics 365 Fundamentals (CRM)", code: "MB-910", dur: "2 days", level: "fund" },
-    { name: "Dynamics 365 Fundamentals (ERP)", code: "MB-920", dur: "2 days", level: "fund" },
-    { name: "D365 Sales Functional Consultant", code: "MB-210", dur: "3 days", level: "assoc" },
-    { name: "D365 Customer Service Functional Consultant", code: "MB-230", dur: "3 days", level: "assoc" },
-    { name: "D365 Field Service Functional Consultant", code: "MB-240", dur: "3 days", level: "assoc" },
-    { name: "D365 Finance Functional Consultant", code: "MB-310", dur: "4 days", level: "assoc" },
-    { name: "D365 Supply Chain Functional Consultant", code: "MB-330", dur: "4 days", level: "assoc" },
-    { name: "D365 Business Central Functional Consultant", code: "MB-800", dur: "4 days", level: "assoc" },
-    { name: "D365 Customer Insights — Data", code: "MB-260", dur: "3 days", level: "assoc" },
-    { name: "D365 Customer Insights — Journeys", code: "MB-280", dur: "3 days", level: "assoc" },
-    { name: "D365 Finance & Operations Developer", code: "MB-500", dur: "5 days", level: "expert" },
-    { name: "D365 Business Central Developer", code: "MB-820", dur: "4 days", level: "expert" },
-  ],
-  "Data & Analytics": [
-    { name: "Azure Data Fundamentals", code: "DP-900", dur: "2 days", level: "fund" },
-    { name: "Azure Data Scientist Associate", code: "DP-100", dur: "4 days", level: "assoc" },
-    { name: "Azure Data Engineer Associate", code: "DP-203", dur: "4 days", level: "assoc" },
-    { name: "Azure Database Administrator Associate", code: "DP-300", dur: "4 days", level: "assoc" },
-    { name: "Azure Cosmos DB Developer Specialty", code: "DP-420", dur: "4 days", level: "assoc" },
-    { name: "Microsoft Fabric Analytics Engineer", code: "DP-600", dur: "4 days", level: "assoc" },
-    { name: "Power BI Data Analyst", code: "PL-300", dur: "3 days", level: "assoc" },
-    { name: "Implement Data Engineering with Fabric", code: "DP-700", dur: "3 days", level: "assoc" },
-    { name: "Azure Enterprise Data Analyst Associate", code: "DP-500", dur: "4 days", level: "assoc" },
-    { name: "Real-Time Intelligence with Microsoft Fabric", code: "DP-604", dur: "2 days", level: "assoc" },
-    { name: "Azure Synapse Analytics Deep Dive", code: "DP-3011", dur: "2 days", level: "assoc" },
-    { name: "Azure Data Solutions Architect Expert", code: "DP-Expert", dur: "5 days", level: "expert" },
-  ],
-  "DevOps & Dev": [
-    { name: "Azure Developer Associate", code: "AZ-204", dur: "5 days", level: "assoc" },
-    { name: "Power Platform Developer Associate", code: "PL-400", dur: "4 days", level: "assoc" },
-    { name: "Microsoft 365 Developer Associate", code: "MS-600", dur: "4 days", level: "assoc" },
-    { name: "Azure Container Apps & Kubernetes Service", code: "AZ-204K", dur: "3 days", level: "assoc" },
-    { name: "GitHub Actions for Azure DevOps", code: "GH-ADO", dur: "2 days", level: "assoc" },
-    { name: "Azure API Management & Integration", code: "AZ-API", dur: "2 days", level: "assoc" },
-    { name: "Deploy Cloud-Native Apps with Azure", code: "AZ-2003", dur: "2 days", level: "assoc" },
-    { name: "AI Orchestration with Azure Functions", code: "AZ-2005", dur: "2 days", level: "assoc" },
-    { name: "Azure Logic Apps & Integration Services", code: "AZ-720", dur: "3 days", level: "assoc" },
-    { name: "Azure Service Bus & Event-Driven Apps", code: "AZ-EDA", dur: "2 days", level: "assoc" },
-    { name: "Designing & Implementing DevOps (AZ-400)", code: "AZ-400", dur: "5 days", level: "expert" },
-    { name: "Azure Solutions Architect Expert", code: "AZ-305", dur: "4 days", level: "expert" },
+    { name: "Fundamentals of Machine Learning", code: "Fundamentals of", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/55375AC-Fundamentals-Machine-Learning-language-course" },
+    { name: "Drive AI transformation in your organization", code: "AB-731T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-course-google" },
+    { name: "AI & Analytics with Microsoft", code: "AI & Analytics ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-training" },
+    { name: "AI & Azure in Insurance", code: "AI & Azure in I", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-certification-path" },
+    { name: "AI Foundations for NGOs", code: "AI Foundations ", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ai-foundations-course" },
+    { name: "AI for Business Professionals", code: "AI for Business", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-professional-course" },
+    { name: "Develop AI Information Extraction Solutions in Azure", code: "AI-3002", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-document-intelligence-course-ai-3002" },
+    { name: "Develop Natural Language Solutions in Azure", code: "AI-3003", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-nlp-solution-course-ai-3003" },
+    { name: "Develop Computer Vision Solutions in Azure", code: "AI-3004", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/build-azure-ai-vision-course" },
+    { name: "Operationalize machine learning and generative AI solutions", code: "AI-300T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ml-model-deployment" },
+    { name: "Microsoft AI for Business Leaders", code: "AI-3017", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-for-business-leaders-course" },
+    { name: "Build AI Apps with Azure Database for PostgreSQL", code: "AI-3019", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-3019-build-ai-apps-azure-database-postgresql-course" },
+    { name: "Implement Knowledge Mining with Azure AI Search", code: "AI-3022", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-certification" },
+    { name: "Design a Dream Destination with AI", code: "AI-3024", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-training-online" },
+    { name: "Develop AI Agents on Azure", code: "AI-3026", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-900-certification" },
+    { name: "Introduction to AI in Azure", code: "AI-900", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ai-900-certification-cost" },
+    { name: "AI-Driven Manufacturing and Operations Optimization", code: "AI-Driven Manuf", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-driven-manufacturing-operations-optimization-course" },
+    { name: "Advanced Azure AI Foundry", code: "Advanced Azure ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-foundry-labs" },
+    { name: "Agentic AI on Microsoft", code: "Agentic AI on M", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-certifications" },
+    { name: "Artificial Intelligence Basics", code: "Artificial Inte", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/ai-online-course" },
+    { name: "Azure Databricks for R-Based Data Analysis & Engineering", code: "Azure Databrick", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/databricks-azure-training" },
+    { name: "Azure Databricks with PySpark", code: "Azure Databrick", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/data-bricks-training" },
+    { name: "Azure MLOps", code: "Azure MLOps", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-mlops-training" },
+    { name: "Build a Copilot App Using Azure AI Studio and Semantic Kernel", code: "Build a Copilot", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/build-ai-copilot-app-with-azure-ai-studio-and-semantic-kernel" },
+    { name: "Build an AI App with Azure Using RAG", code: "Build an AI App", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-ai-course" },
+    { name: "Cloud-Native MLOps with Azure ML and MLflow", code: "Cloud-Native ML", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-mlops-certification" },
+    { name: "Complete Guide to Azure Databricks with PySpark", code: "Complete Guide ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-databricks-course" },
+    { name: "Custom Copilots with Azure AI Studio", code: "Custom Copilots", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-studio-course" },
+    { name: "Implementing a Machine Learning Solution with Microsoft Azure Databricks", code: "DP-090T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dp-090t00-a-implementing-a-machine-learning-solution-with-azure-databricks-training" },
+    { name: "Train and Deploy a Machine Learning Model with Azure Machine Learning", code: "DP-3007", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/train-deploy-machine-learning-azure-dp-3007" },
+    { name: "Build, Orchestrate, and Govern AI Agents with Copilot Studio", code: "DW-107", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/visual-studio-copilot" },
+    { name: "Accelerate Agentic AI", code: "DW-200", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dw-200-azure-openai-workshops-course" },
+    { name: "- Lead the Conversation: Enable AI-Driven Transformation with Agentic AI in Azure AI Foundry", code: "DW-230", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/agentic-ai-training" },
+    { name: "Decode Azure Cognitive Search", code: "Decode Azure Co", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/decode-azure-cognitive-search-language-course" },
+    { name: "Deep Learning Specialization", code: "Deep Learning S", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/deep-learning" },
+    { name: "Designing and Implementing an Azure AI Solution on Edge Devices", code: "Designing and I", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-102-certification" },
+    { name: "Generative AI for .NET Developers with Azure AI Services", code: "Generative AI f", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/.net-ai-course" },
+    { name: "Generative AI for Developers", code: "Generative AI f", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/generative-ai-online" },
+    { name: "Generative AI for Youth", code: "Generative AI f", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/generative-ai-fundamentals" },
+    { name: "GitHub Copilot Fundamentals", code: "GitHub Copilot ", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/github-copilot-fundamentals-language-course" },
+    { name: "Integrating Artificial Intelligence into Classroom Teaching", code: "Integrating Art", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-for-teachers-course" },
+    { name: "MLOps on Azure: From Data Science to Deployment", code: "MLOps on Azure:", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/mlops-azure-data-science-deployment-course" },
+    { name: "Mastering Azure OpenAI", code: "Mastering Azure", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/master-azure-openai-language-course-online" },
+    { name: "Microsoft AI Bootcamp for Educators – Azure AI Fundamentals", code: "Microsoft AI Bo", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/windows-azure-fundamentals" },
+    { name: "Microsoft Copilot for Azure", code: "Microsoft Copil", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-copilot-course" },
+    { name: "No-Code Copilot App Using Azure OpenAI", code: "No-Code Copilot", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-azure-openai-course" },
+    { name: "OpenAI/ChatGPT Embedding and Development Within Microsoft (AI-900 & AI-102)", code: "OpenAI/ChatGPT ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-900-course" },
+    { name: "Prompt Engineering for Microsoft 365 Copilot", code: "Prompt Engineer", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/prompt-engineering-certification" },
+    { name: "Python Foundations +  AI102", code: "Python Foundati", dur: "6 days", level: "fund", url: "https://www.koenig-solutions.com/python-for-ai-course" },
+    { name: "Python Foundations and GitHub Copilot", code: "Python Foundati", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/python-intro-course" },
+    { name: "Secure Microsoft AI Solutions in the Cloud", code: "Secure Microsof", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/secure-microsoft-ai-solutions" },
+    { name: "Use AI for Innovation - Explore Tools and Functionalities in Azure OpenAI Service and Azure AI Search", code: "Use AI for Inno", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-ai-certification" },
+    { name: "Work Smarter with AI", code: "Work Smarter wi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-training-institute" },
+    { name: "55485 - Microsoft 365 Copilot Super User", code: "55485 - Microso", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-copilot-super-user-course" },
+    { name: "Transform business workflows with generative AI", code: "AB-730T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/generative-ai-in-business" },
+    { name: "Introduction to Microsoft 365 and AI administration", code: "AB-900T00", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-900-microsoft-365-fundamentals" },
+    { name: "Architecture, Deployment, Security and Compliance with Microsoft Copilot for Microsoft 365", code: "Architecture, D", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-copilot-architecture" },
+    { name: "Automate, Assist, and Accelerate: Building and Using AI Agents in Microsoft 365 Copilot", code: "Automate, Assis", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-certified-azure-ai-fundamentals" },
+    { name: "Copilot Bootcamp for Developers", code: "Copilot Bootcam", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/copilot-bootcamp-for-developers" },
+    { name: "Copilot for Administrators", code: "Copilot for Adm", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-certification-course" },
+    { name: "Copilot for HR / Legal / Finance", code: "Copilot for HR ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-hr-training" },
+    { name: "Copilot for Leaders", code: "Copilot for Lea", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-for-leaders-training" },
+    { name: "Copilot for Microsoft 365: Empower Your Workforce with Copilot for Microsoft 365: Finance Use Case", code: "Copilot for Mic", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-for-microsoft-365-finance-training" },
+    { name: "Elevate User Productivity with Microsoft 365 Copilot (End User Training)", code: "Elevate User Pr", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-end-user-training" },
+    { name: "Enhancing Productivity with Copilot in PowerPoint, Teams, and Copilot Studio", code: "Enhancing Produ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-online-training" },
+    { name: "Getting Started with Copilot in Outlook", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/copilot-outlook-training" },
+    { name: "Getting Started with Copilot in PowerPoint", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/powerpoint-copilot-online" },
+    { name: "Getting Started with Copilot in Teams", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/copilot-in-teams" },
+    { name: "Getting Started with Copilot in Word", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/getting-started-with-copilot" },
+    { name: "Getting Started with Microsoft 365 Copilot", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-365-copilot-training" },
+    { name: "Getting Started with Microsoft 365 Copilot: Use Cases and Extensions", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-365-planner" },
+    { name: "Getting started with Power BI and Copilot in M365", code: "Getting started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/copilot-in-m365-training" },
+    { name: "Introduction to Microsoft Copilot", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-microsoft-copilot-language-course" },
+    { name: "(Copilot for Microsoft 365 Pre-Sales, Deployment, and Adoption Bootcamp)", code: "JS-100", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-js-100-copilot-bootcamp" },
+    { name: "M55616A Microsoft Copilot Overview for IT Professionals", code: "M55616A Microso", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-copilot-overview-it-professionals-course-m55616a" },
+    { name: "M55618A - Microsoft Copilot for Microsoft 365 for End Users", code: "M55618A - Micro", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-365-end-users-course" },
+    { name: "Prepare Security and Compliance to Support Microsoft 365 Copilot", code: "MS-4002", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-certification" },
+    { name: "Empower Your Workforce with Copilot for Microsoft 365 Use Cases", code: "MS-4004", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-365-copilot-empower-workforce-use-cases-course" },
+    { name: "Craft Effective Prompts for Microsoft Copilot for Microsoft 365", code: "MS-4005---A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/craft-effective-prompts-microsoft-copilot-microsoft-365-course" },
+    { name: "Copilot for Microsoft 365 for Administrators", code: "MS-4006-A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-microsoft-365-administrators-course" },
+    { name: "Copilot for Microsoft 365 User Enablement Specialist", code: "MS-4007", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-microsoft-365-user-enablement-specialist-ms-4007-training" },
+    { name: "Extend Microsoft Copilot for Microsoft 365", code: "MS-4009", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-4009-extend-microsoft-copilot-365-course" },
+    { name: "Extend Microsoft 365 Copilot with Declarative Agents by Using Visual Studio Code", code: "MS-4010", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-4010-build-plugins-connectors-microsoft-copilot-365" },
+    { name: "Build a Foundation to Extend Microsoft 365 Copilot", code: "MS-4014", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-365-classes" },
+    { name: "Build Custom Agents for Microsoft Teams", code: "MS-4015", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-teams-training" },
+    { name: "Manage and Extend Microsoft 365 Copilot", code: "MS-4017", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-4017-manage-extend-microsoft-365-copilot-training" },
+    { name: "Draft, Analyze, and Present with Microsoft 365 Copilot", code: "MS-4018", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-training-certification" },
+    { name: "Transform Your Everyday Business Processes with No-Code Agents", code: "MS-4019", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-4019-training" },
+    { name: "Copilot Immersion Experience", code: "MS-4021", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-training-cost" },
+    { name: "Extend Microsoft 365 Copilot in Copilot Studio", code: "MS-4022", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-online" },
+    { name: "Explore Microsoft 365 Copilot Chat", code: "MS-4023", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/office-365-certification" },
+    { name: "Microsoft 365 Copilot for Business Leaders", code: "Microsoft 365 C", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-bootcamp" },
+    { name: "Microsoft 365 Copilot for Developers", code: "Microsoft 365 C", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-certification" },
+    { name: "Microsoft 365 Copilot for End Users", code: "Microsoft 365 C", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/m365-copilot-certification" },
+    { name: "Microsoft 365 Copilot for Executives", code: "Microsoft 365 C", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-training-course" },
+    { name: "Microsoft 365 Copilot for Finance", code: "Microsoft 365 C", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-online-training" },
+    { name: "Microsoft 365 Copilot: Administration and Security Essentials", code: "Microsoft 365 C", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-365-copilot-administration-security-essentials-course" },
+    { name: "Microsoft 365 Copilot: Executive and Enablement Experience", code: "Microsoft 365 C", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-copilot-executive-enablement-experience-course" },
+    { name: "Microsoft 365 Loop and Copilot", code: "Microsoft 365 L", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-copilot-certification" },
+    { name: "Microsoft Copilot for Sales", code: "Microsoft Copil", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/copilot-sales-training" },
+    { name: "Prepare your organization for Microsoft 365 Copilot", code: "Prepare your or", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/office-365-admin-training" },
+    { name: "Unlocking the Power of Microsoft 365 Copilot", code: "Unlocking the P", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-copilot-training" },
   ],
   "GitHub": [
-    { name: "GitHub Foundations", code: "GH-F", dur: "2 days", level: "fund" },
-    { name: "GitHub Copilot Fundamentals", code: "GH-COP", dur: "1 day", level: "fund" },
-    { name: "GitHub Actions — Automate Workflows", code: "GH-ACT", dur: "3 days", level: "assoc" },
-    { name: "GitHub Administration", code: "GH-ADM", dur: "3 days", level: "assoc" },
-    { name: "GitHub Advanced Security (GHAS)", code: "GH-AS", dur: "3 days", level: "assoc" },
-    { name: "GitHub Packages & Container Registry", code: "GH-PKG", dur: "2 days", level: "assoc" },
-    { name: "GitHub Copilot for Enterprise Development", code: "GH-ENT", dur: "2 days", level: "assoc" },
-    { name: "GitHub Enterprise Cloud & Server Expert", code: "GH-EXP", dur: "4 days", level: "expert" },
+    { name: "Exam Prep GH-100 GitHub Administration", code: "Exam Prep GH-10", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-admin-training" },
+    { name: "Exam Prep GH-200 GitHub Actions", code: "Exam Prep GH-20", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-actions-course" },
+    { name: "Exam Prep GH-500 GitHub Advanced Security", code: "Exam Prep GH-50", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-advanced-security-cost" },
+    { name: "GitHub Copilot with Java for Advanced Users", code: "GitHub Copilot ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-java-programming" },
+  ],
+  "Power Platform": [
+    { name: "Microsoft Power Apps Super User", code: "Microsoft Power", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-powerapps-training-course" },
+    { name: "Microsoft Dataverse for Teams", code: "Microsoft Datav", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dataverse-training" },
+    { name: "55604A - Using AI and Copilot in the Microsoft Power Platform", code: "55604A - Using ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-ai" },
+    { name: "55628A - Mastering Microsoft Copilot Studio", code: "55628A - Master", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-cost" },
+    { name: "AI Builder for Power Platform", code: "AI Builder for ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-builder-power-platform-training" },
+    { name: "AI Builder in Power Platform", code: "AI Builder in P", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-certification" },
+    { name: "AI-Powered Automation with Microsoft Power Automate and AI Builder", code: "AI-Powered Auto", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/automation-classes-online" },
+    { name: "Advanced DAX in Power BI", code: "Advanced DAX in", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-dax-power-bi-course" },
+    { name: "Advanced Data Modeling and Shaping with Power BI", code: "Advanced Data M", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-online-course" },
+    { name: "Advanced Microsoft Power Platform Administration: Managing Enterprise Deployments", code: "Advanced Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-online" },
+    { name: "Advanced Power Apps Development with AI Builder and Model-Driven Apps", code: "Advanced Power ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-ai-builder" },
+    { name: "Advancing Power BI with Automate and AI Builder", code: "Advancing Power", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/advancing-power-bi-automate-ai-builder-course" },
+    { name: "Agents and Automation with Power Platform", code: "Agents and Auto", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/pl-900-certification" },
+    { name: "Artificial Intelligence in Power Platform", code: "Artificial Inte", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-builder-for-powerplatform-training" },
+    { name: "Automation Foundations: Power Automate, RPA, and Power Platform Essentials", code: "Automation Foun", dur: "7 days", level: "fund", url: "https://www.koenig-solutions.com/rpa-automation-training" },
+    { name: "Azure AI Foundry + Agents + GitHub", code: "Azure AI Foundr", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-foundry-cost" },
+    { name: "Building Business Applications with Power Apps & Power Automate", code: "Building Busine", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-training-course" },
+    { name: "Copilot Integration with Microsoft Power Automate Flow and Desktop (RPA)", code: "Copilot Integra", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-rpa-certification" },
+    { name: "Copilot Studio, Power Automate & Data Standardization", code: "Copilot Studio,", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-basics" },
+    { name: "Create Apps and Automation Power Platform", code: "Create Apps and", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-training-course" },
+    { name: "Create Apps and Automations with Power Platform", code: "Create Apps and", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-course" },
+    { name: "Create Copilots with CoPilot Studio", code: "Create Copilots", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-studio-training" },
+    { name: "Prepare and visualize data with Microsoft Power BI", code: "DP-605T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/develop-dynamic-power-bi-course" },
+    { name: "- Build enterprise - ready agents with Copilot Studio", code: "DW-102", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/build-extend-ai-powered-copilot-copilot-studio-dw-102-course" },
+    { name: "Build and Extend agents using pro-code capabilities with Microsoft 365 Agents and Copilot", code: "DW-104", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/ea-course-online" },
+    { name: "Dataverse for Microsoft Teams", code: "Dataverse for M", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dataverse-certification" },
+    { name: "Developing Canvas Apps with Microsoft Power Apps", code: "Developing Canv", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-microsoft-certification" },
+    { name: "End-to-End Data Intelligence: From Power BI Reports to Microsoft Fabric Pipelines", code: "End-to-End Data", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-training-online" },
+    { name: "Fusion Development in Power Platform", code: "Fusion Developm", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/fusion-development-power-platform-language-course" },
+    { name: "HR Automation with Microsoft Copilot Studio: Building Intelligent Agents", code: "HR Automation w", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-workshop" },
+    { name: "Microsoft Cloud for Sustainability", code: "IC-002T00", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-cloud-sustainability-training" },
+    { name: "Intelligent Conversational Bots Built with Power Virtual Agents", code: "Intelligent Con", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/intelligent-bots-training" },
+    { name: "Intelligent Power Platform", code: "Intelligent Pow", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-course-certification" },
+    { name: "Introduction to Power Pages", code: "Introduction to", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/introduction-power-pages-language-course" },
+    { name: "Master Power Automate Cloud and Desktop: Automate Your Workflows and Processes", code: "Master Power Au", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/master-power-automate-cloud-desktop-course" },
+    { name: "Master Power Platform with Copilot Studio", code: "Master Power Pl", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/master-power-platform-with-copilot-studio-course" },
+    { name: "Master Power Platform with Power Automate and Copilot Studio", code: "Master Power Pl", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-apps-certification" },
+    { name: "Mastering Power Apps with Analytics and Automation", code: "Mastering Power", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-training" },
+    { name: "Mastering Power Automate Cloud: Advanced Techniques for Streamlining Workflows", code: "Mastering Power", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/mastering-power-automate-cloud-training" },
+    { name: "Mastery in Power Apps and Power Automate", code: "Mastery in Powe", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-classes" },
+    { name: "Microsoft Copilot Studio Development", code: "Microsoft Copil", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-studio-development-course" },
+    { name: "Microsoft Copilot Studio Development with Fabric Copilot", code: "Microsoft Copil", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/copilot-studio-certification" },
+    { name: "Microsoft Copilot Studio for Developers", code: "Microsoft Copil", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-studio-training" },
+    { name: "Microsoft Copilot Studio for Youth", code: "Microsoft Copil", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-copilot-course-online" },
+    { name: "Microsoft Power Apps Advanced", code: "Microsoft Power", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-apps-advanced-training" },
+    { name: "Microsoft Power Apps with AI Builder", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-training-online" },
+    { name: "Microsoft Power Automate Cloud Flow Essentials", code: "Microsoft Power", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-power-automate-essentials-course" },
+    { name: "Microsoft Power Automate Desktop: Web Automation Mastery", code: "Microsoft Power", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-automate-desktop-web-automation-mastery-course" },
+    { name: "Microsoft Power Automate Flow with RPA", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-automate-with-rpa-training" },
+    { name: "Microsoft Power Automate Flow, Desktop RPA & Copilot Integration", code: "Microsoft Power", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-automate-certification" },
+    { name: "Microsoft Power Automate Super User", code: "Microsoft Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-flow-training" },
+    { name: "Microsoft Power Automate for Desktop", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-desktop-training" },
+    { name: "Microsoft Power Automate with M365 for Business Automation", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-business-training" },
+    { name: "Microsoft Power Automate with Microsoft Teams", code: "Microsoft Power", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/training-for-microsoft-teams" },
+    { name: "Microsoft Power BI Super User (55400AC)", code: "Microsoft Power", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/powerbi-for-end-users-language-course" },
+    { name: "Microsoft Power Pages for External Users", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-pages-training" },
+    { name: "Microsoft Power Platform + Dynamics 365 Core", code: "Microsoft Power", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-core-ms-power-platform" },
+    { name: "Microsoft Power Platform Administration and Management", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-administration-training" },
+    { name: "Microsoft Power Platform Developer with Power Pages", code: "Microsoft Power", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-developer-course" },
+    { name: "Microsoft Power Platform Virtual Training Day: Create Agents in Microsoft Copilot Studio", code: "Microsoft Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-training" },
+    { name: "Microsoft Power Platform for Developers (55384AC)", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-powerplatform" },
+    { name: "Microsoft SharePoint Automation with Power Automate", code: "Microsoft Share", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-automation-power-automate-training" },
+    { name: "Modern Analyst and Business Intelligence with Excel, Power BI, MS Teams, and SharePoint", code: "Modern Analyst ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/business-analyst-certification" },
+    { name: "Modern Business App Development with Power Platform & DevOps", code: "Modern Business", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/devops-certification-course" },
+    { name: "PL 200 Exam Prep", code: "PL 200 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/pl-200-training" },
+    { name: "PL 300 Exam Prep", code: "PL 300 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/pl-300-certification-cost" },
+    { name: "Microsoft Power Platform App Maker", code: "PL-100T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-pl-100t00-training" },
+    { name: "Microsoft Power Platform Functional Consultant", code: "PL-200T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/pl-200-certification-training" },
+    { name: "Microsoft Power Platform Developer", code: "PL-400T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-developer-certification" },
+    { name: "Microsoft Power Automate RPA Developer", code: "PL-500T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-automate-rpa-developer-training" },
+    { name: "Microsoft Power Platform Solution Architect", code: "PL-600T00", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/pl-600-exam-prep-training" },
+    { name: "Create and Manage Model-Driven Apps with Power Apps and Dataverse", code: "PL-7003", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/create-manage-model-driven-powerapps-dataverse-course-pl7003" },
+    { name: "Implement AI Models with Microsoft Power Platform AI Builder", code: "PL-7004", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/pl-7004-training" },
+    { name: "Create and Extend Custom Copilots in Microsoft Copilot Studio", code: "PL-7008", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/create-extend-custom-copilots-microsoft-copilot-studio" },
+    { name: "Introduction to Microsoft Power Platform", code: "PL-900T00-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-power-platform-fundamentals-training" },
+    { name: "Power Apps - Enhanced UI Development", code: "Power Apps - En", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-online-training" },
+    { name: "Power Apps Development: From No Code to Low-Code Mastery", code: "Power Apps Deve", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-certification" },
+    { name: "Power Apps Hackathon", code: "Power Apps Hack", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-apps-course" },
+    { name: "Power Apps and Pages with AI", code: "Power Apps and ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-apps-training" },
+    { name: "Power Apps for Approval Workshop", code: "Power Apps for ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/powerapps-certification" },
+    { name: "Power Apps with Automate and SharePoint", code: "Power Apps with", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-automate-and-sharepoint-course" },
+    { name: "Power Apps with Copilot", code: "Power Apps with", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-with-copilot-course" },
+    { name: "Power Apps: Basic to Advanced", code: "Power Apps: Bas", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-developer-course" },
+    { name: "Power Automate Mastery Cloud Desktop and Power Apps Integration", code: "Power Automate ", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-online" },
+    { name: "Power Automate for Azure Data Engineers", code: "Power Automate ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-pricing" },
+    { name: "Power Automate for Everyone: Building Non-Robotic Automation Skills", code: "Power Automate ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-cost" },
+    { name: "Power BI Administration", code: "Power BI Admini", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-administration-course" },
+    { name: "Power BI Advanced with DAX", code: "Power BI Advanc", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-data-modeling" },
+    { name: "Power BI Advanced with Paginated Reports", code: "Power BI Advanc", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-advanced-paginated-reports-course" },
+    { name: "Power BI Beginner to Advanced", code: "Power BI Beginn", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-advanced-training" },
+    { name: "Power BI Report Server", code: "Power BI Report", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-report-server-language-course-tutorial" },
+    { name: "Power Platform App Maker - Mastery Camp", code: "Power Platform ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-training-online" },
+    { name: "Power Platform Bootcamp Training", code: "Power Platform ", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-bootcamp" },
+    { name: "Power Platform Center of Excellence (CoE)", code: "Power Platform ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-workshop" },
+    { name: "Power Platform Centre of Excellence", code: "Power Platform ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-course" },
+    { name: "Power Platform Dataverse", code: "Power Platform ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-dataverse-training" },
+    { name: "Power Platform Developer with CI/CD", code: "Power Platform ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/pl-600-certification" },
+    { name: "Power Platform Development", code: "Power Platform ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-data-analyst-certification" },
+    { name: "Power Platform Functional Consultant and Power Automate", code: "Power Platform ", dur: "9 days", level: "assoc", url: "https://www.koenig-solutions.com/power-automate-certification-cost" },
+    { name: "Power Platform for DevOps", code: "Power Platform ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-for-devops-course" },
+    { name: "PowerApps Masterclass: Building and Automating Solutions", code: "PowerApps Maste", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/powerapps-training-online" },
+    { name: "PowerApps with RPA", code: "PowerApps with ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/powerapps-rpa-course" },
+    { name: "PowerApps with RPA + Workshop", code: "PowerApps with ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/powerapps-with-rpa-course" },
+    { name: "Streamlining Content Management: The Microsoft Syntex Course", code: "Streamlining Co", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-syntex-language-course" },
+    { name: "Advanced Data Visualization Techniques in Power BI", code: "Advanced Data V", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-power-bi-course" },
+    { name: "Advanced Visualization with Power BI", code: "Advanced Visual", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-visualization-power-bi-training" },
+    { name: "Business-Ready Data Scientist: Delivering Compelling Insights for Business", code: "Business-Ready ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/data-science-online-course" },
+    { name: "Copilot in Power BI", code: "Copilot in Powe", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-data-analyst-certification" },
+    { name: "Course 55164-A: Quick Powerful Graphics with Power View, PowerPivot, Power Query, Power Map, and Power BI", code: "Course 55164-A:", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55164-a-quick-powerful-graphics-training" },
+    { name: "Creating Impactful Dashboards in Power BI", code: "Creating Impact", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-dashboard-design" },
+    { name: "Date Table Design Using DAX", code: "Date Table Desi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dax-online-training" },
+    { name: "Decision Making Using Data Analytics", code: "Decision Making", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/data-analyst-bootcamp" },
+    { name: "Managing Semantic Models in Power BI Workspaces", code: "Managing Semant", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-course-for-beginners" },
+    { name: "Microsoft Power BI Desktop (On-Premise Version)", code: "Microsoft Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-desktop-training" },
+    { name: "Microsoft Power BI for Data-Driven Decision Makers", code: "Microsoft Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-data-driven-decision-makers-training" },
+    { name: "Parameter-Driven Data Ingestion in Power BI", code: "Parameter-Drive", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-beginner-course" },
+    { name: "Power BI Advanced Reporting and Administration", code: "Power BI Advanc", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-training-cost" },
+    { name: "Power BI Advanced with Embedding", code: "Power BI Advanc", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/powerbi-embedding-advance" },
+    { name: "Power BI Intermediate", code: "Power BI Interm", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-online" },
+    { name: "Power BI Mastery: Data Flow Management and Administration in Power BI", code: "Power BI Master", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-mastery-data-flow-management-administration-course" },
+    { name: "Power BI Page Tooltips Basics to Usage", code: "Power BI Page T", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/power-bi-visualization-training" },
+    { name: "Power BI Unlocked: Building a Semantic Model", code: "Power BI Unlock", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-developer-course" },
+    { name: "Power BI for Business Users", code: "Power BI for Bu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-course" },
+    { name: "Power BI for Data Analysis and Reporting with Advanced Excel", code: "Power BI for Da", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/powerbi-course" },
+    { name: "Preparing Your Data for Power BI", code: "Preparing Your ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-training" },
+    { name: "Real-Time Intelligence in Power BI", code: "Real-Time Intel", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-online-training" },
+    { name: "Tabular Editor and DAX Studio", code: "Tabular Editor ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/complete-guide-to-dax-studio-and-tabular-editor" },
+    { name: "A: SharePoint 2016 Business Intelligence", code: "A: SharePoint 2", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2016-business-intelligence-training" },
+    { name: "Data Analysis with Multidimensional Modelling", code: "Data Analysis w", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/data-analysis-multidimensional-modelling-course" },
+    { name: "Designing Business Intelligence Solutions with Microsoft SQL Server 2014", code: "Designing Busin", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20467-designing-self-service-business-intelligence-microsoft-sql-server-2014-training" },
+    { name: "Get and Transform Data with Power Query (M Programming) in Power BI", code: "Get and Transfo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/get-transform-data-with-powerquery-m-language-in-powerbi-training" },
+    { name: "Introduction to Data Strategy and Intelligence for Non-Profits", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/business-intelligence-courses" },
+    { name: "Introduction to Power BI", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-power-bi-introduction-training" },
+    { name: "Introduction to Power BI DAX", code: "Introduction to", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-power-bi-dax-training" },
+    { name: "Microsoft SharePoint 2013 End to End Business Intelligence", code: "Microsoft Share", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-sharepoint-sql-bi" },
+    { name: "Modernizing Data Analytics with SQL Server 2019 - Microsoft Cloud Workshop(40565)", code: "Modernizing Dat", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sql-2019-management-studio" },
+    { name: "Design and Manage Analytics Solutions Using Power BI", code: "PL-300T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-certification-training-course" },
+    { name: "SharePoint 2013 Business Intelligence", code: "SharePoint 2013", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2013-bi-training-course" },
+    { name: "Writing Reports with Report Builder and SSRS Level 3", code: "Writing Reports", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/55236-writing-reports-with-builder-ssrs-level-3-training" },
+    { name: "Writing Reports with Report Designer and SSRS 2016 Level 2", code: "Writing Reports", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ssrs-2016-training" },
+    { name: "Writing Reports with Report Designer and SSRS Level 3", code: "Writing Reports", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/55240-writing-reports-with-designer-ssrs-level-3-training" },
+  ],
+  "Security": [
+    { name: "AI, Cyber/Network Security and Automation", code: "AI, Cyber/Netwo", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ethical-hacking-training" },
+    { name: "Attacking and Defending Azure & M365", code: "Attacking and D", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-training-online" },
+    { name: "Azure Multi-Tenant Architecture with Microsoft Defender and Intune", code: "Azure Multi-Ten", dur: "3 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-defender-certification" },
+    { name: "Azure Sentinel", code: "Azure Sentinel", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-sentinel-training" },
+    { name: "- Modernize and Optimize Your SOC Deployment with Microsoft Sentinel", code: "DW-350", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-sentinel-course" },
+    { name: "Threat Protection and Incident Response with Microsoft Sentinel within Unified Platform", code: "DW-360", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-cyber-security-certification" },
+    { name: "Implement Security Copilot across MS Security Workloads", code: "DW-370", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-security-courses" },
+    { name: "Data Classification and DLP in Microsoft 365", code: "Data Classifica", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/data-classification-dlp-microsoft-365-training" },
+    { name: "Security: Protect Data Manage Risk", code: "FY22", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/fy22-security-protect-data-manage-risk" },
+    { name: "Fundamentals of Cybersecurity and Zero Trust", code: "Fundamentals of", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/fundamentals-cybersecurity-zero-trust" },
+    { name: "Imperva Sonar and Data Security", code: "Imperva Sonar a", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/imperva-sonar-data-security-course" },
+    { name: "Implement Data Security in Microsoft Purview", code: "Implement Data ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/implement-data-security-microsoft-purview-course" },
+    { name: "Introduction to Microsoft Defender", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-defender-training" },
+    { name: "KQL for Azure Admins", code: "KQL for Azure A", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/kql-azure-admins-training" },
+    { name: "M365 Security & Compliance Deep Dive: Fundamental to Advanced Strategies", code: "M365 Security &", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/m365-security-compliance-deep-dive-course" },
+    { name: "M365 Security & Compliance Mastery: Fundamental to Advanced Strategies with Power BI", code: "M365 Security &", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/m365-security-certification" },
+    { name: "Microsoft 365 Security Administration", code: "MS-500", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-500-microsoft-365-security-admin-training" },
+    { name: "Microsoft 365 for Security and Compliance Administrators", code: "Microsoft 365 f", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-security-compliance-training" },
+    { name: "Microsoft Cloud Computing & Security", code: "Microsoft Cloud", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-certification-cost" },
+    { name: "Microsoft Defender Endpoint", code: "Microsoft Defen", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-defender-endpoint-training" },
+    { name: "Microsoft Security Virtual Training Day: Secure Access Management", code: "Microsoft Secur", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-security-training" },
+    { name: "Migrate and Secure Windows Server and SQL Server (Migrate Compute)", code: "PR-602", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-training-online" },
+    { name: "Migrate Enterprise Applications", code: "PR-701", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/pr-701-migrate-enterprise-applications-course" },
+    { name: "SC 200 Exam Prep", code: "SC 200 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sc-200-training" },
+    { name: "SC 400 Exam Prep", code: "SC 400 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sc-400-course" },
+    { name: "SC 900 Exam Prep", code: "SC 900 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sc-900-training" },
+    { name: "Microsoft Cybersecurity Architect", code: "SC-100T00", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-cybersecurity-architect-training-course" },
+    { name: "Microsoft Cybersecurity Architect (Zero-Trust)", code: "SC-100T00", dur: "9 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-cybersecurity-certification" },
+    { name: "Defend against cyberthreats with Microsoft security operations platform", code: "SC-200T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sc-200-exam-training" },
+    { name: "Microsoft Identity and Access Administrator", code: "SC-300T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sc-300-exam-training" },
+    { name: "Administering Information Protection and Compliance in Microsoft 365", code: "SC-400T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sc-400-exam-training" },
+    { name: "Protect sensitive information with Microsoft Purview in the AI era", code: "SC-401", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/info-security-training" },
+    { name: "Configure SIEM Security Operations Using Microsoft Sentinel", code: "SC-5001", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/configure-siem-security-microsoft-sentinel-sc5001" },
+    { name: "Secure Azure Services and Workloads with Microsoft Defender for Cloud Regulatory Compliance Controls", code: "SC-5002", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/secure-azure-services-workloads-microsoft-defender-compliance-sc-5002" },
+    { name: "Implement Information Protection and Data Loss Prevention by Using Microsoft Purview", code: "SC-5003", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/implement-information-protection-data-loss-prevention-microsoft-purview-sc5003" },
+    { name: "Enhance Security Operations by Using Microsoft Security Copilot", code: "SC-5006", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-security-copilot-course" },
+    { name: "Implement Retention, eDiscovery, and Communication Compliance in Microsoft Purview", code: "SC-5007", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-purview-certification" },
+    { name: "Configure and Govern Entitlement with Microsoft Entra ID", code: "SC-5008", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sc-5008-configure-govern-entitlement-microsoft-entra-id" },
+    { name: "Introduction to Microsoft Security, Compliance, and Identity", code: "SC-900T00-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/sc-900-exam-training" },
+    { name: "Secure Access and Management", code: "Secure Access a", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/online-schools-for-cyber-security" },
+    { name: "Security for Business Leaders", code: "Security for Bu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/cism-training" },
+    { name: "Security for End User", code: "Security for En", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/it-security-awareness-training" },
+    { name: "Security for IT Admins/Developers", code: "Security for IT", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/developer-security-training" },
+    { name: "Security: Protect Sensitive Information", code: "Security: Prote", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/certified-information-systems-security-professional" },
+    { name: "Zero Trust", code: "Zero Trust", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/zero-trust-language-course-learn-with-confidence" },
+    { name: "Microsoft Security Virtual Training Day: Defend Against Threats and Secure Cloud Environments", code: "Microsoft Secur", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/computer-security-classes-online" },
+    { name: "Identity and Access Control for Modern Applications", code: "Identity and Ac", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/identity-and-access-control-for-modern-web-applications-training" },
+  ],
+  "Microsoft 365": [
+    { name: "D Office 365 Administration and Troubleshooting", code: "D Office 365 Ad", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/office-365-administration-troubleshooting-10997-training" },
+    { name: "A: Yammer Development Inside Out", code: "A: Yammer Devel", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-yammer-development-inside-out-training" },
+    { name: "AI-Powered Productivity and Governance with Microsoft 365 Copilot and Dynamics 365", code: "AI-Powered Prod", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-fundamentals-course" },
+    { name: "Administering Microsoft 365 with SharePoint  and OneDrive Integration", code: "Administering M", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/onedrive-sharepoint" },
+    { name: "Administering Office 365", code: "Administering O", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-office-365-training" },
+    { name: "Collaborate Smarter: Getting Started with Microsoft Teams and SharePoint Online", code: "Collaborate Sma", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-teams-classes" },
+    { name: "Next-Gen Productivity: Copilot + Agents for the Modern Enterprise", code: "DW-101", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-agents-bootcamp" },
+    { name: "Implement, Govern and Scale Data Security with Microsoft Purview in the era of AI", code: "DW-300", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dw-300-microsoft-purview-deployment-workshop" },
+    { name: "Enabling and Managing Office 365", code: "Enabling and Ma", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20347-enabling-managing-office-365-training-certification" },
+    { name: "Getting Started with Microsoft Teams, Outlook Online, and Microsoft 365 Copilot", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/teams-certification" },
+    { name: "Implementation of Modern Record Management Through SharePoint and Office 365", code: "Implementation ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/implementation-modern-record-management-sharepoint-office-365-course" },
+    { name: "Introduction to SharePoint Online", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-55262-introduction-to-sharepoint-for-office-365-training" },
+    { name: "M365 Administration and Troubleshooting", code: "M365 Administra", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/m365-administration-troubleshooting-course" },
+    { name: "Implement Windows 365 Cloud PCs", code: "MD-015", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/md-015-implement-windows-365-cloud-pcs-course" },
+    { name: "MS 500 Exam Prep", code: "MS 500 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-500-certification-cost" },
+    { name: "Office 365 Administrator", code: "MS-030T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms030-office-365-administrator" },
+    { name: "Employee Experience Platform Specialist", code: "MS-080T00-A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-080-microsoft-course" },
+    { name: "Microsoft 365 Identity and Services", code: "MS-100T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-100-certification" },
+    { name: "Microsoft 365 Mobility and Security", code: "MS-101", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-101-microsoft-365-mobility-security-training" },
+    { name: "Microsoft 365 Administrator", code: "MS-102T00", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/ms-102-microsoft-365-administrator-beta-course" },
+    { name: "Microsoft 365 Messaging", code: "MS-203T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-203t00-microsoft-365-messaging-training-certification-course" },
+    { name: "Troubleshoot Microsoft Exchange Online", code: "MS-220T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/troubleshooting-microsoft-exchange-online-course" },
+    { name: "– Exam Prep", code: "MS-700", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms700-certification" },
+    { name: "Manage collaboration and communication with Microsoft Teams", code: "MS-700T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/managing-microsoft-teams-training" },
+    { name: "Microsoft Teams Voice Engineer", code: "MS-720T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ms-720t00-microsoft-teams-voice-engineer-training" },
+    { name: "Collaboration Communications Systems Engineer", code: "MS-721T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-721t00-collaboration-communications-systems-engineer-course" },
+    { name: "Troubleshooting Microsoft Teams", code: "MS-740", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/troubleshooting-microsoft-teams" },
+    { name: "Microsoft 365 Fundamentals", code: "MS-900T01-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-365-fundamentals-training" },
+    { name: "Managing Microsoft 365 Messaging", code: "Managing Micros", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/managing-microsoft-365-messaging-course" },
+    { name: "Managing Office 365 Identities and Requirements", code: "Managing Office", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/office-365-identity-certification" },
+    { name: "Microsoft 365 Administration", code: "Microsoft 365 A", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-administration-course" },
+    { name: "Microsoft 365 Administration, Security, Compliance, and AI Copilot Mastery", code: "Microsoft 365 A", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/m365-admin-certification" },
+    { name: "Microsoft 365 Administrator Fundamentals", code: "Microsoft 365 A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-365-administrator-fundamentals-language-course" },
+    { name: "Microsoft 365 Copilot for Everyday Work", code: "Microsoft 365 C", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/m365-copilot-training" },
+    { name: "Microsoft 365 Migration", code: "Microsoft 365 M", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-migration-language-course" },
+    { name: "Microsoft 365 Office for the Web Productivity Apps", code: "Microsoft 365 O", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-courses" },
+    { name: "Microsoft 365 Super User", code: "Microsoft 365 S", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-super-user-course" },
+    { name: "Microsoft 365 Tenant Deployment, Configuration, and Monitoring", code: "Microsoft 365 T", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-tenant-deployment" },
+    { name: "Microsoft 365 Virtual Training Day: Building Microsoft Teams Integrations and Workflows", code: "Microsoft 365 V", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-0365-certification" },
+    { name: "Microsoft 365 Virtual Training Day: Enable Remote Work with Microsoft Teams", code: "Microsoft 365 V", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/teams-online-microsoft" },
+    { name: "Microsoft 365 Virtual Training Day: Secure and Protect Your Organization", code: "Microsoft 365 V", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/o365-certification" },
+    { name: "Microsoft 365 for the Web", code: "Microsoft 365 f", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-for-the-web-training" },
+    { name: "Microsoft 365: Enhancing End User Productivity", code: "Microsoft 365: ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/office-365-online" },
+    { name: "Microsoft Office 365 Migration and Administration", code: "Microsoft Offic", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-o365-training" },
+    { name: "Microsoft Office 365 Power User", code: "Microsoft Offic", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-365-power-user-training-certification-course" },
+    { name: "Microsoft Teams Essentials for Everyday Users", code: "Microsoft Teams", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-teams-essentials-for-everyday-users-course" },
+    { name: "Microsoft Teams Fundamentals for Users", code: "Microsoft Teams", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-teams-online" },
+    { name: "Microsoft Teams Rooms Technical Solutions Professional", code: "Microsoft Teams", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-teams-rooms-training" },
+    { name: "Microsoft Teams for Business Users", code: "Microsoft Teams", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-teams-for-business-training" },
+    { name: "Office 365 Core Services", code: "Office 365 Core", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/office-365-core-services-language-course" },
+    { name: "Office 365 for the End-User", code: "Office 365 for ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/55154a-office-365-end-user-training" },
+    { name: "101 Excel Functions", code: "101 Excel Funct", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-certification-course" },
+    { name: "A: Lookup Functions", code: "A: Lookup Funct", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/50559-a-lookup-functions-training" },
+    { name: "A: Creating and Sharing Interactive Dashboards with PowerPivot, Power View, and SharePoint Server", code: "A: Creating and", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55103a-creating-sharing-interactive-dashboards-training" },
+    { name: "AI-Powered Analytics", code: "AI-Powered Anal", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-and-data-science-course" },
+    { name: "AI-Powered PowerPoint Presentation Skills", code: "AI-Powered Powe", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-powerpoint-course" },
+    { name: "Administrator in a Day: Microsoft Power Platform", code: "Administrator i", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/admin-day-microsoft-power-platform" },
+    { name: "Advance Excel 2016 + Power Query", code: "Advance Excel 2", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-excel-power-query-training" },
+    { name: "Advance Excel with Macros and Dashboard - Customised for Yotta", code: "Advance Excel w", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/classes-for-advanced-excel" },
+    { name: "Advance Excel with Power Query", code: "Advance Excel w", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-advanced-training-online" },
+    { name: "Advanced Computer Skills – MS Office - OMIFCO", code: "Advanced Comput", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-software-training" },
+    { name: "Advanced Data Analysis Using Excel with AI", code: "Advanced Data A", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-data-analysis-excel-ai-course" },
+    { name: "Advanced Data Analysis and Presentation Skills Training", code: "Advanced Data A", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/data-analysis-online-course" },
+    { name: "Advanced Excel", code: "Advanced Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-excel-training-courses" },
+    { name: "Advanced Excel Skills for Automation", code: "Advanced Excel ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-skills-training" },
+    { name: "Advanced Excel Training Plan in 2 Days", code: "Advanced Excel ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/best-online-excel-courses" },
+    { name: "Advanced Excel and PowerPoint", code: "Advanced Excel ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/powerpoint-classes" },
+    { name: "Advanced Excel with Copilot for Managers", code: "Advanced Excel ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-excel-certification" },
+    { name: "Advanced Excel with Pivot Tables and Macros", code: "Advanced Excel ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-excel-pivot-table-training-course" },
+    { name: "Advanced Microsoft Excel", code: "Advanced Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-excel-language-course" },
+    { name: "Advanced Microsoft Outlook", code: "Advanced Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-outlook-language-course" },
+    { name: "Advanced Microsoft PowerPoint", code: "Advanced Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-powerpoint-language-course" },
+    { name: "Advanced Microsoft PowerPoint 2019", code: "Advanced Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-powerpoint-2019-training" },
+    { name: "Advanced Microsoft Word Using Co-Pilot", code: "Advanced Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-microsoft-word-language-course" },
+    { name: "Advanced Program for Data Analyst", code: "Advanced Progra", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/advance-data-analysis-training" },
+    { name: "Agent in a Day", code: "Agent in a Day", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-virtual-agents-training" },
+    { name: "App in a Day", code: "App in a Day", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/app-in-a-day-language-course" },
+    { name: "Automation in a Day", code: "Automation in a", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-rpa-training" },
+    { name: "Basic & Advanced MS Office", code: "Basic & Advance", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-online-training" },
+    { name: "Basic Excel", code: "Basic Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/basic-excel-course" },
+    { name: "Chat with your Data in a Day", code: "Chat with your ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/data-science-classes" },
+    { name: "Combo for MS Excel, Power Query, Power Pivot & VBA", code: "Combo for MS Ex", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-excel-courses" },
+    { name: "Complete PowerPoint Course", code: "Complete PowerP", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/complete-powerpoint-course-language-training" },
+    { name: "Copilot studio in a day", code: "Copilot studio ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-training-online" },
+    { name: "Custom Office 365 End User with Word, Excel and Adobe Training", code: "Custom Office 3", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-training" },
+    { name: "Customised Basic to Advanced Excel", code: "Customised Basi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-certification" },
+    { name: "Customised Excel", code: "Customised Exce", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-and-excel-training" },
+    { name: "Customize Excel", code: "Customize Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-macro-training" },
+    { name: "Customize Excel for PMH", code: "Customize Excel", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/customize-excel-for-project-management-professionals-course" },
+    { name: "Customized Advanced Excel & PowerPoint", code: "Customized Adva", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-and-advanced-excel-course" },
+    { name: "Customized Excel/PPT", code: "Customized Exce", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-online-academy" },
+    { name: "Customized MS Office with ChatGPT for GetGlobal", code: "Customized MS O", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-course" },
+    { name: "Customized Microsoft Teams Training for End Users", code: "Customized Micr", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-teams-online-training" },
+    { name: "Customized PPT Training", code: "Customized PPT ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/customized-ppt-training" },
+    { name: "Customized Training on Problem Solving in Excel - Advanced Data Analysis", code: "Customized Trai", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-advanced-training" },
+    { name: "Dataverse for Teams in a Day", code: "Dataverse for T", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dataverse-for-teams-course" },
+    { name: "Everyday Excel", code: "Everyday Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/everyday-excel-language-course-boost-skills" },
+    { name: "Excel", code: "Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-courses-online" },
+    { name: "Excel 2019 Customized", code: "Excel 2019 Cust", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-2019-certification" },
+    { name: "Excel Advanced with PM", code: "Excel Advanced ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/online-excel-certification" },
+    { name: "Excel Analytics Course", code: "Excel Analytics", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-training-online" },
+    { name: "Excel Analytics with Pareto", code: "Excel Analytics", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-analytics-course" },
+    { name: "Excel Analytics: Linear Regression Analysis in MS Excel", code: "Excel Analytics", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-analytics-linear-regression-analysis-ms-excel-course" },
+    { name: "Excel Basics", code: "Excel Basics", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/accredited-excel-courses" },
+    { name: "Excel Data Analysis", code: "Excel Data Anal", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-workshop-online" },
+    { name: "Excel Intermediate", code: "Excel Intermedi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-intermediate-language-course" },
+    { name: "Excel Introduction Level", code: "Excel Introduct", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/excel-course-introduction-intermediate" },
+    { name: "Excel Power Techniques", code: "Excel Power Tec", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-excel-course-online" },
+    { name: "Excel Power Techniques: Automation, Dashboards & Lookups", code: "Excel Power Tec", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-dashboards-training" },
+    { name: "Excel Training - VR", code: "Excel Training ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-training-courses-online" },
+    { name: "Excel Training Curriculum", code: "Excel Training ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-advanced-course" },
+    { name: "Excel Training: Intermediate to Advanced", code: "Excel Training:", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-certification-course" },
+    { name: "Excel for Financial Analysis", code: "Excel for Finan", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-financial-analysis-course" },
+    { name: "Excel for Microsoft 365/2021 - Level 4 - Extract, Analyze, and Visualize Data", code: "Excel for Micro", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-365-2021-level-4-extract-analyze-visualize-data-course" },
+    { name: "Excel in A Day", code: "Excel in A Day", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-in-a-day-language-course" },
+    { name: "Excel with BI – Fast-Track Training Curriculum", code: "Excel with BI –", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-query-excel-course" },
+    { name: "Excel with Copilot", code: "Excel with Copi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-copilot-training" },
+    { name: "Extensive Excel and Word", code: "Extensive Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-word-course" },
+    { name: "Financial Analyst Using Excel", code: "Financial Analy", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-analyst-course" },
+    { name: "Financial Excel", code: "Financial Excel", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-excel-language-course" },
+    { name: "Financial Excel - Stellantis", code: "Financial Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-excel-stellantis-language-course" },
+    { name: "Financial Modeling & Power BI For Financial Analyst", code: "Financial Model", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-modeling-certification" },
+    { name: "Financial Modelling Using Excel in 5 Days", code: "Financial Model", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-modeling-in-excel" },
+    { name: "Intermediate Microsoft Word Using Co-Pilot", code: "Intermediate Mi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/intermediate-microsoft-word-language-course" },
+    { name: "Introduction to Microsoft Outlook", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/learn-microsoft-outlook-language-course-introduction" },
+    { name: "Introduction to Microsoft Outlook 2019", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/55275-a-introduction-to-microsoft-outlook-2019-training" },
+    { name: "Introduction to Microsoft PowerPoint", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-microsoft-powerpoint-language-course" },
+    { name: "Introduction to Microsoft Word", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/55272-a-introduction-to-microsoft-word-2019-training" },
+    { name: "Introduction to Microsoft Word Using Co-Pilot", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-microsoft-word-language-course" },
+    { name: "Introduction to Office 365", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-office-365-training" },
+    { name: "Leap Into Power BI", code: "Leap Into Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/leap-power-bi-course" },
+    { name: "Learn Power Apps in a Day", code: "Learn Power App", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/learn-power-apps-in-a-day-course" },
+    { name: "Low-Code for Developers in a Day Power Platform", code: "Low-Code for De", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/low-code-developer-language-course" },
+    { name: "M365 Customized Workshop", code: "M365 Customized", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-365-fundamentals" },
+    { name: "Microsoft Word Expert (Microsoft 365 Apps)", code: "MO-111", dur: "3 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-word-expert-mo-111-training" },
+    { name: "Microsoft Excel Expert (Microsoft 365 Apps)", code: "MO-211", dur: "3 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-excel-expert-mo-211-training" },
+    { name: "MS Excel - Foundation Custom", code: "MS Excel - Foun", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-excel-online-course" },
+    { name: "MS Excel 2016 – Advanced", code: "MS Excel 2016 –", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-xls-course" },
+    { name: "MS Excel Advanced Customized", code: "MS Excel Advanc", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-advanced-customized-training" },
+    { name: "MS Excel Foundation Customized", code: "MS Excel Founda", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/excel-training-classes" },
+    { name: "MS Excel and VBA", code: "MS Excel and VB", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-macro-vba" },
+    { name: "MS Office", code: "MS Office", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-home-student" },
+    { name: "MS Office 2 Day Custom", code: "MS Office 2 Day", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-office-2-day-custom-course" },
+    { name: "MS Office Customised in 4 Days", code: "MS Office Custo", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-office-online-course" },
+    { name: "MS Office Using AI - Custom", code: "MS Office Using", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-courses" },
+    { name: "MS Office in 8 Hours", code: "MS Office in 8 ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-office-certification" },
+    { name: "MS Office with AI in 1 Day", code: "MS Office with ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-office-ai-1-day-course" },
+    { name: "MS Office with ChatGPT (for Cambridge Technology)", code: "MS Office with ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-certification" },
+    { name: "MS PowerPoint Advanced Customized", code: "MS PowerPoint A", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/advanced-ms-powerpoint-custom-course" },
+    { name: "MS Word + Excel + PPT in 3 Days", code: "MS Word + Excel", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/3-day-microsoft-office-intensive-course-word-excel-ppt" },
+    { name: "MS Word Advanced Customized", code: "MS Word Advance", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-word-advanced-customization-course" },
+    { name: "MS Word Foundation Customized", code: "MS Word Foundat", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-word-online" },
+    { name: "Marketing Analytics Forecasting Models with Excel", code: "Marketing Analy", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/marketing-analytics-forecasting-models-excel-course" },
+    { name: "Masterclass After Dashboard in a Day", code: "Masterclass Aft", dur: "2 days", level: "expert", url: "https://www.koenig-solutions.com/it-online-course" },
+    { name: "Mastering Excel Dashboards", code: "Mastering Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/mastering-excel-dashboards-course" },
+    { name: "Mastering MS Office with ChatGPT", code: "Mastering MS Of", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/mastering-ms-office-course-with-chatgpt" },
+    { name: "Mastering Marketing Analytics Forecasting Models Using Excel & Strategy to Application", code: "Mastering Marke", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/master-marketing-analytics-forecasting-excel-course" },
+    { name: "Mastering Microsoft Excel and Power Query Including M Language", code: "Mastering Micro", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-powerquery-m-language-course" },
+    { name: "Maximizing Productivity with Microsoft 365 Copilot: Word, PowerPoint, Excel,  Outlook, and Teams", code: "Maximizing Prod", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-365-training" },
+    { name: "Microsoft Access 2024", code: "Microsoft Acces", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-access-training-course" },
+    { name: "Microsoft Copilot Training for MS Office in 4 Hours", code: "Microsoft Copil", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-copilot" },
+    { name: "Microsoft Designer", code: "Microsoft Desig", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-designer-language-course-boost-your-skills" },
+    { name: "Microsoft End User Productivity with Outlook, Teams & OneDrive", code: "Microsoft End U", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-end-user-productivity-course" },
+    { name: "Microsoft Excel (Intermediate + Advanced): Customized", code: "Microsoft Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-intermediate-advanced-customized-course" },
+    { name: "Microsoft Excel - Business Intelligence", code: "Microsoft Excel", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-business-intelligence-training" },
+    { name: "Microsoft Excel - Dashboards for Business Intelligence", code: "Microsoft Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-dashboards-business-intelligence-training" },
+    { name: "Microsoft Excel - Power Pivot", code: "Microsoft Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-powerpivot-training" },
+    { name: "Microsoft Excel - Power Query", code: "Microsoft Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-power-query-training" },
+    { name: "Microsoft Excel 2016 / 2019", code: "Microsoft Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-training" },
+    { name: "Microsoft Excel BI", code: "Microsoft Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-business-intelligence-course" },
+    { name: "Microsoft Excel Customised", code: "Microsoft Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-online" },
+    { name: "Microsoft Excel Customized for UFlex", code: "Microsoft Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-classes-online" },
+    { name: "Microsoft Excel Expert", code: "Microsoft Excel", dur: "3 days", level: "expert", url: "https://www.koenig-solutions.com/microsoft-excel-expert-certification" },
+    { name: "Microsoft Excel Training (Version: 2016/19)", code: "Microsoft Excel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-certification-by-microsoft" },
+    { name: "Microsoft Excel with Data Analysis Using BI", code: "Microsoft Excel", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-data-analysis-training" },
+    { name: "Microsoft Forms", code: "Microsoft Forms", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-forms-language-course-tutorial" },
+    { name: "Microsoft Lists for End Users", code: "Microsoft Lists", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-lists-end-users-training" },
+    { name: "Microsoft Office 365 Planner", code: "Microsoft Offic", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-planner-office-365-training" },
+    { name: "Microsoft Office Package", code: "Microsoft Offic", dur: "14 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-excel-courses" },
+    { name: "Microsoft Office Specialist: PowerPoint Associate (PowerPoint and PowerPoint 2019)", code: "Microsoft Offic", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/powerpoint-associate-language-course-2019" },
+    { name: "Microsoft OneNote for End User", code: "Microsoft OneNo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-onenote-training" },
+    { name: "Microsoft PowerPoint 2016 / 2019", code: "Microsoft Power", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-powerpoint-training" },
+    { name: "Microsoft PowerPoint 2019", code: "Microsoft Power", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-powerpoint-2019-training-and-certification-course" },
+    { name: "Microsoft Publisher 2019", code: "Microsoft Publi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-publisher-2019-training" },
+    { name: "Microsoft Publisher 365 for End Users", code: "Microsoft Publi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-publisher-training" },
+    { name: "Microsoft Teams for End Users", code: "Microsoft Teams", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-teams-for-end-users" },
+    { name: "Microsoft Teams in 4 Hours", code: "Microsoft Teams", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-teams-training-course" },
+    { name: "Microsoft Visio 2016 / 2019", code: "Microsoft Visio", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-visio-training" },
+    { name: "Microsoft Visio with VBA", code: "Microsoft Visio", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-visio-vba-training" },
+    { name: "Microsoft Visio – Web Version", code: "Microsoft Visio", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/visio-online-course" },
+    { name: "Microsoft Viva", code: "Microsoft Viva", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-viva-training-course" },
+    { name: "Microsoft Word 365 Apps MO-110", code: "Microsoft Word ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-word-365-apps-mo-110-course" },
+    { name: "Microsoft® Excel® for Microsoft 365 MSO (Version 2512 Build 16.0.19530.20184) 64-bit", code: "Microsoft® Exce", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-microsoft-certification" },
+    { name: "Microsoft® PowerPoint® for Microsoft 365 MSO (Version 2512 Build 16.0.19530.20184) 64-bit", code: "Microsoft® Powe", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-powerpoint-online-course" },
+    { name: "Office 365 – Custom Training", code: "Office 365 – Cu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/office-365-course-online" },
+    { name: "Outlook on iPhone", code: "Outlook on iPho", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/outlook-iphone-training" },
+    { name: "Overview of MS Office in 1 Day", code: "Overview of MS ", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/overview-of-ms-office-training" },
+    { name: "PCF - Power Apps Code Components in a Day", code: "PCF - Power App", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-apps-code-components" },
+    { name: "Power BI Administrator in a Day", code: "Power BI Admini", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-administrator-day-course" },
+    { name: "Power BI Advanced Data Visualization with Power BI", code: "Power BI Advanc", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-advanced-data-course" },
+    { name: "Power BI DAX in a Day", code: "Power BI DAX in", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-dax-day-course" },
+    { name: "Power BI Dashboard in a Day", code: "Power BI Dashbo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dashboard-in-a-day-language-course" },
+    { name: "Power BI Developer in a Day", code: "Power BI Develo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-developer-day-course" },
+    { name: "Power BI Fabric Analyst in a Day", code: "Power BI Fabric", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-fabric-analyst-training" },
+    { name: "Power BI Modern Excel Analyst in a Day", code: "Power BI Modern", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-modern-excel-analyst-training" },
+    { name: "Power BI Paginated Reports in a Day", code: "Power BI Pagina", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-bi-paginated-reports-training" },
+    { name: "Power Pages in a Day", code: "Power Pages in ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-pages-in-a-day-course" },
+    { name: "PowerPivot for End Users", code: "PowerPivot for ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/powerpivot-for-end-users" },
+    { name: "R and Visualisation Using Power BI", code: "R and Visualisa", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/r-visualisation-power-bi-training" },
+    { name: "Real Time Intelligence in a Day", code: "Real Time Intel", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/intelligence-training-online" },
+    { name: "SharePoint 2013 End User Level 2", code: "SharePoint 2013", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/55052-sharepoint-2013-end-user-level-2-training" },
+    { name: "SharePoint 2019 End User", code: "SharePoint 2019", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-end-user-2019-training-course" },
+    { name: "Statistics and Probability Using Excel", code: "Statistics and ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/excel-stats-probability-course" },
+    { name: "Statistics for Business Analytics Using MS Excel", code: "Statistics for ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/statistics-business-analytics-excel-course" },
+    { name: "Super Advanced Formulas & Pivot Tables", code: "Super Advanced ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/super-advanced-formulas-pivot-tables-language-course" },
+    { name: "Teams & Outlook with Copilot", code: "Teams & Outlook", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/outlook-training-online" },
+    { name: "Time Management Training with Outlook", code: "Time Management", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/time-management-training-outlook" },
+    { name: "VBA in Excel", code: "VBA in Excel", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/vba-excel-applications-online-training-course" },
+    { name: "Visual Basic for Applications (VBA)", code: "Visual Basic fo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/visual-basic-application-training-course" },
+    { name: "Core Solutions of Skype for Business 2015/2019", code: "Core Solutions ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/certified-for-skype-for-business" },
+    { name: "Enterprise Voice and Online Services with Microsoft Lync Server 2013", code: "Enterprise Voic", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-lync-course" },
+    { name: "Microsoft Teams for End Users Customized - 4HRS", code: "Microsoft Teams", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-teams-end-user-training" },
+    { name: "1B: Administering Microsoft Exchange Server 2016/2019", code: "1B: Administeri", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-exchange-server-training-course" },
+    { name: "2B: Designing and Deploying Microsoft Exchange Server 2016/2019", code: "2B: Designing a", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/designing-deploying-microsoft-exchange-server-2016-2019-training-certification" },
+    { name: "Administering Microsoft Exchange Server 2016", code: "Administering M", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-microsoft-exchange-server-2016-course" },
+    { name: "Configuring, Managing, and Troubleshooting Microsoft Exchange Server 2016", code: "Configuring, Ma", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/exchange-2016-certification" },
+    { name: "Core Solutions of Microsoft Exchange Server 2013", code: "Core Solutions ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20341-core-solutions-microsoft-exchange-server-2013-training" },
+    { name: "Designing and Deploying Microsoft Exchange Server 2016", code: "Designing and D", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/designing-deploying-microsoft-exchange-server-2016-training-certification" },
+    { name: "21st Century Learning Design", code: "21st Century Le", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/21st-century-learning-design-course" },
+    { name: "Education Transformation Framework", code: "Education Trans", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/education-transformation-framework-training" },
+    { name: "Microsoft Certified Educator (MCE)", code: "Microsoft Certi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-certified-educator-mce-language-course" },
+    { name: "Microsoft Educator - OneNote Teacher Academy", code: "Microsoft Educa", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-educator-onenote-teacher-academy-course" },
+    { name: "Minecraft Education Teacher Academy", code: "Minecraft Educa", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/minecraft-education-teacher-academy-course" },
+    { name: "Bootcamp: Modern Desktop Administration", code: "Bootcamp: Moder", dur: "15 days", level: "assoc", url: "https://www.koenig-solutions.com/modern-desktop-admin-training" },
+    { name: "Implement and Manage Microsoft Intune with Windows 11", code: "Implement and M", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/implement-manage-microsoft-intune-windows-11-course" },
+    { name: "M55399A - Implement and Manage Microsoft Intune", code: "M55399A - Imple", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-intune-training" },
+    { name: "Microsoft 365 Endpoint Administrator", code: "MD-102T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/md-102-endpoint-administrator-language-course" },
+    { name: "MDM with Intune", code: "MDM with Intune", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/mdm-intune-mobile-device-management-standalone-training-certification-course" },
+    { name: "Microsoft Intune Windows Autopilot", code: "Microsoft Intun", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-intune-windows-autopilot-language-course" },
+    { name: "PowerShell for SharePoint Administrators", code: "PowerShell for ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/powershell-sharepoint-administrators-training" },
+    { name: "Introduction to SharePoint 2016 for Collaboration and Document Management", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/sharepoint-collaboration-document-management-course" },
+    { name: "SharePoint Online Power User (Cloud Version)", code: "SharePoint Onli", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-online-power-user-training" },
+    { name: "A: Introduction to SharePoint 2016", code: "A: Introduction", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/55252a-introduction-to-sharepoint-2016-training" },
+    { name: "A: SharePoint 2016 Technologies Introduction", code: "A: SharePoint 2", dur: "4 days", level: "fund", url: "https://www.koenig-solutions.com/sharepoint-2016-technologies-introduction-training" },
+    { name: "A: SharePoint for Office 365 Site Owner", code: "A: SharePoint f", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55261a-sharepoint-for-office-365-site-owner-identity-training" },
+    { name: "55355AC SharePoint 2016 Administration", code: "55355AC SharePo", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-admin-language-course" },
+    { name: "Advanced Solutions of Microsoft SharePoint Server 2013", code: "Advanced Soluti", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-solutions-ms-sharepoint-server-training" },
+    { name: "Advanced Technologies of SharePoint 2016", code: "Advanced Techno", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/managing-microsoft-sharepoint-server-training" },
+    { name: "Basic SharePoint Server 2013 Branding", code: "Basic SharePoin", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-server-2013-branding-certification-course" },
+    { name: "Core Solutions of Microsoft SharePoint Server 2013", code: "Core Solutions ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2013-course" },
+    { name: "Developing Microsoft SharePoint with Subscription Edition", code: "Developing Micr", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-sharepoint-subscription-edition-course" },
+    { name: "Developing SharePoint 2019 Core Solutions", code: "Developing Shar", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-developer-course" },
+    { name: "Developing with SharePoint Framework on SharePoint 2019", code: "Developing with", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-framework-certification" },
+    { name: "Developing with the SharePoint Framework", code: "Developing with", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/55249-developing-with-the-sharepoint-framework-training" },
+    { name: "Introduction to SharePoint 2013 for Collaboration and Document Management", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-sharepoint-online" },
+    { name: "Introduction to SharePoint 2019 (55298)", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-sharepoint-2019-training" },
+    { name: "Manage SharePoint and OneDrive in Microsoft 365", code: "MS-040T00", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/manage-sharepoint-onedrive-microsoft-365-training" },
+    { name: "Manage SharePoint, OneDrive, and ShareGate in Microsoft 365", code: "Manage SharePoi", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/manage-sharepoint-onedrive-sharegate-microsoft-365-training" },
+    { name: "Managing Projects with SharePoint", code: "Managing Projec", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/managing-projects-with-sharepoint" },
+    { name: "Mastering SharePoint Online: Administration, Security, and Scripting", code: "Mastering Share", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-online-course" },
+    { name: "Microsoft SharePoint 2013: Site Administrator", code: "Microsoft Share", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-courses" },
+    { name: "Microsoft SharePoint Modern Experience: Advanced Site Owner", code: "Microsoft Share", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-sharepoint-course" },
+    { name: "Microsoft SharePoint Modern Experience: Site Basics", code: "Microsoft Share", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/sharepoint-modern-training" },
+    { name: "Microsoft SharePoint Modern Experience: Site Owner with Power Platform", code: "Microsoft Share", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-sharepoint-modern-experience-site-owner-power-platform-course" },
+    { name: "Microsoft SharePoint Server 2013 for the Site Owner/Power User", code: "Microsoft Share", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-server-2013-site-owner" },
+    { name: "Microsoft SharePoint Server 2016 for the Site Owner/Power User", code: "Microsoft Share", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55197a-microsoft-sharepoint-server-2016-site-owner-power-user-training" },
+    { name: "Microsoft SharePoint Server Content Management for SharePoint 2013 and 2016", code: "Microsoft Share", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-server-certification" },
+    { name: "Microsoft SharePoint Server for the Site Owner Power User 55197", code: "Microsoft Share", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-power-user-training" },
+    { name: "No-Code SharePoint 2013-2016 Workflows with SharePoint Designer 2013", code: "No-Code SharePo", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-designer-course" },
+    { name: "Planning and Administering SharePoint 2016", code: "Planning and Ad", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20339-1a-planning-administering-sharePoint-2016-training-certification" },
+    { name: "Power Platform with SharePoint Online", code: "Power Platform ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/power-platform-certifications" },
+    { name: "SharePoint 2010 End User (50575)", code: "SharePoint 2010", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/50575-sharepoint-2010-end-user-training" },
+    { name: "SharePoint 2013 End User (55031)", code: "SharePoint 2013", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/55031-Sharepoint-2013-End-User-training" },
+    { name: "SharePoint 2013 End User Level 1", code: "SharePoint 2013", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/55050-sharepoint-2013-end-user-level-1-training" },
+    { name: "SharePoint 2013 Site Collection and Site Administration", code: "SharePoint 2013", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-admin-course" },
+    { name: "SharePoint 2016 End User", code: "SharePoint 2016", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-user-training" },
+    { name: "SharePoint 2016 Power User (55217)", code: "SharePoint 2016", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2016-power-user-certification-training-course" },
+    { name: "SharePoint 2016 Power User 55200-A", code: "SharePoint 2016", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2016-power-user-training-certification" },
+    { name: "SharePoint 2016 Site Collections and Site Owner Administration", code: "SharePoint 2016", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/55234a-sharePoint-2016-site-collections-site-owner-administration-training" },
+    { name: "SharePoint 2016 Site Owner (55251)", code: "SharePoint 2016", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2016-site-owner-training" },
+    { name: "SharePoint 2019 Power User", code: "SharePoint 2019", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2019-course" },
+    { name: "SharePoint 2019 Site Owner (55299)", code: "SharePoint 2019", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-2019-site-owner-training" },
+    { name: "SharePoint 2019 Super User", code: "SharePoint 2019", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/55286-microsoft-sharepoint-2019-power-user-training" },
+    { name: "SharePoint Content Contributors", code: "SharePoint Cont", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-content-contributors" },
+    { name: "SharePoint Migration Using ShareGate", code: "SharePoint Migr", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/file-server-to-sharepoint-migration" },
+    { name: "SharePoint Migration Using ShareGate with Compliance", code: "SharePoint Migr", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-administrator-certification" },
+    { name: "SharePoint Online Branding Super User", code: "SharePoint Onli", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-branding-course" },
+    { name: "SharePoint Online End User Training", code: "SharePoint Onli", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-office-365-end-user-certification-training-course" },
+    { name: "SharePoint Online Essentials", code: "SharePoint Onli", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/sharepoint-online-certification" },
+    { name: "SharePoint Online Management and Administration (55370AC)", code: "SharePoint Onli", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-online-management-admin-training" },
+    { name: "SharePoint Online Power User Training", code: "SharePoint Onli", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-certification-cost" },
+    { name: "SharePoint Online Site Owner", code: "SharePoint Onli", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/share-point-course" },
+    { name: "SharePoint Online Super User", code: "SharePoint Onli", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-online-super-user-course" },
+    { name: "SharePoint Online for Administrators", code: "SharePoint Onli", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-administrators-training" },
+    { name: "SharePoint Power User 2019", code: "SharePoint Powe", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-power-user-2019-training-course" },
+    { name: "SharePoint Server 2019 Deployment and Administration", code: "SharePoint Serv", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-admin-training" },
+    { name: "SharePoint Server SE Super User", code: "SharePoint Serv", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-server-power-user" },
+    { name: "SharePoint ShareGate Migration with Compliance", code: "SharePoint Shar", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sharepoint-certification-course" },
+    { name: "Introduction to Microsoft Azure Data", code: "DP-900T00-A", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/dp900-ms-azure-data-fundamentals-training" },
+    { name: "Database Fundamentals", code: "Database Fundam", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/database-fundamentals-training" },
+    { name: "HTML5 Application Development Fundamentals", code: "HTML5 Applicati", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/html5-app-development-fundamentals" },
+    { name: "Microsoft Security Workshop: Enterprise Security Fundamentals", code: "Microsoft Secur", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com//microsoft-security-workshop-enterprise-securiy-fundamentals-training-course" },
+    { name: "A: Introduction to Microsoft Project 2016: Getting Started", code: "A: Introduction", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/ms-project-online" },
+    { name: "A: Mastering Microsoft Project 2016", code: "A: Mastering Mi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/mastering-microsoft-ms-project-2016-55205a-training" },
+    { name: "A: Microsoft Project 2019: Digging Deeper", code: "A: Microsoft Pr", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55289-microsoft-project-2019-digging-deeper-training" },
+    { name: "Microsoft Office 365 Project Online Professional (Cloud Version)", code: "Microsoft Offic", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-office-365-project-online-professional-training" },
+    { name: "Microsoft Project (Covering Project Online Desktop Client)", code: "Microsoft Proje", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-project-online-desktop-client-training" },
+    { name: "Microsoft Project 2019", code: "Microsoft Proje", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-project-2019-training-ms-certification" },
+    { name: "Microsoft Project 2021", code: "Microsoft Proje", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-project-training-course" },
+    { name: "Microsoft Project Professional 2016", code: "Microsoft Proje", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-project-training-classes-ms-certification" },
+  ],
+  "Dynamics 365": [
+    { name: "A: Microsoft Dynamics 365 Customization and Configuration", code: "A: Microsoft Dy", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-customization-and-configuration-training" },
+    { name: "Introduction to Microsoft Dynamics 365", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/55250a-introduction-to-microsoft-dynamics-365-training" },
+    { name: "Advanced Development in Microsoft Dynamics 365 Finance and Operations", code: "Advanced Develo", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-operations-advance-development-training" },
+    { name: "Contact Center Modernization with Microsoft Power Platform and Dynamics 365", code: "Contact Center ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-certification" },
+    { name: "Copilot with Microsoft Dynamics 365 CRM", code: "Copilot with Mi", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-crm-language-course-copilot" },
+    { name: "Development Basics in Microsoft Dynamics 365 Finance and Operations", code: "Development Bas", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/development-basics-dynamics-ax-7-training-certification" },
+    { name: "Dynamics 365 Insights", code: "Dynamics 365 In", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-insights-training" },
+    { name: "Financial Consolidations in Microsoft Dynamics 365 for Finance and Operations", code: "Financial Conso", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ms-financial-consolidation-training" },
+    { name: "Fundamentals of Project Management & Accounting Microsoft Dynamics 365", code: "Fundamentals of", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/fundamentals-project-management-training" },
+    { name: "HubSpot CRM for Marketing and Sales Professionals", code: "HubSpot CRM for", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/hubspot-training" },
+    { name: "Lifecycle Services and Tools in Microsoft Dynamics 365 Finance & Operations", code: "Lifecycle Servi", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-lifecycle-services-lcs-training" },
+    { name: "Microsoft Dynamics 365 Sales", code: "MB-210T01", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-sales" },
+    { name: "Dynamics 365 Customer Insights - Journeys", code: "MB-220T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-marketing-training-course" },
+    { name: "Microsoft Dynamics 365 Customer Service", code: "MB-230T01", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-customer-engagement-for-service-training-certification-course" },
+    { name: "Microsoft Dynamics 365 Field Service", code: "MB-240T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-field-service-training-course" },
+    { name: "Microsoft Customer Insights - Data Specialty", code: "MB-260T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/customer-data-platform-specialist-training" },
+    { name: "Microsoft Dynamics 365: Core Finance and Operations", code: "MB-300T00", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-dynamics-365-core-finance-operations-training" },
+    { name: "Microsoft Dynamics 365 Finance Functional Consultant", code: "MB-310T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/mb-310-certification-microsoft" },
+    { name: "Microsoft Dynamics 365 Commerce Functional Consultant", code: "MB-340T00", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-commerce-functional-consultant-training" },
+    { name: "Microsoft Dynamics 365: Finance and Operations Apps Developer", code: "MB-500T00", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/mb-500-finance-operations-apps-developer" },
+    { name: "Create and Manage Journeys with Dynamics 365 Customer Insights", code: "MB-7005", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-course" },
+    { name: "– Create and Manage Segments in Dynamics 365 Customer Insights", code: "MB-7006", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-customer-insights" },
+    { name: "Dynamics 365 Business Central Developer", code: "MB-820T00-A", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/mb-820-microsoft-course" },
+    { name: "Microsoft Dynamics 365 Fundamentals (CRM)", code: "MB-910T00", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/mb-910-exam-prep" },
+    { name: "Microsoft Dynamics 365 Business Central Fundamentals", code: "Microsoft Dynam", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/dynamics-bc-fundamentals-training" },
+    { name: "Microsoft Dynamics 365 HR & Payroll", code: "Microsoft Dynam", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/Microsoft-dynamics-365-hr-payroll-training" },
+    { name: "Microsoft Dynamics GP Inventory Management & Purchasing", code: "Microsoft Dynam", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/gp-inventory-management-purchasing-course" },
+    { name: "Introduction to Service in Dynamics 365", code: "AB-6004", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/dynamics-365-customer-service-enterprise" },
+    { name: "Accelerate Seller Productivity", code: "Accelerate Sell", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/info-tech-course" },
+    { name: "Azure Apps & Infrastructure Partner Sales Acceleration Program (PSAP)", code: "Azure Apps & In", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-apps-infrastructure-psap-language-course" },
+    { name: "Azure Data & AI Partner Sales Acceleration Program (PSAP)", code: "Azure Data & AI", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-engineer-certification" },
+    { name: "Customer Service in CRM 2016", code: "Customer Servic", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/customer-service-in-microsoft-dynamics-crm-2016-training" },
+    { name: "Dynamics 365 CRM – Functional and Technical", code: "Dynamics 365 CR", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-crm-certification" },
+    { name: "Dynamics 365 Customer Engagements App Extensibility", code: "Dynamics 365 Cu", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/visual-studio-for-dynamics-365" },
+    { name: "Microsoft Dynamics 365 Customer Experience Analyst", code: "MB-280", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-d365-certification" },
+    { name: "Configure Dynamics 365 Customer Experience Model-Driven Apps", code: "MB-280T01", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-training" },
+    { name: "Empower Sellers with Dynamics 365 Sales and Microsoft 365 Copilot for Sales", code: "MB-280T02", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-course" },
+    { name: "Design and Deliver Powerful Customer Experiences with Dynamics 365 Customer Insights", code: "MB-280T03", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-customer-insights" },
+    { name: "Configure a Dynamics 365 Customer Experience Solution", code: "MB-280T04", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/d365-training" },
+    { name: "Microsoft Dynamics 365 CE (Omnichannel)", code: "Microsoft Dynam", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-ce-omnichannel-training" },
+    { name: "Microsoft Dynamics 365 CRM & Power Platform Practitioner Bootcamp", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-power-platform-fundamentals" },
+    { name: "Microsoft Dynamics 365 CRM Developer", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-crm-developer-course" },
+    { name: "Microsoft Dynamics 365 CRM Mastery - Sales, Customer Service and Field Service", code: "Microsoft Dynam", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-certification" },
+    { name: "Microsoft Dynamics 365 Sales CRM Essentials", code: "Microsoft Dynam", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-dynamics-crm-course" },
+    { name: "Microsoft Dynamics 365 Technical Workshop: Implement the Modern Customer Service Experience", code: "Microsoft Dynam", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-customer-service-workshop-implementation" },
+    { name: "Microsoft Dynamics 365 Technical Workshop: Optimize Sales Process with Dynamics 365 Sales", code: "Microsoft Dynam", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-sales-optimization-technical-workshop" },
+    { name: "Modern Work & Security SMB Partner Sales Acceleration Program (PSAP)", code: "Modern Work & S", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/modern-work-security-smb-partner-sales-acceleration-program-language-course" },
+    { name: "Modern Work Partner Sales Acceleration Program (PSAP)", code: "Modern Work Par", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/it-training-program" },
+    { name: "Processes in Dynamics 365 Customer Engagement", code: "Processes in Dy", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/processes-dynamics-365-ce-training" },
+    { name: "Sales Management in CRM 2016", code: "Sales Managemen", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/sales-management-in-microsoft-dynamics-crm-2016-training" },
+    { name: "Security, Compliance, & Identity Partner Sales Acceleration Program (PSAP)", code: "Security, Compl", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/security-compliance-identity-psap-sales-program-course" },
+    { name: "A Microsoft Software Asset Manager", code: "A Microsoft Sof", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-software-asset-manager" },
+    { name: "Introduction to Finance in Dynamics 365", code: "AB-6002", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/dynamics-365-finance-and-operations-course" },
+    { name: "Accounting Fundamentals and IFRS Essentials", code: "Accounting Fund", dur: "4 days", level: "fund", url: "https://www.koenig-solutions.com/accounting-fundamentals-and-ifrs" },
+    { name: "Advanced Financial Management", code: "Advanced Financ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-management-course" },
+    { name: "Asset Management in Dynamics 365 Finance and Operations", code: "Asset Managemen", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/asset-management-dynamics-finance-operations" },
+    { name: "Dynamics 365 F&O – Finance and Supply Chain Overview", code: "Dynamics 365 F&", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/logistics-and-supply-chain-management-courses" },
+    { name: "Dynamics 365 Finance Administration & Operations Management", code: "Dynamics 365 Fi", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-course-online" },
+    { name: "Dynamics 365 Finance Fundamentals", code: "Dynamics 365 Fi", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/dynamics-365-training-online" },
+    { name: "Dynamics 365 Finance Operations (F&O) – Comprehensive Course", code: "Dynamics 365 Fi", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-finance-and-operations" },
+    { name: "End User Training for Microsoft Dynamics 365 Finance", code: "End User Traini", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/end-user-microsoft-dynamics-365-finance-training" },
+    { name: "End User Training for Microsoft Dynamics 365 SCM", code: "End User Traini", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/d365-supply-chain-training" },
+    { name: "Financial Modelling and Valuation", code: "Financial Model", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-modelling-and-valuation-course" },
+    { name: "Fundamentals of Finance & Accounting", code: "Fundamentals of", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/fundamentals-of-finance-and-accounting-training" },
+    { name: "Introduction to Microsoft Dynamics 365 Finance and Operations with Data Migration", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-finance-operations-data-migration-course" },
+    { name: "Conceptualize Supply Chain Management in Microsoft Dynamics 365", code: "MB-330", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-supply-chain-management-training" },
+    { name: "Augment Advanced Level Supply Chain Management Solutions with Microsoft Dynamics 365", code: "MB-335", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-scm-mb-335-training" },
+    { name: "Manage Finance & Ops", code: "Manage Finance ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/it-ops-management" },
+    { name: "Microsoft Dynamics 365 Business Central Functional Consultant – Finance User", code: "Microsoft Dynam", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/d365-finance-training" },
+    { name: "Microsoft Dynamics 365 Finance & Operations (D365 F&O) Developer", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-finance-and-operations-training" },
+    { name: "Microsoft Dynamics 365 Finance Administrator", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-finance-administrator-course" },
+    { name: "Microsoft Dynamics 365 Finance and Operations Developer", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-finance-operation-developer-course" },
+    { name: "Project Management Accounting Microsoft Dynamics 365 Operations", code: "Project Managem", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/project-management-accounting-dynamics-ax-7-training" },
+    { name: "Resilient Supply Chain (MOC MB-920)", code: "Resilient Suppl", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/resilient-supply-chain-moc-mb-920-course" },
+    { name: "Warehouse Management in Microsoft Dynamics 365 for Finance and Operations", code: "Warehouse Manag", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/warehouse-management-in-microsoft-dynamics-365-for-finance-and-operations-training" },
+    { name: "Business Central (Supply Chain Fundamentals)", code: "Business Centra", dur: "4 days", level: "fund", url: "https://www.koenig-solutions.com/business-central-365-supply-chain-management-training" },
+    { name: "Business Central Essentials: Finance, Operations, Procurement & HR Integration", code: "Business Centra", dur: "8 days", level: "fund", url: "https://www.koenig-solutions.com/business-central-certification" },
+    { name: "Business Central Functional With Taxation", code: "Business Centra", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-bc-with-taxation-training" },
+    { name: "Comprehensive Dynamics 365 Business Central Course", code: "Comprehensive D", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/business-central-course" },
+    { name: "Comprehensive Guide to Budgeting and Fixed Assets in Microsoft Dynamics 365 Business Central", code: "Comprehensive G", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-course" },
+    { name: "Copilot for Business Central for Developers", code: "Copilot for Bus", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/business-central-developer" },
+    { name: "Dynamics Business Central with Reporting", code: "Dynamics Busine", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/reporting-microsoft-dynamics-365-bc-training" },
+    { name: "Empowering Dynamics 365 Business Central Development with Power Apps and Power Automate", code: "Empowering Dyna", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-365-business-central-development-power-apps-automate-course" },
+    { name: "Getting Started with Microsoft Dynamics 365 Business Central", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ms-dynamics-certification" },
+    { name: "How to Use Shopify in Business Central", code: "How to Use Shop", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/shopify-business-central-training" },
+    { name: "Microsoft Dynamics 365 Business Central Finance for Power Users", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/certification-microsoft-dynamics-365" },
+    { name: "Microsoft Dynamics 365 Business Central Integration with Shopify", code: "Microsoft Dynam", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-integration" },
+    { name: "Microsoft Dynamics 365 Business Central Supply Chain Management (Business User)", code: "Microsoft Dynam", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/supply-chain-courses-online" },
+    { name: "Microsoft Dynamics 365 Business Central Technical Training", code: "Microsoft Dynam", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-business-central-training" },
+    { name: "Microsoft Dynamics 365 Business Central – Web Services", code: "Microsoft Dynam", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-365-bc-web-services-training" },
+    { name: "Microsoft Dynamics 365 Business Central: Introduction to Fixed Asset", code: "Microsoft Dynam", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/fixed-assets-microsoft-dynamics-365-bc-training" },
+    { name: "Microsoft Dynamics 365 Supply Chain Management on Business Central", code: "Microsoft Dynam", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/d365-supply-chain-management" },
+    { name: "Microsoft Dynamics Business Central with Reporting_Functional", code: "Microsoft Dynam", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-certified-dynamics-365" },
+    { name: "Using AL in Microsoft Dynamics 365 Business Central", code: "Using AL in Mic", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/using-al-microsoft-dynamics-365-business-central-training" },
+    { name: "Application Integration Framework in Microsoft Dynamics AX 2012", code: "Application Int", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/application-integration-microsoft" },
+    { name: "Bridging Microsoft Dynamics AX2012 & Finance and Operations", code: "Bridging Micros", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/bridging-dynamics-ax2012-training" },
+    { name: "Development I in Microsoft Dynamics AX 2012", code: "Development I i", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-ax-development-i-course" },
+    { name: "Development II in Microsoft Dynamics AX 2012", code: "Development II ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/development-microsoft-dynamics-ax-ii-course" },
+    { name: "Development III in Microsoft Dynamics AX 2012", code: "Development III", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-ax-development-iii-course" },
+    { name: "Management Reporter in Dynamics AX", code: "Management Repo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/management-reporter-dynamics-ax-language-course" },
+    { name: "Microsoft AX 2012 Fundamentals (ERP)", code: "Microsoft AX 20", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-ax-2012-erp-fundamentals" },
+    { name: "Reporting in Microsoft Dynamics AX 2012", code: "Reporting in Mi", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ax-2012-report-parameters" },
+    { name: "Development Environment Introduction in Microsoft Dynamics NAV 2017", code: "Development Env", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-development-environment-in-microsoft-dynamics-nav-2017-language-course" },
+    { name: "Installation and Configuration in Microsoft Dynamics NAV 2017", code: "Installation an", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/installation-configuration-microsoft-dynamics-nav-2017-training" },
+    { name: "Introduction to Development in Microsoft Dynamics NAV 2018", code: "Introduction to", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/dynamics-nav-development-course" },
+    { name: "Introduction to Navision 2018", code: "Introduction to", dur: "4 days", level: "fund", url: "https://www.koenig-solutions.com/introduction-navision-language-course" },
+    { name: "Inventory Management in Microsoft Dynamics NAV 2018", code: "Inventory Manag", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/dynamics-nav-online" },
+    { name: "Microsoft Dynamics NAV Functional Course", code: "Microsoft Dynam", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-dynamics-nav-functional-course-koenig-originals-language-training" },
+    { name: "Warehouse Management in Microsoft Dynamics NAV 2018", code: "Warehouse Manag", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-nav-training" },
+  ],
+  "Data & Analytics": [
+    { name: "20776A : Performing Big Data Engineering on Microsoft Cloud Services", code: "20776A : Perfor", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dp-203-certification" },
+    { name: "A Beginner’s Guide to Power BI", code: "A Beginner’s Gu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-certification-course" },
+    { name: "AI Transformation on Azure Cloud", code: "AI Transformati", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-engineer-associate" },
+    { name: "Develop Generative AI Solutions with Azure OpenAI Service", code: "AI-050T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/develop-generative-ai-solutions-azure-openai-service-course-ai-050" },
+    { name: "Develop AI Solutions in Azure", code: "AI-102T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-102-exam-prep-training-course" },
+    { name: "Develop Generative AI Apps in Azure", code: "AI-3016", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/ai-3016-develop-custom-copilots-azure-openai-studio-course" },
+    { name: "Copilot Foundations", code: "AI-3018", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/ai-3018-copilot-foundations-course" },
+    { name: "Develop Generative AI Solutions Using Azure OpenAI and the Semantic Kernel SDK", code: "AZ-2005", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/develop-ai-agents-azure-openai-semantic-kernel-az-2005-course" },
+    { name: "Applied Data Analytics with Excel, SQL, Power BI and Python", code: "Applied Data An", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/excel-data-analytics-course" },
+    { name: "Applied Data Science for Financial Decision-Making & Investment Management", code: "Applied Data Sc", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/financial-data-science" },
+    { name: "Azure AI Bot Service and Copilot Studio", code: "Azure AI Bot Se", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-bot-service-bot-framework-sdk-training" },
+    { name: "Azure Databricks", code: "Azure Databrick", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-databricks-online" },
+    { name: "Azure HDInsight", code: "Azure HDInsight", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-hdinsight-training" },
+    { name: "Building End-to-End Solution Using Azure Synapse Analytics", code: "Building End-to", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/synapse-analytics-course" },
+    { name: "Business Intelligence and Data Mining with Power BI", code: "Business Intell", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/business-intelligence-data-mining-power-bi-course" },
+    { name: "ChatGPT Copilots Using Azure OpenAI & Semantic Kernel", code: "ChatGPT Copilot", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/openai-chatgpt-training" },
+    { name: "Comprehensive Data Engineering with Python and Azure Databricks", code: "Comprehensive D", dur: "15 days", level: "assoc", url: "https://www.koenig-solutions.com/databricks-data-engineer-certification" },
+    { name: "Course 55232-A: Writing Analytical Queries for Business Intelligence", code: "Course 55232-A:", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/writing-analytical-queries-bi-training" },
+    { name: "Designing and Implementing a Data Science Solution on Azure", code: "DP-100T01", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/designing-implementing-data-science-on-azure" },
+    { name: "Build Machine Learning Solutions Using Azure Databricks", code: "DP-3014", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/dp-3014-course" },
+    { name: "Implement data engineering solutions using Microsoft Fabric", code: "DP-700T00-A", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-engineer-training" },
+    { name: "Implement data engineering solutions using Azure Databricks", code: "DP-750T00-A", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-certification-data-engineer" },
+    { name: "Data Transformation Using Spark", code: "Data Transforma", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/spark-data-transformation-training" },
+    { name: "Developing SQL 2016 Data Models (SSAS)", code: "Developing SQL ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/20768-developing-sql-data-models-ssas-training-certification" },
+    { name: "Exploring Data Analytics, Business Intelligence, and Machine Learning", code: "Exploring Data ", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/best-data-analytics-certification" },
+    { name: "Getting Started with Data Warehousing", code: "Getting Started", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/data-warehouse-modeling" },
+    { name: "Implementing Data Models and Reports with Microsoft SQL Server 2014", code: "Implementing Da", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20466-implementing-data-models-reports-microsoft-sql-server-2014-training" },
+    { name: "Implementing a Data Warehouse with Microsoft SQL Server 2012", code: "Implementing a ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/data-warehouse-implementation" },
+    { name: "Implementing a SQL 2016 Data Warehouse (SSIS)", code: "Implementing a ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20767-implementing-sql-2016-data-warehouse-training-certification" },
+    { name: "Introduction to Azure OpenAI and GitHub Copilot for End Users", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/azure-openai-training" },
+    { name: "Machine Learning for Azure Databricks", code: "Machine Learnin", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-databricks-machine-learning-course" },
+    { name: "Mastering Azure Databricks-From Foundations to Production Excellence", code: "Mastering Azure", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/databricks-data-engineering-certification" },
+    { name: "Mastering Data Analytics and Data Governance with Azure Synapse Analytics", code: "Mastering Data ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-synapse-analytics-training" },
+    { name: "Microsoft AI Bootcamp for Freshers", code: "Microsoft AI Bo", dur: "12 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-bootcamp-freshers-language-course" },
+    { name: "Microsoft Copilot for Data and AI", code: "Microsoft Copil", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-102" },
+    { name: "Power BI & AI for Data Analytics", code: "Power BI & AI f", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-course-fees" },
+    { name: "Power BI Data Analyst with Fabric", code: "Power BI Data A", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-data-analyst-course" },
+    { name: "PySpark for Data Testing Automation", code: "PySpark for Dat", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/pyspark-training-online" },
+    { name: "Azure Data Fundamentals for Nonprofits", code: "Azure Data Fund", dur: "10 days", level: "fund", url: "https://www.koenig-solutions.com/harnessing-data-for-nonprofit-success" },
+    { name: "Create a Data-Driven Strategy: Build a Unified Data Ecosystem with Microsoft Fabric and Synapse Analytics", code: "Create a Data-D", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-synapse-certification" },
+    { name: "Implement a Data Engineering Solution with Azure Databricks", code: "DP-3027", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-course-online" },
+    { name: "Implement Generative AI Engineering with Azure Databricks", code: "DP-3028", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/databricks-bootcamp" },
+    { name: "Work Smarter with Copilot in Microsoft Fabric", code: "DP-3029", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/copilot-online-course" },
+    { name: "Implement a Data Science and Machine Learning Solution for AI with Microsoft Fabric", code: "DP-604T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/certifications-for-data-science" },
+    { name: "Microsoft Fabric Analytics", code: "DW-210", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-fabric-online-course" },
+    { name: "Lead the Conversation: Unify Your Data Platform with Microsoft Fabric", code: "DW-240", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/data-architecture-course" },
+    { name: "Data Analytics with Microsoft Fabric and Databricks", code: "Data Analytics ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/certified-in-data-analytics" },
+    { name: "Data Factory and Fabric Combined", code: "Data Factory an", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-factory-certification" },
+    { name: "Data Mastery with SSAS and MS SQL Server 2022", code: "Data Mastery wi", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ssas-online-training" },
+    { name: "Day After Dashboard in a Day with Microsoft Fabric", code: "Day After Dashb", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-fabric-bootcamp" },
+    { name: "Empowering Snowflake with Microsoft Fabric", code: "Empowering Snow", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/empowering-snowflake-microsoft-fabric-training" },
+    { name: "Exploring Microsoft Fabric in a Day", code: "Exploring Micro", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/fabric-course-online" },
+    { name: "Extended Data Engineering on Azure with Azure Synapse, Microsoft Purview and Power BI", code: "Extended Data E", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-engineering" },
+    { name: "Getting Started with Microsoft Fabric", code: "Getting Started", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/microsoft-fabric-overview" },
+    { name: "Master Data Engineering with Azure Synapse and PySpark", code: "Master Data Eng", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/data-engineering-bootcamp" },
+    { name: "Microsoft Fabric Workshop", code: "Microsoft Fabri", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-fabric-workshop-training" },
+    { name: "Microsoft Fabric with MLOPS", code: "Microsoft Fabri", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-fabric-online-training" },
+    { name: "Modern Data Engineering with Microsoft Fabric", code: "Modern Data Eng", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/data-engineering-certification" },
+    { name: "Smart Agents for Microsoft Fabric - Copilot and AI Skill", code: "Smart Agents fo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-ai-certification" },
+    { name: "Synapse", code: "Synapse", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-synapse-course" },
+    { name: "Querying Data with Transact-SQL 2016", code: "Querying Data w", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/querying-data-transact-sql-training" },
+    { name: "Developing SQL 2016 Databases", code: "Developing SQL ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-sql-databases-training" },
+    { name: "40364 Database Administration Fundamentals", code: "40364 Database ", dur: "4 days", level: "fund", url: "https://www.koenig-solutions.com/database-administration-certification" },
+    { name: "Microsoft Cloud Workshop: Migrate EDW to Azure SQL Data Warehouse", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrate-edw-azure-sql-data-warehouse-training" },
+    { name: "A: PowerShell for SQL Server Administrators", code: "A: PowerShell f", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/55069-a-powershell-for-sql-server-administrators-training" },
+    { name: "A: Writing Reports with Report Designer and SSRS 2014 Level 1", code: "A: Writing Repo", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/report-designer-online" },
+    { name: "A: SQL 2016 AlwaysOn High Availability", code: "A: SQL 2016 Alw", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/course-55246-a-sql-2016-alwayson-high-availability-training" },
+    { name: "Designing and Implementing Cloud Data Platform Solutions", code: "Designing and I", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/designing-implementing-cloud-data-platform-solutions-training-certification" },
+    { name: "55316 - Administering a SQL Database", code: "55316 - Adminis", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-sql-database-training" },
+    { name: "55369 - Provisioning Databases on SQL Server", code: "55369 - Provisi", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-language-certification" },
+    { name: "Administering Microsoft SQL Server 2012 Databases", code: "Administering M", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-sql-server-training" },
+    { name: "Administering Microsoft SQL Server 2014 Databases", code: "Administering M", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20462-administering-microsoft-sql-server-2014-databases-training" },
+    { name: "Administering Microsoft SQL Server 2022", code: "Administering M", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-microsoft-sql-server" },
+    { name: "Administering a SQL Database Infrastructure", code: "Administering a", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/admin-sql-database-infrastructure-training" },
+    { name: "Advance SQL Database Training", code: "Advance SQL Dat", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-certification-training" },
+    { name: "Advanced Microsoft SQL Server – Performance, Tuning & Scripting", code: "Advanced Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/advanced-sql-server-training" },
+    { name: "Advanced Querying and Database Optimization for SQL Developer", code: "Advanced Queryi", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-developer-course-online" },
+    { name: "Analyzing Data with SQL Server 2016 Reporting Services (SSRS)", code: "Analyzing Data ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/analyzing-data-sql-server-reporting-services" },
+    { name: "Basic to Advanced SQL", code: "Basic to Advanc", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/basic-to-advanced-sql-training-course" },
+    { name: "Bootcamp with SQL", code: "Bootcamp with S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-bootcamp-training" },
+    { name: "Capstone Project on SQL", code: "Capstone Projec", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sql-online-course" },
+    { name: "DP 203 Exam Prep", code: "DP 203 Exam Pre", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-data-engineer-course" },
+    { name: "Querying Data with Microsoft Transact-SQL", code: "DP-080T00", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/querying-data-transact-sql-dp080-training" },
+    { name: "Migrate SQL Server Workloads to Azure SQL", code: "DP-3001", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrate-sql-server-to-azure-sql-dp-3001" },
+    { name: "Implement Scalable Database Solutions Using Azure SQL", code: "DP-300T00-A", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-dp-300-training-certification" },
+    { name: "Database Fundamentals and Forensic Analysis", code: "Database Fundam", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/sql-beginner-course" },
+    { name: "Database Testing", code: "Database Testin", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/database-testing-training" },
+    { name: "Designing Database Solutions for Microsoft SQL Server 2014", code: "Designing Datab", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/20465-designing-database-solutions-microsoft-sql-server-2014-training" },
+    { name: "Developing Microsoft SQL Server 2012 Databases", code: "Developing Micr", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-sql-server-2012-database" },
+    { name: "Developing Microsoft SQL Server 2014 Databases", code: "Developing Micr", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/Sql-Certification" },
+    { name: "ETL Testing", code: "ETL Testing", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/etl-testing-training" },
+    { name: "Implementing a Tabular Data Model by Using SQL Server Analysis Services", code: "Implementing a ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/ssas-tabular-training" },
+    { name: "Introduction to SQL Databases-55315", code: "Introduction to", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/10985-introduction-sql-databases-training-certification" },
+    { name: "Leveraging AI for SQL and Databases", code: "Leveraging AI f", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-sql-training" },
+    { name: "M55353A - Administering a SQL Database Infrastructure", code: "M55353A - Admin", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-sql-database-infrastructure-training" },
+    { name: "MS SQL Server 2025 Database Administration Bootcamp", code: "MS SQL Server 2", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-database-administrator-course" },
+    { name: "Mastering SQL Server 2019 Database Development", code: "Mastering SQL S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-training" },
+    { name: "Mastering SQL with SQL Server 2022", code: "Mastering SQL w", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-sql-certification" },
+    { name: "Mastering Stored Procedures in Microsoft SQL Server", code: "Mastering Store", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-courses" },
+    { name: "Microsoft SQL Always On High Availability with Optimization", code: "Microsoft SQL A", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-alwayson-ha-with-optimization-training" },
+    { name: "Microsoft SQL Server 2019 Performance Tuning and Management", code: "Microsoft SQL S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-sql-server-performance-tuning-management" },
+    { name: "Microsoft SQL Server 2025: Enterprise Database Administration", code: "Microsoft SQL S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms-sql-course" },
+    { name: "Microsoft SQL Server 2025: Enterprise Database Performance Optimization", code: "Microsoft SQL S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-optimizer" },
+    { name: "Microsoft SQL Server: Beginner to Professional", code: "Microsoft SQL S", dur: "20 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-sql-server-certification" },
+    { name: "Microsoft Secure Database Administration with Development", code: "Microsoft Secur", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-secure-database-dba-developer-course" },
+    { name: "Performance Tuning and Managing MS SQL Server 2022", code: "Performance Tun", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/master-ms-sql-server-performance-tuning" },
+    { name: "Performance Tuning and Optimizing SQL Databases", code: "Performance Tun", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/10987a-performance-tuning-optimizing-sql-databases-training" },
+    { name: "Provisioning SQL Databases", code: "Provisioning SQ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20765a-provisioning-sql-databases-training-certification" },
+    { name: "Querying Microsoft SQL Server 2014 Databases", code: "Querying Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20461-querying-microsoft-sql-server-2014-training" },
+    { name: "Querying Microsoft SQL Server 2025", code: "Querying Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-query-training-course" },
+    { name: "Querying Microsoft SQL Server with Transact-SQL", code: "Querying Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/master-querying-microsoft-sql-server" },
+    { name: "SQL Querying: Fundamentals", code: "SQL Querying: F", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/sql-querying-fundamentals-training" },
+    { name: "SQL Server 2016 Admin: High Availability and Performance Tuning", code: "SQL Server 2016", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-admin-high-availability-performance-tuning" },
+    { name: "SQL Server with Management Studio", code: "SQL Server with", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-with-management-studio-training" },
+    { name: "The SQL Server 2022 Workshop", code: "The SQL Server ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-workshop-course" },
+    { name: "Updating Your Skills to SQL Server 2016", code: "Updating Your S", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/online-sql-server-2016" },
+    { name: "Working with SQL Server Management Studio", code: "Working with SQ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-online-course" },
+    { name: "Writing SQL Queries", code: "Writing SQL Que", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sql-certification-class" },
+  ],
+  "DevOps & Dev": [
+    { name: "Implement Security Through a Pipeline Using Azure DevOps", code: "AZ-2001", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-azure-security-workshop-implementing-pipeline-azure-devops" },
+    { name: "Agile Software Development with Azure DevOps", code: "Agile Software ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/agile-software-development-with-azure-devops-training" },
+    { name: "Azure DevOps Server", code: "Azure DevOps Se", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-devops-server-training" },
+    { name: "Azure DevOps Using Terraform", code: "Azure DevOps Us", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-devops-online-course" },
+    { name: "Biztalk", code: "Biztalk", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/biztalk-course-training" },
+    { name: "DevOps with GitHub", code: "DevOps with Git", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/devops-github-course" },
+    { name: "GitHub Actions for Azure", code: "GitHub Actions ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/github-actions-azure-course-guide" },
+    { name: "GitHub Actions with Azure", code: "GitHub Actions ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/github-azure-training" },
+    { name: "TFS 2018", code: "TFS 2018", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/tfs-training-course" },
+    { name: "Test KD1", code: "Test KD1", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/scrum-master-certification" },
+    { name: ".NET Core Microservices - The Complete Guide (.NET 6 MVC)", code: ".NET Core Micro", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/net-core-microservices-complete-guide-net6-mvc" },
+    { name: ".NET Foundations (4012)", code: ".NET Foundation", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/dot-net-course" },
+    { name: "Mobility & Devices Fundamentals", code: "Mobility & Devi", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/mobility-devices-fundamentals-training" },
+    { name: "HTML5 and CSS", code: "HTML5 and CSS", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/html-css-training-course" },
+    { name: "ASP.NET Blazor Development with Microservices", code: "ASP.NET Blazor ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/aspnet-blazor-development-microservices-training" },
+    { name: "ASP.NET Core 3.1 Blazor", code: "ASP.NET Core 3.", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-asp-net-blazor-training" },
+    { name: "ASP.NET Core MVC (4043)", code: "ASP.NET Core MV", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/asp-net-core-mvc-course" },
+    { name: "ASP.NET Core Web Development on .NET Core 8", code: "ASP.NET Core We", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/web-developer-certification" },
+    { name: "ASP.NET REST API Following CLEAN ARCHITECTURE & DDD with .NET 8", code: "ASP.NET REST AP", dur: "4 days", level: "expert", url: "https://www.koenig-solutions.com/aspnet-6-rest-api-clean-architecture-ddd-course" },
+    { name: "ASP.NET Web API Development with Entity Framework", code: "ASP.NET Web API", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/asp-net-web-api-with-entity-framework-training" },
+    { name: "AZ 2009: Build Distributed Apps with .NET Aspire", code: "AZ 2009: Build ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/creating-a-asp-net-web-application" },
+    { name: "Advanced C# - BEL", code: "Advanced C# - B", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/c#-course" },
+    { name: "Advanced Software Architecture and Data Management", code: "Advanced Softwa", dur: "10 days", level: "expert", url: "https://www.koenig-solutions.com/it-architecture-certification" },
+    { name: "Blazor Application Development Using .NET 6", code: "Blazor Applicat", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-blazor-app-development-net6-training" },
+    { name: "Blazor Development with .NET 8", code: "Blazor Developm", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/blazor-webassembly-course" },
+    { name: "Build .NET Applications with C#", code: "Build .NET Appl", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/csharp-bootcamp" },
+    { name: "Build Web Applications with ASP.NET Blazor", code: "Build Web Appli", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/asp-net-blazor-web-applications-course" },
+    { name: "Building Microservices with .NET", code: "Building Micros", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/building-microservices-net-language" },
+    { name: "C# Developers: Double Your Coding Speed with Visual Studio", code: "C# Developers: ", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/c-sharp-developers-coding-speed-training" },
+    { name: "C# Essentials", code: "C# Essentials", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/csharp-essentials-training" },
+    { name: "C# Essentials (4002)", code: "C# Essentials (", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/c-essentials-training" },
+    { name: "C# and .NET Foundations (4014)", code: "C# and .NET Fou", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/csharp-dotnet-foundations-course" },
+    { name: "C# and ADO.NET", code: "C# and ADO.NET", dur: "8 days", level: "assoc", url: "https://www.koenig-solutions.com/csharp-and-ado-dotnet" },
+    { name: "C# for Beginners", code: "C# for Beginner", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/c-sharp-classes" },
+    { name: "Design Patterns Using .NET", code: "Design Patterns", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/net-design-patterns-training" },
+    { name: "Design Patterns in .NET for End User", code: "Design Patterns", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/training-on-design-patterns-using-dotnet-training" },
+    { name: "Developing ASP.NET Core 9 Web Applications", code: "Developing ASP.", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/asp-net-core-development" },
+    { name: "Developing ASP.NET Core MVC Web Applications", code: "Developing ASP.", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-asp-net-core-mvc-web-applications-training-certification-course" },
+    { name: "Developing Web Applications Using .NET 6", code: "Developing Web ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/developing-web-applications-in-net-training" },
+    { name: "Developing Windows Applications with Microsoft Visual Studio", code: "Developing Wind", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-visual-studio-windows-app-development-course" },
+    { name: "Developing Windows Communication Foundation Solutions with Microsoft Visual Studio", code: "Developing Wind", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/wcf-training" },
+    { name: "Dot NET with C# and ASP.NET API Development", code: "Dot NET with C#", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dot-net-csharp-aspnet-api-development-training" },
+    { name: "GitHub Advanced Security", code: "GH-500", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/github-advanced-security-certification" },
+    { name: "GitHub Foundations", code: "GH-900", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/github-certification-course" },
+    { name: "GitHub Copilot for .NET Developers", code: "GitHub Copilot ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/copilot-programming" },
+    { name: "Introduction to Programming (55337AC)", code: "Introduction to", dur: "5 days", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-programming-55337ac-training" },
+    { name: "Introduction to Web Development with Blazor", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-to-web-development-blazor-course" },
+    { name: "Language Integrated Query (LINQ)", code: "Language Integr", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/Learn-LINQ-Language-Integrated-Query-Course" },
+    { name: "Mastering Entity Framework Core", code: "Mastering Entit", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/mastering-entity-framework-training" },
+    { name: "Mastering in Windows Forms with .NET 8", code: "Mastering in Wi", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/winforms-csharp" },
+    { name: "Mastery in DotNet Development", code: "Mastery in DotN", dur: "13 days", level: "assoc", url: "https://www.koenig-solutions.com/net-course-online" },
+    { name: "Microservices with .NET and ASP.NET Core", code: "Microservices w", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microservices-dotnet-training" },
+    { name: "Microsoft Windows Presentation Foundation (WPF) (4035)", code: "Microsoft Windo", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-windows-presentation-foundation-wpf-course-4035" },
+    { name: "Object-Oriented Programming in C# (4001)", code: "Object-Oriented", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/object-oriented-programming-c" },
+    { name: "Optimizing .NET Application Development", code: "Optimizing .NET", dur: "10 days", level: "assoc", url: "https://www.koenig-solutions.com/net-coding-bootcamp" },
+    { name: "Programming in Blazor 5 (ASP.NET Core 5)", code: "Programming in ", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-asp-net-core-blazor5-training" },
+    { name: "Programming in C#", code: "Programming in ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/csharp-advanced-training" },
+    { name: "Programming in C# with Unit Testing", code: "Programming in ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/csharp-programming-unit-testing-training" },
+    { name: "Programming in VB.NET", code: "Programming in ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/programming-vbnet-course" },
+    { name: "Programming with F#", code: "Programming wit", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/fsharp-course" },
+    { name: "QT and QML Associate", code: "QT and QML Asso", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/qt-qml-course" },
+    { name: "Sitecore (C)", code: "Sitecore (C)", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/sitecore-certification" },
+    { name: "Software Architecture: Meta and SOLID Principles in C#", code: "Software Archit", dur: "1 day", level: "expert", url: "https://www.koenig-solutions.com/software-architecture-meta-solid-principles-c-sharp-course" },
+    { name: "System Design and Architecture", code: "System Design a", dur: "5 days", level: "expert", url: "https://www.koenig-solutions.com/aws-architect-certification" },
+    { name: "TCP/IP Socket Programming in C# .NET", code: "TCP/IP Socket P", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/tcp-ip-socket-programming-c-sharp-net-training" },
+    { name: "Test-Driven Development Using Visual Studio and MSTest (4006)", code: "Test-Driven Dev", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/test-driven-development-course" },
+    { name: "Unit Testing for C#", code: "Unit Testing fo", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/c-sharp-online-test" },
+    { name: "Unit Testing in Visual Studio 2022 (UTVS2022)", code: "Unit Testing in", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/unit-testing-visual-studio-language" },
+    { name: "Unity Game Development Using C#", code: "Unity Game Deve", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/csharp-unity-game-development-course" },
+    { name: "VB Scripting", code: "VB Scripting", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/vb-scripting-course" },
+    { name: "Visual Studio 2022 Fundamentals", code: "Visual Studio 2", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/learn-visual-studio-2022-fundamentals-course" },
+    { name: "Windows Communication Foundation", code: "Windows Communi", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/windows-communication-foundation-training" },
+    { name: "Automating Administration with PowerShell", code: "AZ-040T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/automating-administration-azure-powershell-training" },
+    { name: "Active Directory Management via PowerShell", code: "Active Director", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/active-directory-management-powershell-course" },
+    { name: "Advanced Automated Administration with Windows PowerShell (55318A)", code: "Advanced Automa", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/adv-automated-admin-windows-powershell-training" },
+    { name: "Automating Administration with Windows PowerShell", code: "Automating Admi", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-certification-training-course" },
+    { name: "Windows PowerShell Scripting and Toolmaking", code: "MS-55039", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ms55039-windows-powershell-scripting-toolmaking-training" },
+    { name: "PowerShell 5.0 and Desired State Configuration", code: "PowerShell 5.0 ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-scripting-course" },
+    { name: "PowerShell Fundamentals (1 Day)", code: "PowerShell Fund", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/powershell-fundamentals-training" },
+    { name: "PowerShell Fundamentals with Labs (2 Days)", code: "PowerShell Fund", dur: "2 days", level: "fund", url: "https://www.koenig-solutions.com/powershell-fundamentals-with-labs-training" },
+    { name: "PowerShell Pester", code: "PowerShell Pest", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-pester-language" },
+    { name: "PowerShell for Administration", code: "PowerShell for ", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-script-training" },
+    { name: "PowerShell for Microsoft Endpoint Configuration Manager Administrators (55133D)", code: "PowerShell for ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/sccm-training" },
+    { name: "PowerShell for Windows and Linux Administrators", code: "PowerShell for ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-advanced-training" },
+    { name: "Scripting and Toolmaking with PowerShell (M55627A)", code: "Scripting and T", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-scripting-certification" },
+    { name: "Microsoft Cloud Workshop: Containers and DevOps", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/containers-and-devops-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: SQL Server Hybrid Cloud", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sql-server-hybrid-cloud-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Continuous Delivery in Azure DevOps", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/continuous-delivery-azure-devops-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Data Platform Upgrade and Migration", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/data-platform-upgrade-migration-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Enterprise-Class Networking in Azure", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/enterprise-class-networking-azure-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Azure Stack", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-stack-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: SAP HANA on Azure", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/sap-hana-on-azure-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Security Baseline on Azure", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/windows-azure-certification" },
+    { name: "Microsoft Cloud Workshop: Business Continuity and Disaster Recovery", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/business-continuity-disaster-recovery-training" },
+    { name: "Microsoft Cloud Workshop: High Performance Computing", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/high-performance-computing-training" },
+    { name: "Microsoft Cloud Workshop: OSS PaaS and DevOps", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/oss-paas-devops-microsoft-cloud-workshop" },
+    { name: "Microsoft Cloud Workshop: Windows Server and SQL Server 2008-R2 End of Support Planning", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/windows-and-sql-server-r2-end-support-training" },
+    { name: "Cloud & Datacenter Monitoring with System Center Operations Manager 2012 R2", code: "Cloud & Datacen", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/cloud-and-datacenter-monitoring-with-scom-2012-r2-training" },
+    { name: "Cloud Computing for End Users", code: "Cloud Computing", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/cloud-computing-for-end-users-training" },
+    { name: "Distributed File System", code: "Distributed Fil", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/distributed-file-system-training" },
+    { name: "Introduction to Microsoft Cloud Computing", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/introduction-microsoft-cloud-computing-training" },
+    { name: "Introduction to Microsoft Cloud Computing (55195AC)", code: "Introduction to", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/Intro-to-microsoft-cloud-computing-training" },
+    { name: "Microsoft Cloud Workshop: Azure Synapse Analytics and AI", code: "Microsoft Cloud", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/azure-synapse-analytics-and-ai-40576g-training" },
+    { name: "Migrating On-Premises", code: "Migrating On-Pr", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrating-to-aws-course" },
+    { name: "Migrating to Exchange 2013", code: "Migrating to Ex", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/migrating-exchange-2013-training" },
+    { name: "Active Directory Troubleshooting", code: "Active Director", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/active-directory-troubleshooting-training" },
+    { name: "Azure Backup and Disaster Recovery Specialist - Cloud Backup Administrator", code: "Azure Backup an", dur: "6 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-backup-training" },
+    { name: "Introduction to Quantum Computing with Azure Quantum and Q#", code: "Introduction to", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/quantum-computing-azure-course" },
+    { name: "Linux OSS", code: "Linux OSS", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/linux-certified" },
+    { name: "Development, Extensions, and Deployment for Microsoft Dynamics 365 Finance", code: "MB6-894", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/mb6-894-certification" },
+    { name: "Mastering Hyper-V and SCVMM", code: "Mastering Hyper", dur: "7 days", level: "assoc", url: "https://www.koenig-solutions.com/hyper-v-training" },
   ],
   "Windows Server": [
-    { name: "Windows Client Fundamentals", code: "MD-100", dur: "2 days", level: "fund" },
-    { name: "Windows Server 2022 Core Administration", code: "WS-011", dur: "5 days", level: "assoc" },
-    { name: "Modern Desktop Administration (MD-101)", code: "MD-101", dur: "5 days", level: "assoc" },
-    { name: "Administering Windows Server Hybrid Core", code: "AZ-800", dur: "4 days", level: "assoc" },
-    { name: "Active Directory Domain Services", code: "WS-AD", dur: "3 days", level: "assoc" },
-    { name: "Hyper-V Virtualization & Storage", code: "WS-HV", dur: "3 days", level: "assoc" },
-    { name: "Windows Server Failover Clustering", code: "WS-FC", dur: "3 days", level: "assoc" },
-    { name: "Configuring Windows Server Hybrid Advanced", code: "AZ-801", dur: "4 days", level: "expert" },
+    { name: "B: Administering the Web Server (IIS) Role of Windows Server", code: "B: Administerin", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-web-server-iis-role-of-windows-server" },
+    { name: "Fundamentals of Active Directory", code: "Fundamentals of", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/active-directory-fundamentals-training" },
+    { name: "Administer Active Directory Domain Services", code: "AZ-1008", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/az-1008-administer-active-directory-domain-services-course" },
+    { name: "Active Directory Rights Management Services", code: "Active Director", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/active-directory-rights-management-services-course" },
+    { name: "Active Directory Services with Windows Server", code: "Active Director", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/active-directory-services-window-server-training" },
+    { name: "Administering Active Directory Services 2019", code: "Administering A", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/administering-active-directory-services-course" },
+    { name: "Administering Windows Server 2012 – 70-411", code: "Administering W", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2012-certification" },
+    { name: "Automate Active Directory Administration with PowerShell", code: "Automate Active", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/automate-active-directory-administration-powershell" },
+    { name: "Bootcamp: Modern Datacenter Administration", code: "Bootcamp: Moder", dur: "15 days", level: "assoc", url: "https://www.koenig-solutions.com/modern-datacenter-admin-training" },
+    { name: "Capsule Training Windows AD", code: "Capsule Trainin", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/active-directory-basics" },
+    { name: "Configuring Advanced Windows Server 2012 Services – 70-412", code: "Configuring Adv", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-certification-online" },
+    { name: "Configuring Windows 8.1", code: "Configuring Win", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-8" },
+    { name: "Configuring and Administering Hyper-V in Windows Server 2022", code: "Configuring and", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/configuring-administering-hyper-v-windows-server-2022-course" },
+    { name: "Get License Ready Master", code: "Get License Rea", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/master-language-course-get-license-ready" },
+    { name: "Identity with Windows Server (55344AC)", code: "Identity with W", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/identity-windows-server-training" },
+    { name: "Identity with Windows Server 2016", code: "Identity with W", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20742-identity-windows-server-training-certification" },
+    { name: "Implementing Microsoft Identity Manager (MIM) 2016", code: "Implementing Mi", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/implementing-microsoft-identity-manager-mim-2016-training-certification" },
+    { name: "Implementing and Managing Active Directory Certificate Services", code: "Implementing an", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/implementing-active-directory-training" },
+    { name: "Installation, Storage and Compute with Windows Server 2016 (55324AC)", code: "Installation, S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2016-training" },
+    { name: "Installation, Storage, and Compute with Windows Server", code: "Installation, S", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-training" },
+    { name: "Installing and Configuring Windows Server 2012 R2", code: "Installing and ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20410-installing-configuring-windows-server-2012-training" },
+    { name: "Installing and Configuring Windows Server 2012 – 70-410", code: "Installing and ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2012-online" },
+    { name: "M55371A - Administering Windows Server", code: "M55371A - Admin", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/m55371a-administering-windows-server-course" },
+    { name: "M55617A - Introduction to Windows 11 for IT Professionals", code: "M55617A - Intro", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/m55617a-introduction-windows-11-it-professionals" },
+    { name: "M55626A - Advanced Administration and Automation with PowerShell", code: "M55626A - Advan", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/m55626a-advanced-administration-automation-powershell-course" },
+    { name: "M98366A - Microsoft Networking Foundations", code: "M98366A - Micro", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/m98366a-microsoft-networking-foundations-course" },
+    { name: "M98367A - Microsoft Security Fundamentals", code: "M98367A - Micro", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-security-fundamentals-m98367a-course" },
+    { name: "Managing Windows Environments with Group Policy", code: "MS-50255", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/m50255-managing-windows-environments-group-policy-training" },
+    { name: "MSIX Training", code: "MSIX Training", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/msix-training-course" },
+    { name: "Microsoft Domain Controller", code: "Microsoft Domai", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-domain-controller-training" },
+    { name: "Network Fundamentals", code: "Network Fundame", dur: "1 day", level: "fund", url: "https://www.koenig-solutions.com/network-basics-course" },
+    { name: "Networking with Windows Server", code: "Networking with", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/cisco-certifications" },
+    { name: "Networking with Windows Server (55349AC)", code: "Networking with", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/networking-windows-server-training" },
+    { name: "Securing Windows Server 2016", code: "Securing Window", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20744-securing-windows-server-2016-training-certification" },
+    { name: "Securing Windows Server 2019", code: "Securing Window", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/securing-windows-server-2019-language-course-guide" },
+    { name: "Securing Windows Server 2022", code: "Securing Window", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/securing-windows-server-2022-course" },
+    { name: "Storage and High Availability with Windows Server", code: "Storage and Hig", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/storage-high-availability-windows-server-training" },
+    { name: "Troubleshooting Windows Server 2016 Core Technologies", code: "Troubleshooting", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2016-core-technologies-language-course-troubleshooting-guide" },
+    { name: "Upgrading Your Skills to MCSA: Windows Server 2016", code: "Upgrading Your ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20743-upgrading-skills-mcsa-windows-server-training" },
+    { name: "Windows Server 2019 Administration", code: "WS-011T00-A", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2019-administration-training" },
+    { name: "Windows Admin Center", code: "Windows Admin C", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/windows-admin-center-language-course" },
+    { name: "Windows Client, Enterprise Desktop Support Technician", code: "Windows Client,", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-client-enterprise-desktop" },
+    { name: "Windows Operating System Fundamentals", code: "Windows Operati", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/98-349-windows-operating-system-fundamentals-training" },
+    { name: "Windows Server 2025", code: "Windows Server ", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-2025-course" },
+    { name: "Windows Server Administration Fundamentals", code: "Windows Server ", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/40365-windows-server-administration-fundamentals-training-certifications" },
+    { name: "Windows Server Hybrid Administrator (AZ-800 & AZ-801)", code: "Windows Server ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-administration-course" },
+    { name: "Windows Server and File Services Management", code: "Windows Server ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-server-courses" },
+    { name: "Wintel Administration", code: "Wintel Administ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/wintel-admin-course" },
+    { name: "FSLogix", code: "FSLogix", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/fslogix-training" },
+    { name: "Implementing and Managing Windows 11", code: "Implementing an", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/implementing-and-managing-windows-11-training" },
+    { name: "Implementing and Managing Windows 11 (55345)", code: "Implementing an", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/implementing-managing-windows-11-course" },
+    { name: "Mastering Windows 11 Deployments with MDT (M55631A )", code: "Mastering Windo", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-11-deployment-mdt" },
+    { name: "Modern Collaboration and Remote Work for End Users", code: "Modern Collabor", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/modern-collaboration-remote-work-end-user-course" },
+    { name: "OneDrive 365 for Business", code: "OneDrive 365 fo", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/onedrive-365-for-business-training" },
+    { name: "Supporting and Troubleshooting Windows 10", code: "Supporting and ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/m10982-supporting-troubleshooting-windows-10-training" },
+    { name: "Windows 11", code: "Windows 11", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-windows-11-training" },
+    { name: "Windows 11 Advanced Administration(M55624A)", code: "Windows 11 Adva", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/windows-11-administration" },
+    { name: "Implementing a Software-Defined Datacenter Using System Center Virtual Machine Manager", code: "Implementing a ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/20745b-course" },
+    { name: "A: Installing and Configuring Service Level Dashboard", code: "A: Installing a", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/installing-and-configuring-service-level-dashboard-training" },
+    { name: "A: System Center 2012 Service Manager", code: "A: System Cente", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/55009-a-system-center-2012-service-manager-training" },
+    { name: "A: Mobile Device Management", code: "A: Mobile Devic", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/mobile-device-management-mdm-training" },
+    { name: "PowerShell for System Center Configuration Manager Administrators", code: "PowerShell for ", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/powershell-system-center-configuration-manager-administrators" },
+    { name: "Administering Configuration Manager, Part I: Fundamentals and Asset Management (55313AC)", code: "Administering C", dur: "3 days", level: "fund", url: "https://www.koenig-solutions.com/microsoft-admin-config-manager-55313ac-training" },
+    { name: "Designing and Providing Microsoft Licensing Solutions to Large Organizations", code: "Designing and P", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/designing-and-providing-microsoft-licensing-solutions-to-large-organization-training" },
+    { name: "IT Service Management with System Center Service Manager", code: "IT Service Mana", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/it-service-management-system-center-service-manager-training" },
+    { name: "Implementing a Software-Defined Datacenter", code: "Implementing a ", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/implementing-a-software-defined-datacenter" },
+    { name: "M55601-1A - Implementing and Managing Microsoft Virtualization Platforms", code: "M55601-1A - Imp", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/microsoft-virtualization-training" },
+    { name: "Mastering System Centre Virtual Machine Manager", code: "Mastering Syste", dur: "4 days", level: "assoc", url: "https://www.koenig-solutions.com/scvmm-training" },
+    { name: "Microsoft Endpoint Configuration Manager (MECM)", code: "Microsoft Endpo", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/mecm-training" },
+    { name: "Planning and Deploying System Center 2012 Configuration Manager", code: "Planning and De", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/system-center-configuration-manager-certification" },
+    { name: "Planning for and Managing Devices in the Enterprise: Enterprise Mobility Suite (EMS) and On-Premises Tools", code: "Planning for an", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ems-online-training" },
+    { name: "System Center 2012 Orchestrator", code: "System Center 2", dur: "3 days", level: "assoc", url: "https://www.koenig-solutions.com/system-center-course-orchestrator-training-certification" },
+    { name: "System Center Operations Manager 2019", code: "System Center O", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/system-center-operations-manager-course" },
+    { name: "Test & kd3", code: "Test & kd3", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/fortinet-training" },
   ],
 };
 
@@ -6264,15 +7827,17 @@ const AWARDS = [
 
 function Counter({ end, suffix = "", prefix = "" }) {
   const [val, setVal] = useState(0);
+  const [phase, setPhase] = useState("idle"); // idle | counting | done
   const ref = useRef(null);
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
+      setPhase("counting");
       let start = 0; const dur = 1800; const step = 16;
       const inc = end / (dur / step);
       const t = setInterval(() => {
         start += inc;
-        if (start >= end) { setVal(end); clearInterval(t); }
+        if (start >= end) { setVal(end); clearInterval(t); setPhase("done"); }
         else setVal(Math.floor(start));
       }, step);
       obs.disconnect();
@@ -6280,7 +7845,8 @@ function Counter({ end, suffix = "", prefix = "" }) {
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, [end]);
-  return <span ref={ref}>{prefix}{val.toLocaleString()}{suffix}</span>;
+  const cls = phase === "counting" ? "num-counting" : phase === "done" ? "num-done" : "";
+  return <span ref={ref} className={cls}>{prefix}{val.toLocaleString()}{suffix}</span>;
 }
 
 // ── MULTI-STEP FORM (revamped) ──
@@ -7220,9 +8786,9 @@ function VsVendorCard({ v }) {
             ))}
           </ul>
         </div>
-        <button className="vs-cta-btn" style={{ background:'#076D9D', borderRadius:28, fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', width:'fit-content', marginTop:16 }}
-          onMouseEnter={e=>e.currentTarget.style.background='#0694D1'}
-          onMouseLeave={e=>e.currentTarget.style.background='#076D9D'}>
+        <button className="vs-cta-btn" style={{ background:'#0694D1', borderRadius:8, fontSize:14, fontWeight:700, color:'white', border:'none', cursor:'pointer', width:'fit-content', marginTop:16, padding:'10px 22px', boxShadow:'0 4px 16px rgba(6,148,209,0.3)', transition:'background 0.2s, box-shadow 0.2s, transform 0.2s' }}
+          onMouseEnter={e=>{e.currentTarget.style.background='#057ab5';e.currentTarget.style.transform='translateY(-1px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(6,148,209,0.4)';}}
+          onMouseLeave={e=>{e.currentTarget.style.background='#0694D1';e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 4px 16px rgba(6,148,209,0.3)';}}>
           {v.cta}
         </button>
       </div>
@@ -7288,6 +8854,13 @@ function VsMoreCard() {
 
 function VendorStack() {
   const [activeTab, setActiveTab] = useState(0);
+  const [vsMenuOpen, setVsMenuOpen] = useState(false);
+  const applyRef = useRef(null);
+
+  const switchTo = (i) => {
+    setActiveTab(i);
+    if (applyRef.current) applyRef.current(i);
+  };
 
   useEffect(() => {
     const SHIFT = 22, SCALE = 0.03, FADE = 0.12, MAX_BG = 4;
@@ -7307,6 +8880,14 @@ function VendorStack() {
           el.style.transform = `translateY(-${pos * SHIFT}px) scale(${Math.max(1 - pos * SCALE, 0.78)})`; el.style.opacity = String(Math.max(1 - pos * FADE, 0.2)); el.style.zIndex = String(100 - pos);
         }
       });
+    }
+
+    applyRef.current = applyCards;
+
+    // Mobile: direct tab control, no scroll triggers
+    if (window.innerWidth <= 767) {
+      applyCards(0);
+      return;
     }
 
     let lastActive = -1;
@@ -7340,25 +8921,34 @@ function VendorStack() {
         {/* Header */}
         <div className="vs-header" style={{ textAlign:'center', padding:'0 16px' }}>
           <span style={{ display:'inline-block', borderRadius:9999, background:'rgba(6,148,209,0.18)', padding:'6px 16px', fontSize:11, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'#4DBFEF', marginBottom:12 }}>Top Vendor Partners</span>
-          <h2 style={{ marginTop:0, fontSize:'clamp(24px,3.5vw,40px)', fontWeight:800, color:'white' }}>
+          <h2 style={{ marginTop:0, fontSize:'24px', fontWeight:800, color:'white', lineHeight:1.4 }}>
             Train with{' '}
-            <span style={{ background:'linear-gradient(to right,#0694D1,#4DBFEF)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text' }}>Industry Leaders</span>
+            <TextShimmer as="span" duration={2.5} spread={2}>Industry Leaders</TextShimmer>
           </h2>
           <p style={{ margin:'0 auto', maxWidth:520, fontSize:15, color:'rgba(255,255,255,0.55)', lineHeight:1.7 }}>
             Koenig is an authorized training partner for the world's leading technology vendors, delivering globally recognized certifications.
           </p>
         </div>
 
-        {/* Mobile tab bar */}
-        <div className="vs-mobile-tabs" style={{ overflowX:'auto', scrollbarWidth:'none' }}>
-          <div style={{ display:'flex', gap:8, padding:'0 16px', width:'max-content' }}>
-            {VS_TABS.map((tab, i) => (
-              <button key={i} onClick={() => scrollToTrigger(i)} style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:9999, border:`1px solid ${activeTab===i?'#0694D1':'rgba(6,148,209,0.3)'}`, background: activeTab===i?'rgba(6,148,209,0.25)':'transparent', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, transition:'background 0.2s,border-color 0.2s', fontFamily:'inherit' }}>
-                <span style={{ fontSize:14 }}>{tab.icon}</span>
-                <span style={{ fontSize:13, color: activeTab===i?'white':'rgba(255,255,255,0.7)', fontWeight: activeTab===i?600:400 }}>{tab.label}</span>
-              </button>
-            ))}
-          </div>
+        {/* Mobile hamburger tab selector */}
+        <div className="vs-mobile-hamburger-wrap">
+          <button className="vs-hamburger-btn" onClick={() => setVsMenuOpen(o => !o)}>
+            <span style={{ fontSize:16 }}>{VS_TABS[activeTab].icon}</span>
+            <span className="vs-hamburger-label">{VS_TABS[activeTab].label}</span>
+            <svg className={`vs-hamburger-chevron${vsMenuOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          {vsMenuOpen && (
+            <div className="vs-hamburger-dropdown">
+              {VS_TABS.map((tab, i) => (
+                <button key={i} className={`vs-hamburger-item${activeTab === i ? ' active' : ''}`}
+                  onClick={() => { switchTo(i); setVsMenuOpen(false); }}>
+                  <span style={{ fontSize:16 }}>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                  {activeTab === i && <svg style={{ marginLeft:'auto' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0694D1" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Main layout: sidebar + deck */}
@@ -7383,29 +8973,105 @@ function VendorStack() {
                 </div>
               ))}
             </div>
+            {/* Mobile prev/next navigation */}
+            <div className="vs-mobile-nav" style={{ display:'none', alignItems:'center', justifyContent:'space-between', marginTop:14, gap:10 }}>
+              <button
+                onClick={() => switchTo(Math.max(0, activeTab - 1))}
+                disabled={activeTab === 0}
+                style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 0', borderRadius:10, border:'1.5px solid rgba(6,148,209,0.35)', background:'transparent', color: activeTab===0?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.75)', fontSize:13, fontWeight:600, cursor: activeTab===0?'not-allowed':'pointer', fontFamily:'inherit', transition:'all 0.2s' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                Prev
+              </button>
+              <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:600 }}>{activeTab + 1} / {VS_VENDORS.length}</span>
+              <button
+                onClick={() => switchTo(Math.min(VS_VENDORS.length - 1, activeTab + 1))}
+                disabled={activeTab === VS_VENDORS.length - 1}
+                style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 0', borderRadius:10, border:'1.5px solid rgba(6,148,209,0.35)', background:'transparent', color: activeTab===VS_VENDORS.length-1?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.75)', fontSize:13, fontWeight:600, cursor: activeTab===VS_VENDORS.length-1?'not-allowed':'pointer', fontFamily:'inherit', transition:'all 0.2s' }}>
+                Next
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
         <style>{`
-          .vs-mobile-tabs { display: none; margin: 8px 0 10px; }
-          .vs-mobile-tabs::-webkit-scrollbar { display: none; }
+          .vs-mobile-hamburger-wrap { display: none; position: relative; margin: 8px 16px 14px; }
+          .vs-hamburger-btn {
+            width: 100%; display: flex; align-items: center; gap: 10px;
+            padding: 11px 16px; border-radius: 12px;
+            border: 1.5px solid rgba(6,148,209,0.4);
+            background: rgba(6,148,209,0.12);
+            cursor: pointer; font-family: inherit; color: #fff;
+          }
+          .vs-hamburger-label { flex: 1; text-align: left; font-size: 14px; font-weight: 600; color: #fff; }
+          .vs-hamburger-chevron { transition: transform 0.2s; flex-shrink: 0; color: rgba(255,255,255,0.6); }
+          .vs-hamburger-chevron.open { transform: rotate(180deg); }
+          .vs-hamburger-dropdown {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 50;
+            background: #071e30; border: 1.5px solid rgba(6,148,209,0.3);
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+          }
+          .vs-hamburger-item {
+            width: 100%; display: flex; align-items: center; gap: 10px;
+            padding: 12px 16px; border: none; background: transparent;
+            cursor: pointer; font-family: inherit; font-size: 14px;
+            color: rgba(255,255,255,0.7); transition: background 0.15s;
+          }
+          .vs-hamburger-item:hover { background: rgba(6,148,209,0.12); }
+          .vs-hamburger-item.active { color: #fff; font-weight: 600; background: rgba(6,148,209,0.18); }
+          .vs-hamburger-item + .vs-hamburger-item { border-top: 1px solid rgba(6,148,209,0.1); }
           @media (max-width: 767px) {
-            .vs-section { padding: 24px 0; }
-            .vs-header { margin-bottom: 14px; }
-            .vs-mobile-tabs { display: flex !important; }
-            .vs-layout { flex-direction: column; gap: 0; padding: 0 12px; }
+            /* Hide scroll triggers — tabs control cards directly on mobile */
+            .vs-trigger { display: none !important; }
+            /* Section is no longer sticky on mobile — just normal flow */
+            .vs-section { position: relative !important; top: 0 !important; padding: 28px 0 20px; }
+            .vs-header { margin-bottom: 16px; }
+            .vs-header h2 { font-size: 20px !important; }
+            .vs-header p { font-size: 13px !important; }
+            .vs-mobile-hamburger-wrap { display: block; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 14px; }
             .vs-sidebar { display: none !important; }
-            .vs-deck-col { padding-top: 6px; }
-            .vs-viewport { height: 450px; }
-            .vs-card-wrapper { height: 450px; }
-            .vs-card-content { padding: 16px 14px 62px !important; }
+            .vs-deck-col { padding-top: 0; }
+            /* Card container — auto height, not fixed */
+            .vs-viewport { position: relative; height: auto !important; min-height: 340px; }
+            .vs-card-wrapper {
+              position: relative !important;
+              height: auto !important;
+              border-radius: 16px !important;
+              transform: none !important;
+              opacity: 1 !important;
+              margin-bottom: 0;
+            }
+            /* Only show the active card — hidden ones get opacity:0 pointer-events:none */
+            .vs-card-wrapper[style*="translateY(110%)"],
+            .vs-card-wrapper[style*="opacity: 0"],
+            .vs-card-wrapper[style*="opacity:0"] { display: none !important; }
+            .vs-card-content { padding: 18px 16px 72px !important; }
             .vs-card-title { font-size: 22px !important; }
             .vs-card-panel { display: none !important; }
-            .vs-stats-bar { padding-right: 0 !important; }
-            .vs-cta-btn { padding: 9px 14px !important; font-size: 12px !important; }
-            .vs-more-content { padding: 16px 14px !important; }
-            .vs-more-title { font-size: 24px !important; }
+            .vs-stats-bar { padding-right: 0 !important; height: 52px !important; border-radius: 0 0 16px 16px; }
+            .vs-stats-bar span:first-child { font-size: 14px !important; }
+            .vs-stats-bar span:last-child { font-size: 9px !important; }
+            .vs-cta-btn { padding: 10px 18px !important; font-size: 13px !important; width: 100% !important; text-align: center; }
+            .vs-more-content { padding: 18px 16px !important; }
+            .vs-more-title { font-size: 22px !important; }
             .vs-more-panel { display: none !important; }
+            /* Nav dots — next/prev hint */
+            .vs-mobile-nav { display: flex !important; }
+          }
+          @media (max-width: 480px) {
+            .vs-header h2 { font-size: 18px !important; }
+            .vs-header p { font-size: 12px !important; max-width: 92% !important; }
+            .vs-layout { padding: 0 12px; }
+            .vs-card-content { padding: 16px 14px 68px !important; }
+            .vs-card-title { font-size: 18px !important; }
+            .vs-stats-bar { height: 48px !important; }
+          }
+          @media (max-width: 360px) {
+            .vs-header h2 { font-size: 16px !important; }
+            .vs-card-content { padding: 14px 12px 64px !important; }
+            .vs-card-title { font-size: 16px !important; }
           }
           @media (min-width: 768px) and (max-width: 1023px) {
             .vs-section { padding: 40px 0; }
@@ -7488,14 +9154,20 @@ function GlobeSection() {
             </div>
           </div>
 
-          <div className="globe-country-grid">
-            {GLOBE_MARKERS.map((m, i) => (
-              <div key={m.label} className="globe-country-row" style={{ animationDelay: `${i * 0.06}s` }}>
-                <span className="globe-country-dot"><span className="gm-pulse-sm" /></span>
-                <span className="globe-country-flag">{m.flag}</span>
-                <span className="globe-country-name">{m.label}</span>
-              </div>
-            ))}
+          <div className="globe-country-slider-outer">
+            <div className="globe-country-slider-wrap">
+              {['a','b'].map(key => (
+                <div key={key} className="globe-country-grid" aria-hidden={key === 'b' ? true : undefined}>
+                  {GLOBE_MARKERS.map((m, i) => (
+                    <div key={m.label} className="globe-country-row" style={{ animationDelay: `${i * 0.06}s` }}>
+                      <span className="globe-country-dot"><span className="gm-pulse-sm" /></span>
+                      <span className="globe-country-flag">{m.flag}</span>
+                      <span className="globe-country-name">{m.label}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -7749,11 +9421,13 @@ function generateCertPDF(name) {
   bbar.addColorStop(0, '#0694d1'); bbar.addColorStop(0.5, '#10d9a8'); bbar.addColorStop(1, '#38bdf8');
   ctx.fillStyle = bbar; ctx.fillRect(0, 788, 1122, 6);
 
-  // Trigger download
+  // Trigger download — must append to DOM for Firefox/Safari compatibility
   const link = document.createElement('a');
   link.download = 'Koenig-Sample-Certificate.png';
   link.href = canvas.toDataURL('image/png');
+  document.body.appendChild(link);
   link.click();
+  document.body.removeChild(link);
 }
 
 // ── BROCHURE GENERATOR ──
@@ -7977,6 +9651,7 @@ function CertShowcase({ onUnlock }) {
                 { code: "AI-102", name: "Azure AI Engineer",          img: "https://images.credly.com/images/61f56aa4-16fd-403c-90bc-1d90dba1fa99/image.png",        fallback: "https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg" },
                 { code: "SC-300", name: "Identity & Access Admin",    img: "https://images.credly.com/images/91295436-0704-4b98-8e1a-ef5f937bda21/image.png",        fallback: "https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg" },
                 { code: "AZ-305", name: "Solutions Architect Expert", img: "https://images.credly.com/images/987adb7e-49be-4e24-b67e-55986bd3fe66/image.png",        fallback: "https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-expert-badge.svg" },
+                { code: "PL-300", name: "Power BI Data Analyst",      img: "https://images.credly.com/images/7d2c174d-e86d-4cb3-9aea-e41b74a2d1ba/image.png",        fallback: "https://learn.microsoft.com/en-us/media/learn/certification/badges/microsoft-certified-associate-badge.svg" },
               ].map(b => (
                 <a
                   key={b.code}
@@ -8059,16 +9734,42 @@ function ScoreRing({ score = 700, max = 1000, color = "#0694D1", size = 72 }) {
   );
 }
 
+const MOBILE_PER_PAGE = 6;
+
 function UnifiedCertSection({ onEnroll, onBrochure }) {
   const [viewMode, setViewMode]       = useState("courses"); // "courses" | "exams"
   const [activeTab, setActiveTab]     = useState(CERT_TABS[0]);
   const [activeLevel, setActiveLevel] = useState("all");
   const [certSearch, setCertSearch]   = useState("");
+  const [certSort, setCertSort]       = useState("price-asc");
   const [selectedCert, setSelectedCert] = useState(null);
   const [flippedCards, setFlippedCards] = useState(new Set());
+  const [mobilePage, setMobilePage]   = useState(0);
+  const [isMobile, setIsMobile]       = useState(() => typeof window !== "undefined" && window.innerWidth <= 768);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const toggleCard = (code, e) => { e.stopPropagation(); setFlippedCards(prev => { const n = new Set(prev); n.has(code) ? n.delete(code) : n.add(code); return n; }); };
 
   useEffect(() => { setSelectedCert(null); setFlippedCards(new Set()); }, [activeTab, viewMode]);
+  useEffect(() => { setMobilePage(0); }, [activeTab, activeLevel, certSearch, certSort, viewMode]);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  // Listen for external tech selection (from hero mobile menu)
+  useEffect(() => {
+    const handler = (e) => {
+      if (CERT_TABS.includes(e.detail)) {
+        setActiveTab(e.detail);
+        setActiveLevel("all");
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("koenig:selectTech", handler);
+    return () => window.removeEventListener("koenig:selectTech", handler);
+  }, []);
 
   const allCerts = CERTS[activeTab] || [];
   const counts = {
@@ -8089,12 +9790,33 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
   // Courses mode
   const q = certSearch.trim().toLowerCase();
   const searchActive = q.length > 0;
-  const courseDisplay = searchActive
+  const LEVEL_ORDER = { fund: 0, assoc: 1, expert: 2 };
+  const applyCertSort = (arr) => {
+    const s = [...arr];
+    switch (certSort) {
+      case "name-az":    return s.sort((a,b) => a.name.localeCompare(b.name));
+      case "name-za":    return s.sort((a,b) => b.name.localeCompare(a.name));
+      case "price-asc":  return s.sort((a,b) => getCertPrice(a) - getCertPrice(b));
+      case "price-desc": return s.sort((a,b) => getCertPrice(b) - getCertPrice(a));
+      case "dur-asc":    return s.sort((a,b) => (parseInt(a.dur)||1) - (parseInt(b.dur)||1));
+      case "dur-desc":   return s.sort((a,b) => (parseInt(b.dur)||1) - (parseInt(a.dur)||1));
+      case "level":      return s.sort((a,b) => (LEVEL_ORDER[a.level]??1) - (LEVEL_ORDER[b.level]??1));
+      default: /* popular */ return s.sort((a,b) => {
+        const pa = CERT_POPULAR[a.code] ? (CERT_POPULAR[a.code].hot ? 2 : 1) : 0;
+        const pb = CERT_POPULAR[b.code] ? (CERT_POPULAR[b.code].hot ? 2 : 1) : 0;
+        return pb - pa;
+      });
+    }
+  };
+  const rawCourseDisplay = searchActive
     ? CERT_TABS.flatMap(tab => CERTS[tab].map(c => ({ ...c, tab }))).filter(c =>
         c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || c.tab.toLowerCase().includes(q) ||
         (c.level==="fund"&&"fundamentals".includes(q)) || (c.level==="assoc"&&"associate".includes(q)) || (c.level==="expert"&&"expert".includes(q))
       )
     : allCerts.filter(c => activeLevel==="all" ? true : activeLevel==="popular" ? !!CERT_POPULAR[c.code]?.hot : c.level===activeLevel).map(c => ({ ...c, tab: activeTab }));
+  const courseDisplay = applyCertSort(rawCourseDisplay);
+  const totalMobilePages = isMobile ? Math.ceil(courseDisplay.length / MOBILE_PER_PAGE) : 1;
+  const pagedCourseDisplay = isMobile ? courseDisplay.slice(mobilePage * MOBILE_PER_PAGE, (mobilePage + 1) * MOBILE_PER_PAGE) : courseDisplay;
 
   // Exams mode
   const skills       = EXAM_SKILLS[activeTab] || [];
@@ -8121,7 +9843,6 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
             </div>
             {/* ── MODE TOGGLE ── */}
             <div className="cert-mode-wrap">
-              <span className="cert-mode-label">View Mode</span>
               <div className="cert-mode-toggle">
 
                 {/* Courses button */}
@@ -8178,35 +9899,6 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
             </div>
           </div>
 
-          {/* Search — courses mode only */}
-          <AnimatePresence>
-            {viewMode==="courses" && (
-              <motion.div
-                className="certs-search-wrap"
-                initial={{ opacity:0, y:-8 }}
-                animate={{ opacity:1, y:0 }}
-                exit={{ opacity:0, y:-8 }}
-                transition={{ duration:0.22 }}
-              >
-                <svg className="certs-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                <input
-                  className="certs-search-input"
-                  type="text"
-                  placeholder="Search certifications or exam codes… e.g. AZ-900, Copilot, Security"
-                  value={certSearch}
-                  onChange={e => setCertSearch(e.target.value)}
-                  onKeyDown={e => e.key==="Escape" && setCertSearch("")}
-                />
-                {certSearch ? (
-                  <button className="certs-search-clear" onClick={() => setCertSearch("")} title="Clear">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
-                  </button>
-                ) : (
-                  <span className="certs-search-kbd">Esc to clear</span>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
 
         {/* ── LAYOUT ── */}
@@ -8214,6 +9906,49 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
 
           {/* SIDEBAR */}
           <div className="cert-sidebar">
+            {/* ── Mobile hamburger trigger (hidden on desktop) ── */}
+            <button
+              className="cert-sidebar-hamburger"
+              onClick={() => setSidebarOpen(o => !o)}
+              aria-label="Select Technology"
+            >
+              <span className="cert-sidebar-hamburger-logo" style={activeTab==="GitHub"?{background:"#fff",borderRadius:8,padding:3}:{}}>
+                {TECH_LOGOS[activeTab]({ size: 20 })}
+              </span>
+              <span className="cert-sidebar-hamburger-label">{activeTab}</span>
+              <span className="cert-sidebar-hamburger-count">{CERTS[activeTab].length}</span>
+              <svg
+                className={`cert-sidebar-hamburger-icon${sidebarOpen ? ' open' : ''}`}
+                style={{marginLeft:'auto'}}
+                width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </button>
+
+            {/* ── Mobile dropdown panel ── */}
+            {sidebarOpen && (
+              <div className="cert-sidebar-dropdown">
+                {CERT_TABS.map(t => (
+                  <button
+                    key={t}
+                    className={`cert-sidebar-dropdown-item${activeTab===t?" active":""}`}
+                    onClick={() => { setActiveTab(t); setActiveLevel("all"); setSidebarOpen(false); }}
+                  >
+                    <span className="cert-sidebar-dropdown-logo" style={t==="GitHub"?{background:"#fff",borderRadius:7,padding:3}:{}}>
+                      {TECH_LOGOS[t]({ size: t==="GitHub"?18:22 })}
+                    </span>
+                    <span className="cert-sidebar-dropdown-name">{t}</span>
+                    <span className="cert-sidebar-dropdown-count">{CERTS[t].length}</span>
+                    {activeTab===t && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* ── Desktop scrollable list (hidden on mobile) ── */}
             <div className="cert-sidebar-scroll">
               <div className="cert-sidebar-label">Technologies</div>
               {CERT_TABS.map(t => (
@@ -8249,8 +9984,8 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
           {/* RIGHT PANEL */}
           <div className="cert-right">
 
-            {/* INFO PANEL — shared, adapts per mode */}
-            <div className="cert-info-panel">
+            {/* ── Tech identity strip ── */}
+            <div className="cert-info-panel" style={{paddingBottom:12}}>
               <div className="cert-info-row1">
                 <div className="cert-info-logo" style={activeTab==="GitHub"?{background:"#fff",borderRadius:12,padding:6,display:"inline-flex"}:{}}>
                   {TECH_LOGOS[activeTab]({ size: activeTab==="GitHub"?30:38 })}
@@ -8266,35 +10001,6 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                   </div>
                 )}
                 <button className="cert-info-enroll" onClick={onEnroll}>Enquire Now →</button>
-              </div>
-              <div className="cert-info-row2">
-                <div className="cert-info-pills">
-                  {viewMode==="courses" ? (
-                    CERT_META[activeTab].pills.map(p => (
-                      <span key={p} className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{p}</span>
-                    ))
-                  ) : (
-                    <>
-                      <span className="cert-info-pill"><span className="cert-info-pill-dot">🎯</span>Pass: 700/1000</span>
-                      <span className="cert-info-pill"><span className="cert-info-pill-dot">🔄</span>Free Renewal</span>
-                      <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[activeTab].pills[0]}</span>
-                      <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[activeTab].pills[1]}</span>
-                    </>
-                  )}
-                </div>
-                <div className="cert-level-tabs">
-                  {levels.map(lv => (
-                    <button
-                      key={lv.key}
-                      className={`cert-level-tab${activeLevel===lv.key?" active":""}`}
-                      data-lv={lv.key}
-                      onClick={() => { setActiveLevel(lv.key); setSelectedCert(null); }}
-                    >
-                      {lv.label}
-                      <span className="cert-level-tab-count">{lv.count}</span>
-                    </button>
-                  ))}
-                </div>
               </div>
             </div>
 
@@ -8313,24 +10019,69 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                   style={{ flex:1, minHeight:0, display:"flex", flexDirection:"column" }}
                 >
                   <div className="cert-panel">
-                    {/* sticky label */}
-                    {searchActive ? (
-                      <div className="cert-panel-sticky">
-                        <span style={{fontSize:12,fontWeight:800,color:"var(--blue)",background:"rgba(6,148,209,0.1)",padding:"4px 12px",borderRadius:20,border:"1.5px solid rgba(6,148,209,0.3)"}}>
-                          {courseDisplay.length} result{courseDisplay.length!==1?"s":""}
-                        </span>
-                        <span style={{fontSize:13,fontWeight:600,color:"var(--light-sub)"}}>for "<strong style={{color:"var(--light-text)"}}>{certSearch.trim()}</strong>"</span>
-                        <button onClick={() => setCertSearch("")} style={{marginLeft:"auto",fontSize:12,color:"var(--blue)",background:"none",border:"none",cursor:"pointer",fontWeight:700}}>Clear ×</button>
+                    {/* ── Toolbar: search + level filters + sort ── */}
+                    <div className="cert-panel-sticky">
+                      {/* Search */}
+                      <div className="cert-panel-search">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{color:"#0694D1",flexShrink:0}}><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                        <input
+                          className="cert-panel-search-input"
+                          type="text"
+                          placeholder="Search courses…"
+                          value={certSearch}
+                          onChange={e => setCertSearch(e.target.value)}
+                          onKeyDown={e => e.key==="Escape" && setCertSearch("")}
+                        />
+                        {certSearch && (
+                          <button className="cert-panel-search-clear" onClick={() => setCertSearch("")} title="Clear">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+                          </button>
+                        )}
                       </div>
-                    ) : (
-                      <div className="cert-panel-sticky">
-                        <span style={{fontSize:12,fontWeight:800,color:lc,background:`color-mix(in srgb, ${lc} 10%, transparent)`,padding:"4px 12px",borderRadius:20,border:`1.5px solid ${lc}`}}>
-                          {courseDisplay.length} {ll==="All"?"All Courses":ll}
+                      {/* Level filter tabs inline */}
+                      {!searchActive && (
+                        <>
+                          <div className="cert-level-tabs" style={{flexShrink:0}}>
+                            {levels.map(lv => (
+                              <button
+                                key={lv.key}
+                                className={`cert-level-tab${activeLevel===lv.key?" active":""}`}
+                                data-lv={lv.key}
+                                onClick={() => { setActiveLevel(lv.key); setSelectedCert(null); }}
+                              >
+                                {lv.label}
+                                <span className="cert-level-tab-count">{lv.count}</span>
+                              </button>
+                            ))}
+                          </div>
+                          <select
+                            className="cert-level-select"
+                            value={activeLevel}
+                            onChange={e => { setActiveLevel(e.target.value); setSelectedCert(null); }}
+                          >
+                            {levels.map(lv => (
+                              <option key={lv.key} value={lv.key}>{lv.label} ({lv.count})</option>
+                            ))}
+                          </select>
+                        </>
+                      )}
+                      {searchActive && (
+                        <span style={{fontSize:12,fontWeight:600,color:"var(--light-sub)",whiteSpace:"nowrap",flexShrink:0}}>
+                          {courseDisplay.length} result{courseDisplay.length!==1?"s":""} for "<strong style={{color:"var(--light-text)"}}>{certSearch.trim()}</strong>"
                         </span>
-                        <span style={{fontSize:13,fontWeight:700,color:"var(--light-text)"}}>{activeTab}</span>
-                        <span className="cert-scroll-hint"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>Scroll for more</span>
+                      )}
+                      {/* Sort — pushed to right */}
+                      <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:5,flexShrink:0}}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{color:"var(--light-sub)"}}><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+                        <select className="cert-sort-select" value={certSort} onChange={e=>setCertSort(e.target.value)}>
+                          <option value="price-asc">Price: Low → High</option>
+                          <option value="price-desc">Price: High → Low</option>
+                          <option value="dur-asc">Duration: Short → Long</option>
+                          <option value="dur-desc">Duration: Long → Short</option>
+                        </select>
                       </div>
-                    )}
+                      {searchActive && <button onClick={() => setCertSearch("")} style={{fontSize:11,color:"var(--blue)",background:"none",border:"none",cursor:"pointer",fontWeight:700,flexShrink:0}}>Clear ×</button>}
+                    </div>
                     <div className="cert-panel-scroll">
                       {courseDisplay.length===0 ? (
                         <div className="certs-no-results">
@@ -8340,12 +10091,13 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                           <button style={{marginTop:16,fontSize:12,fontWeight:700,color:"var(--blue)",background:"rgba(6,148,209,0.08)",border:"1px solid rgba(6,148,209,0.25)",borderRadius:8,padding:"7px 16px",cursor:"pointer"}} onClick={() => setCertSearch("")}>Clear search</button>
                         </div>
                       ) : (
+                        <>
                         <div className="cert-grid">
-                          {courseDisplay.map((c,i) => {
+                          {pagedCourseDisplay.map((c,i) => {
                             const isFlipped = flippedCards.has(c.code);
                             const bp = CARD_BEST_PRACTICES[c.level] || CARD_BEST_PRACTICES.assoc;
                             return (
-                            <div key={`c-${i}`} className={`cert-card ${c.level}-card`} style={{minHeight:230}}>
+                            <div key={`c-${i}`} className={`cert-card ${c.level}-card`} style={{minHeight:155}}>
                               {/* Popular badge */}
                               {CERT_POPULAR[c.code]?.hot && !isFlipped && (
                                 <span className="cert-hot-badge">
@@ -8374,7 +10126,13 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                                     <span className={`cert-badge ${c.level}`}>
                                       {c.level==="fund"?"Fundamentals":c.level==="assoc"?"Associate":"Expert"}
                                     </span>
-                                    <div className="cert-name">{c.name}</div>
+                                    <div className="cert-name-wrap"
+                                      onMouseEnter={e=>{const n=e.currentTarget.querySelector('.cert-name');if(n&&n.scrollHeight>n.clientHeight)e.currentTarget.classList.add('show-tip');}}
+                                      onMouseLeave={e=>e.currentTarget.classList.remove('show-tip')}
+                                    >
+                                      <div className="cert-name">{c.name}</div>
+                                      <div className="cert-name-tooltip">{c.name}</div>
+                                    </div>
                                     <div className="cert-code-row">
                                       <span className="cert-code">{c.code}</span>
                                       <span className="cert-hours">
@@ -8447,8 +10205,28 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                             );
                           })}
                         </div>
+                        {/* ── Mobile Pagination ── */}
+                        {isMobile && totalMobilePages > 1 && (
+                          <div className="cert-mobile-pagination">
+                            <button
+                              className="cert-mpag-btn"
+                              disabled={mobilePage === 0}
+                              onClick={() => { setMobilePage(p => p - 1); }}
+                            >‹</button>
+                            <span className="cert-mpag-info">
+                              Page {mobilePage + 1} of {totalMobilePages}
+                            </span>
+                            <button
+                              className="cert-mpag-btn"
+                              disabled={mobilePage >= totalMobilePages - 1}
+                              onClick={() => { setMobilePage(p => p + 1); }}
+                            >›</button>
+                          </div>
+                        )}
+                        </>
                       )}
                     </div>
+
                   </div>
                 </motion.div>
               )}
@@ -8494,7 +10272,12 @@ function UnifiedCertSection({ onEnroll, onBrochure }) {
                                 <span className={`cert-badge ${cert.level}`}>
                                   {cert.level==="fund"?"Fundamentals":cert.level==="assoc"?"Associate":"Expert"}
                                 </span>
-                                <div className="cert-name">{cert.name}</div>
+                                <div className="cert-name-wrap"
+                                  onMouseEnter={e=>{const n=e.currentTarget.querySelector('.cert-name');if(n&&n.scrollHeight>n.clientHeight)e.currentTarget.classList.add('show-tip');}}
+                                  onMouseLeave={e=>e.currentTarget.classList.remove('show-tip')}>
+                                  <div className="cert-name">{cert.name}</div>
+                                  <div className="cert-name-tooltip">{cert.name}</div>
+                                </div>
                                 <div className="cert-code">{cert.code}</div>
                                 <div className="exam-stat-chips">
                                   <span className="exam-chip">⏱ {cm.examDur}</span>
@@ -8779,19 +10562,6 @@ function CertExamDetails({ onEnroll, onBrochure }) {
                   <span className="cert-info-pill"><span className="cert-info-pill-dot">🔄</span>Free Renewal</span>
                   <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[examTab].pills[0]}</span>
                   <span className="cert-info-pill"><span className="cert-info-pill-dot">✓</span>{CERT_META[examTab].pills[1]}</span>
-                </div>
-                <div className="cert-level-tabs">
-                  {levels.map(lv => (
-                    <button
-                      key={lv.key}
-                      className={`cert-level-tab${examLevel === lv.key ? " active" : ""}`}
-                      data-lv={lv.key}
-                      onClick={() => setExamLevel(lv.key)}
-                    >
-                      {lv.label}
-                      <span className="cert-level-tab-count">{lv.count}</span>
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>
@@ -9465,6 +11235,7 @@ const STEP_ARROW_COLOR = { "cfc-fund": "#34d399", "cfc-assoc": "#0694D1", "cfc-e
 
 function CertPathSection({ onCTA, onBrochure }) {
   const [active, setActive] = useState(0);
+  const [techOpen, setTechOpen] = useState(false);
   const track = CERT_PATHS[active];
 
   const trackStats = [
@@ -9485,7 +11256,7 @@ function CertPathSection({ onCTA, onBrochure }) {
           <p className="certpath-sub">Every Microsoft role has a defined path from Fundamentals to Expert. Select your track below and see exactly which exams to take — in order.</p>
         </div>
 
-        {/* Technology grid */}
+        {/* Technology grid (desktop) / hamburger (mobile) */}
         <div className="certpath-tech-grid reveal">
           {CERT_PATHS.map((cat, i) => (
             <button
@@ -9497,6 +11268,43 @@ function CertPathSection({ onCTA, onBrochure }) {
               <div className="certpath-tech-card-name">{cat.key}</div>
             </button>
           ))}
+        </div>
+
+        {/* Mobile hamburger trigger */}
+        <div style={{position:'relative', width:'100%', zIndex:50}}>
+          <button
+            className="certpath-hamburger reveal"
+            onClick={() => setTechOpen(o => !o)}
+            aria-label="Select Technology"
+          >
+            <span className="certpath-hamburger-logo">{TECH_LOGOS[track.key]({ size: 22 })}</span>
+            <span className="certpath-hamburger-label">{track.key}</span>
+            <svg
+              className={`certpath-hamburger-icon${techOpen ? ' open' : ''}`}
+              width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"
+            >
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          {techOpen && (
+            <div className="certpath-hamburger-dropdown">
+              <div className="certpath-hamburger-dropdown-label">Select Technology</div>
+              {CERT_PATHS.map((cat, i) => (
+                <button
+                  key={cat.key}
+                  className={`certpath-hamburger-item${active === i ? ' active' : ''}`}
+                  onClick={() => { setActive(i); setTechOpen(false); }}
+                >
+                  <span className="certpath-hamburger-item-logo">{TECH_LOGOS[cat.key]({ size: 20 })}</span>
+                  <span className="certpath-hamburger-item-name">{cat.key}</span>
+                  {active === i && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0694D1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Body: path + info */}
@@ -10011,11 +11819,9 @@ function AwardsSlider() {
             fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase",
             padding: "5px 16px", borderRadius: 20, marginBottom: 10,
           }}>Recognition</span>
-          <h2 style={{ fontSize: "clamp(22px,2.8vw,34px)", fontWeight: 800, color: "var(--ink)", marginBottom: 8, lineHeight: 1.2, letterSpacing: "-0.02em" }}>
+          <h2 style={{ fontSize: "24px", fontWeight: 800, color: "var(--ink)", marginBottom: 8, lineHeight: 1.4, letterSpacing: "-0.015em" }}>
             Awards &amp;{" "}
-            <span style={{ background: "linear-gradient(90deg, var(--blue), #50e6ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-              Recognition
-            </span>
+            <TextShimmer as="span" duration={2.5} spread={2}>Recognition</TextShimmer>
           </h2>
           <p style={{ fontSize: 14, color: "#7a9ab0", margin: 0 }}>
             Recognized by Microsoft for training excellence — Partner of the Year, Superstar Campaign winner, and more.
@@ -10174,13 +11980,7 @@ function PlatformPreview() {
             </div>
             <div className="preview-title">
               Train inside real<br/>
-              <span style={{
-                background: 'linear-gradient(90deg, #50e6ff 0%, #0694D1 50%, #50e6ff 100%)',
-                WebkitBackgroundClip: 'text', backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>
-                Microsoft Azure labs
-              </span>
+              <TextShimmer as="span" duration={2.5} spread={2}>Microsoft Azure labs</TextShimmer>
             </div>
             <div className="preview-sub">
               Every Koenig course includes hands-on lab access — the same Azure portal your MCT uses on exam day.
@@ -10573,6 +12373,7 @@ function ComparisonTable({ onCTA }) {
 
         {/* Table */}
         <motion.div className="compare-table-wrap" initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.05}} transition={{duration:0.8,delay:0.15,ease:[0.16,1,0.3,1]}}>
+          <div className="compare-table-scroll">
           <table className="compare-table" role="table">
             <thead>
               <tr className="compare-thead">
@@ -10605,6 +12406,7 @@ function ComparisonTable({ onCTA }) {
               ))}
             </tbody>
           </table>
+          </div>
         </motion.div>
 
         <p className="compare-footnote">Data sourced from public pricing pages and review platforms. Accurate as of March 2026. Partial = available in select regions only.</p>
@@ -10848,7 +12650,7 @@ function PricingTiersSection({ onCTA }) {
             }}>
               Request Enterprise Quote →
             </button>
-            <button onClick={onCTA} style={{
+            <button className="enterprise-talk-sales" onClick={onCTA} style={{
               padding:"11px 22px",borderRadius:10,
               background:"rgba(255,255,255,0.07)",border:"1px solid rgba(255,255,255,0.18)",
               color:"rgba(255,255,255,0.85)",fontSize:14,fontWeight:600,cursor:"pointer",fontFamily:"inherit",
@@ -11104,11 +12906,9 @@ function LearningFormatsSection({ onCTA }) {
           <span style={{ display:"inline-block", background:"rgba(6,148,209,0.18)", color:"#0694d1", fontSize:11, fontWeight:600, letterSpacing:"0.12em", textTransform:"uppercase", padding:"6px 16px", borderRadius:20, marginBottom:12 }}>
             Learning Formats
           </span>
-          <h2 style={{ fontSize:"clamp(22px,2.8vw,36px)", fontWeight:800, color:"#fff", lineHeight:1.2, marginBottom:12 }}>
+          <h2 style={{ fontSize:"24px", fontWeight:800, color:"#fff", lineHeight:1.4, marginBottom:12 }}>
             Learning That{" "}
-            <span style={{ background:"linear-gradient(90deg,#0694D1,#38bdf8)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>
-              Fits Your Life
-            </span>
+            <TextShimmer as="span" duration={2.5} spread={2}>Fits Your Life</TextShimmer>
           </h2>
           <p style={{ fontSize:14, color:"rgba(255,255,255,0.55)", lineHeight:1.65, maxWidth:560, margin:"0 auto" }}>
             Four formats. One quality standard. Every option comes with the same expert instructors, official courseware, and money-back guarantee.
@@ -11447,8 +13247,8 @@ const REFERRAL_STEPS = [
       </svg>
     ),
     title: "You get paid",
-    desc: "$150 transferred directly to you once enrolment is confirmed. Bonuses stack as you refer more.",
-    reward: { label: "You earn", amount: "$150 cash", color: "#f59e0b" },
+    desc: "$120 transferred directly to you once enrolment is confirmed. Bonuses stack as you refer more.",
+    reward: { label: "You earn", amount: "$120 cash", color: "#f59e0b" },
   },
 ];
 
@@ -11464,12 +13264,12 @@ function ReferralSection({ onCTA }) {
     setDone(true);
   };
 
-  const earnings = refs * 150;
+  const earnings = refs * 120;
   const sliderPct = ((refs - 1) / 9) * 100;
 
   const MILESTONES = [
-    { refs: 1, reward: "$150 cash", label: "1 referral" },
-    { refs: 3, reward: "$500 + gift", label: "3 referrals" },
+    { refs: 1, reward: "$120 cash", label: "1 referral" },
+    { refs: 3, reward: "$500 cash", label: "3 referrals" },
     { refs: 5, reward: "Free course", label: "5 referrals — course free" },
   ];
 
@@ -11512,14 +13312,14 @@ function ReferralSection({ onCTA }) {
           transition={{ duration: 0.7 }}
         >
           <h2 className="referral-h2">
-            Earn <em>$150 cash</em> for every<br />colleague you certify
+            Earn <em>$120 cash</em> for every<br />colleague you certify
           </h2>
           <p className="referral-sub">
             Recommend Koenig's Microsoft training to a colleague. When they enrol, you get paid — no cap, no expiry, no hoops.
           </p>
           <div className="referral-stat-row">
             {[
-              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, text: "$150 per referral" },
+              { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>, text: "$120 per referral" },
               { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, text: "Paid within 30 days" },
               { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, text: "No cap on referrals" },
               { icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>, text: "Any Microsoft course" },
@@ -11596,7 +13396,7 @@ function ReferralSection({ onCTA }) {
               <span className="referral-calc-amount">{earnings.toLocaleString()}</span>
             </div>
             <div className="referral-calc-refs">
-              For <strong>{refs} referral{refs !== 1 ? "s" : ""}</strong> × $150 each
+              For <strong>{refs} referral{refs !== 1 ? "s" : ""}</strong> × $120 each
             </div>
             <input
               type="range"
@@ -11631,29 +13431,48 @@ function ReferralSection({ onCTA }) {
           <div className="referral-steps-label">How it works</div>
           <div className="referral-steps-track">
             {REFERRAL_STEPS.map((s, i) => (
-              <motion.div
-                key={i}
-                className="referral-step-card"
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-              >
-                <div className="referral-step-num-badge">{s.step}</div>
-                <div className="referral-step-title">{s.title}</div>
-                <div className="referral-step-when">{s.when}</div>
-                <div className="referral-step-desc">{s.desc}</div>
-                {s.reward && (
-                  <div
-                    className="referral-step-reward-tag"
-                    style={{ background: s.reward.color + "15", color: s.reward.color, border: `1.5px solid ${s.reward.color}35` }}
+              <React.Fragment key={i}>
+                <motion.div
+                  className="referral-step-card"
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.5, delay: i * 0.12 }}
+                >
+                  <div className="referral-step-num-badge">{s.step}</div>
+                  <div className="referral-step-title">{s.title}</div>
+                  <div className="referral-step-when">{s.when}</div>
+                  <div className="referral-step-desc">{s.desc}</div>
+                  {s.reward && (
+                    <div
+                      className="referral-step-reward-tag"
+                      style={{ background: s.reward.color + "15", color: s.reward.color, border: `1.5px solid ${s.reward.color}35` }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                      <span style={{ fontWeight: 800 }}>{s.reward.amount}</span>
+                      <span style={{ fontWeight: 500, opacity: 0.75 }}>{s.reward.label}</span>
+                    </div>
+                  )}
+                </motion.div>
+                {i < REFERRAL_STEPS.length - 1 && (
+                  <motion.div
+                    className="referral-step-arrow"
+                    initial={{ opacity: 0, x: -8 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.4, delay: i * 0.12 + 0.25 }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <span style={{ fontWeight: 800 }}>{s.reward.amount}</span>
-                    <span style={{ fontWeight: 500, opacity: 0.75 }}>{s.reward.label}</span>
-                  </div>
+                    <motion.svg
+                      width="28" height="28" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut", delay: i * 0.3 }}
+                    >
+                      <polyline points="9 18 15 12 9 6"/>
+                    </motion.svg>
+                  </motion.div>
                 )}
-              </motion.div>
+              </React.Fragment>
             ))}
           </div>
         </div>
@@ -11662,8 +13481,8 @@ function ReferralSection({ onCTA }) {
         <div className="referral-rewards-strip">
           {[
             {
-              reward: "$150 cash", label: "Per referral", color: "#0694D1",
-              desc: "Every successful enrolment earns you $150 — paid directly, no minimum threshold.",
+              reward: "$120 cash", label: "Per referral", color: "#0694D1",
+              desc: "Every successful enrolment earns you $120 — paid directly, no minimum threshold.",
               icon: (
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -11671,11 +13490,11 @@ function ReferralSection({ onCTA }) {
               ),
             },
             {
-              reward: "$500 + gift", label: "3 referrals", color: "#f59e0b",
-              desc: "Hit 3 successful referrals and earn a $500 cash bonus plus an exclusive Koenig gift.",
+              reward: "$500 cash", label: "3 referrals", color: "#f59e0b",
+              desc: "Hit 3 successful referrals and earn a $500 cash bonus paid directly to you.",
               icon: (
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+                  <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
                 </svg>
               ),
             },
@@ -11747,6 +13566,104 @@ function ReferralSection({ onCTA }) {
   );
 }
 
+// ── FLOATING MS LOGO BUBBLES (hero background) ──
+const MS_BUBBLE_LOGOS = [
+  // Azure
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 2L3 19h6l3-5.5 4 8.5h7L13 2z" fill="#0078D4"/><path d="M12 2L6 15.5l4.5 2.5 1.5-4 4 8.5h7L13 2z" fill="#50e6ff" opacity=".55"/></svg>,
+  // Teams
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="2" y="9" width="12" height="10" rx="3" fill="#6264A7"/><rect x="11" y="5" width="9" height="8.5" rx="2.5" fill="#6264A7" opacity=".72"/><circle cx="19" cy="6" r="3.5" fill="#7B83EB"/></svg>,
+  // Microsoft 365
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" fill="#f25022"/><rect x="13" y="1" width="10" height="10" rx="1.5" fill="#7fba00"/><rect x="1" y="13" width="10" height="10" rx="1.5" fill="#00a4ef"/><rect x="13" y="13" width="10" height="10" rx="1.5" fill="#ffb900"/></svg>,
+  // Power BI
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="1" y="13" width="5.5" height="10" rx="1.5" fill="#F2C811"/><rect x="9" y="7" width="5.5" height="16" rx="1.5" fill="#F2C811" opacity=".85"/><rect x="17" y="2" width="5.5" height="21" rx="1.5" fill="#F2C811" opacity=".65"/></svg>,
+  // GitHub
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.68c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.99 1.03-2.69-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 12 6.8c.85.004 1.7.115 2.5.34 1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.6 1.03 2.69 0 3.85-2.34 4.7-4.57 4.95.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12c0-5.52-4.48-10-10-10z" fill="rgba(255,255,255,0.85)"/></svg>,
+  // Defender
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 2L3 6v6c0 5.25 3.6 10.15 9 11.54C17.4 22.15 21 17.25 21 12V6L12 2z" fill="#0078D4" opacity=".22" stroke="#0078D4" strokeWidth="1.3"/><path d="M8 12l3.5 3.5 5-5" stroke="#50e6ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  // Azure AI / Copilot
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0F6CBD" strokeWidth="1" fill="none" opacity=".35"/><path d="M12 3l2.4 6H21l-5.4 3.9 2.4 6L12 15l-6 3.9 2.4-6L3 9h6.6z" fill="#50e6ff"/></svg>,
+  // Outlook
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="1" y="5" width="14" height="14" rx="2.5" fill="#0078D4"/><path d="M1 8l7 5 7-5" stroke="white" strokeWidth="1.3" strokeLinecap="round"/><rect x="12" y="3" width="11" height="11" rx="2" fill="#0078D4" opacity=".55" stroke="white" strokeWidth=".8"/><path d="M12 7l5.5 3.5L23 7" stroke="white" strokeWidth="1" strokeLinecap="round" opacity=".8"/></svg>,
+  // VS Code
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M17 2L7 12.5 3 9l-1 1 4.5 4L2 18l1 1 4-3.5L17 22l5-2.5V4.5L17 2z" fill="#007ACC" opacity=".2" stroke="#007ACC" strokeWidth="1.2"/><path d="M17 6.5l-7 6 7 5V6.5z" fill="#007ACC" opacity=".6"/></svg>,
+  // SharePoint
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><circle cx="9" cy="9" r="7" fill="#038387" opacity=".25" stroke="#038387" strokeWidth="1.3"/><circle cx="15" cy="12" r="6" fill="#038387" opacity=".45" stroke="#038387" strokeWidth="1.3"/><circle cx="9" cy="16" r="5" fill="#038387" opacity=".7" stroke="#038387" strokeWidth="1.3"/></svg>,
+  // Azure Functions
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="4" fill="#0062AD" opacity=".2" stroke="#0062AD" strokeWidth="1.2"/><path d="M13.5 4l-5 8h5l-3 8 8-10h-5.5l3.5-6h-3z" fill="#50e6ff"/></svg>,
+  // Sentinel
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 2L3 6v6c0 5.25 3.6 10.15 9 11.54C17.4 22.15 21 17.25 21 12V6L12 2z" fill="#6264A7" opacity=".22" stroke="#6264A7" strokeWidth="1.3"/><circle cx="12" cy="11" r="3.5" fill="#6264A7" opacity=".6"/><circle cx="12" cy="11" r="1.5" fill="#c4b5fd"/></svg>,
+  // Dynamics 365
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z" fill="#CC4A31" opacity=".18" stroke="#CC4A31" strokeWidth="1.3"/><path d="M12 7a5 5 0 0 1 5 5" stroke="#CC4A31" strokeWidth="2.5" strokeLinecap="round" fill="none"/><circle cx="12" cy="12" r="2.2" fill="#CC4A31"/></svg>,
+  // Fabric
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M12 2L2 12l10 10 10-10L12 2z" fill="#8661C5" opacity=".2" stroke="#8661C5" strokeWidth="1.3"/><path d="M12 6l6 6-6 6-6-6 6-6z" fill="#8661C5" opacity=".45"/><circle cx="12" cy="12" r="3" fill="#c4b5fd"/></svg>,
+  // Azure DevOps
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0078D4" strokeWidth="1.5" fill="none"/><circle cx="12" cy="12" r="4" fill="#0078D4" opacity=".4"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#50e6ff" strokeWidth="1.6" strokeLinecap="round"/></svg>,
+  // OneDrive
+  (s) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none"><path d="M5 16.5C4.2 14 5.8 11 8.5 10.5 9.5 8 12 6.5 14.5 7c2.2.4 3.8 2 4 4 1.7.3 3 1.8 3 3.5" stroke="#50e6ff" strokeWidth="1.4" fill="none" strokeLinecap="round"/><ellipse cx="12" cy="17" rx="7" ry="4.5" fill="#0078D4" opacity=".3"/></svg>,
+];
+
+const BUBBLE_DATA = (() => {
+  const count = 28;
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    logoIdx: i % MS_BUBBLE_LOGOS.length,
+    // deterministic spread, no Math.random() so stable across renders
+    x: 3 + ((i * 23 + 7) % 88),        // % of viewport width
+    y: 3 + ((i * 17 + 13) % 88),       // % of viewport height
+    size: 44 + (i * 9) % 30,           // 44–73 px diameter
+    dx: ((i * 31 + 5) % 80) - 40,      // float x offset
+    dy: ((i * 19 + 11) % 80) - 40,     // float y offset
+    duration: 9 + (i * 3) % 14,        // 9–22 s
+    delay: (i * 0.35) % 7,             // staggered start
+  }));
+})();
+
+function FloatingMSBubbles() {
+  return (
+    <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+      {BUBBLE_DATA.map(b => {
+        const LogoFn = MS_BUBBLE_LOGOS[b.logoIdx];
+        const iconSize = Math.round(b.size * 0.52);
+        return (
+          <motion.div
+            key={b.id}
+            style={{
+              position: "absolute",
+              left: `${b.x}%`,
+              top: `${b.y}%`,
+              width: b.size,
+              height: b.size,
+              borderRadius: "50%",
+              background: "rgba(6,148,209,0.10)",
+              border: "1px solid rgba(6,148,209,0.28)",
+              boxShadow: "0 0 16px rgba(6,148,209,0.12), inset 0 0 10px rgba(6,148,209,0.06)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backdropFilter: "blur(1px)",
+            }}
+            animate={{
+              x: [0, b.dx, 0],
+              y: [0, b.dy, 0],
+              opacity: [0.45, 0.85, 0.45],
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              duration: b.duration,
+              repeat: Infinity,
+              repeatType: "mirror",
+              delay: b.delay,
+              ease: "easeInOut",
+            }}
+          >
+            <LogoFn size={iconSize} />
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── MAIN ──
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -11763,12 +13680,26 @@ export default function App() {
   const [chatMsg, setChatMsg] = useState("");
   const [showBackTop, setShowBackTop] = useState(false);
   const heroVideoRef = useRef(null);
+  const statsBarRef = useRef(null);
+  const [techMenuOpen, setTechMenuOpen] = useState(false);
   const toggleVideoMute = () => {
     const v = heroVideoRef.current;
     if (!v) return;
     v.muted = !v.muted;
     setVideoMuted(v.muted);
   };
+
+  // Mobile stats bar entrance animation
+  useEffect(() => {
+    const el = statsBarRef.current;
+    if (!el) return;
+    if (window.innerWidth > 768) { el.classList.add('stats-animated'); return; }
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { el.classList.add('stats-animated'); obs.disconnect(); }
+    }, { threshold: 0.15 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -11969,7 +13900,7 @@ export default function App() {
         <div className="nav-right">
           <button className="nav-cta" onClick={() => setBrochureModal(true)}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Download Brochure
+            <span className="nav-cta-text">Download Brochure</span>
           </button>
         </div>
       </nav>
@@ -11977,45 +13908,125 @@ export default function App() {
 
       {/* HERO — 21st.dev split layout */}
       <section className="hero" id="main-content">
-        {/* Backgrounds */}
-        <div className="hero-bg">
-          <div className="hero-bg-gradient"/>
-          <div className="blob1"/>
-          <div className="blob2"/>
-          <div className="blob3"/>
-        </div>
-        <div className="hero-grid"/>
-        <div className="hero-sep"/>
 
-        {/* Background Boxes grid — z:4 so logos appear above bg gradients/blobs */}
-        <div className="hero-boxes-wrap" style={{ position: "absolute", inset: 0, overflow: "hidden", zIndex: 4, pointerEvents: "none" }}>
-          <Boxes />
-        </div>
-        {/* Radial vignette — sits above boxes, dims center so text stays readable */}
+        {/* ── Microsoft-branded hero background ── */}
+
+        {/* 1. Base gradient — Microsoft partner page deep navy */}
         <div style={{
-          position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none",
-          background: "radial-gradient(ellipse 70% 60% at 50% 45%, rgba(4,12,24,0.68) 0%, rgba(4,12,24,0.20) 60%, transparent 100%)",
+          position:"absolute", inset:0, zIndex:0, pointerEvents:"none",
+          background:"linear-gradient(160deg, #00213d 0%, #001b36 35%, #001020 65%, #001929 100%)",
         }}/>
+
+        {/* 2. Subtle diagonal stripe — Microsoft-style texture */}
+        <div style={{
+          position:"absolute", inset:0, zIndex:1, pointerEvents:"none",
+          backgroundImage:[
+            "linear-gradient(to right, rgba(0,120,212,0.10) 1px, transparent 1px)",
+            "linear-gradient(to bottom, rgba(0,120,212,0.10) 1px, transparent 1px)",
+          ].join(", "),
+          backgroundSize:"48px 48px",
+          maskImage:"linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 100%)",
+          WebkitMaskImage:"linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.15) 100%)",
+        }}/>
+
+        {/* 3. Microsoft Azure signature glow — top-right, stronger blue */}
+        <div style={{
+          position:"absolute", top:"-20%", right:"-5%", zIndex:1, pointerEvents:"none",
+          width:700, height:700, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(0,120,212,0.35) 0%, rgba(0,120,212,0.15) 40%, transparent 70%)",
+          filter:"blur(70px)",
+        }}/>
+
+        {/* 4. Center-left secondary glow — gives depth like MS partner portals */}
+        <div style={{
+          position:"absolute", top:"30%", left:"-5%", zIndex:1, pointerEvents:"none",
+          width:500, height:500, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(0,100,175,0.22) 0%, transparent 70%)",
+          filter:"blur(60px)",
+        }}/>
+
+        {/* 5. Bottom accent — Koenig blue warmth */}
+        <div style={{
+          position:"absolute", bottom:"-15%", right:"25%", zIndex:1, pointerEvents:"none",
+          width:450, height:450, borderRadius:"50%",
+          background:"radial-gradient(circle, rgba(6,148,209,0.18) 0%, transparent 70%)",
+          filter:"blur(55px)",
+        }}/>
+
+        {/* 6. Top horizontal light bar — common on MS vendor pages */}
+        <div style={{
+          position:"absolute", top:0, left:0, right:0, zIndex:2, pointerEvents:"none",
+          height:2,
+          background:"linear-gradient(90deg, transparent 0%, rgba(0,120,212,0.6) 30%, rgba(80,230,255,0.8) 50%, rgba(0,120,212,0.6) 70%, transparent 100%)",
+        }}/>
+
+        {/* 5. MS tech logos placed evenly on grid intersections (every 5 cols × 4 rows of 40px grid) */}
+        {(() => {
+          const LOGOS = [
+            // Azure
+            ()=><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 19h6l3-5.5 4 8.5h7L13 2z" fill="#0078D4"/><path d="M12 2L6 15.5l4.5 2.5 1.5-4 4 8.5h7L13 2z" fill="#50e6ff" opacity=".55"/></svg>,
+            // Windows / M365
+            ()=><svg viewBox="0 0 24 24" fill="none"><rect x="1" y="1" width="10" height="10" rx="1.5" fill="#f25022"/><rect x="13" y="1" width="10" height="10" rx="1.5" fill="#7fba00"/><rect x="1" y="13" width="10" height="10" rx="1.5" fill="#00a4ef"/><rect x="13" y="13" width="10" height="10" rx="1.5" fill="#ffb900"/></svg>,
+            // Teams
+            ()=><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="9" width="12" height="10" rx="3" fill="#6264A7"/><rect x="11" y="5" width="9" height="8.5" rx="2.5" fill="#6264A7" opacity=".7"/><circle cx="19" cy="6" r="3.5" fill="#7B83EB"/></svg>,
+            // Power BI
+            ()=><svg viewBox="0 0 24 24" fill="none"><rect x="1" y="13" width="5.5" height="10" rx="1.5" fill="#F2C811"/><rect x="9" y="7" width="5.5" height="16" rx="1.5" fill="#F2C811" opacity=".85"/><rect x="17" y="2" width="5.5" height="21" rx="1.5" fill="#F2C811" opacity=".65"/></svg>,
+            // Defender
+            ()=><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L3 6v6c0 5.25 3.6 10.15 9 11.54C17.4 22.15 21 17.25 21 12V6L12 2z" fill="#0078D4" opacity=".25" stroke="#0078D4" strokeWidth="1.3"/><path d="M8 12l3.5 3.5 5-5" stroke="#50e6ff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+            // Copilot
+            ()=><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#0F6CBD" strokeWidth="1" fill="none" opacity=".35"/><path d="M12 3l2.4 6H21l-5.4 3.9 2.4 6L12 15l-6 3.9 2.4-6L3 9h6.6z" fill="#50e6ff"/></svg>,
+            // VS Code
+            ()=><svg viewBox="0 0 24 24" fill="none"><path d="M17 2L7 12.5 3 9l-1 1 4.5 4L2 18l1 1 4-3.5L17 22l5-2.5V4.5L17 2z" fill="#007ACC" opacity=".25" stroke="#007ACC" strokeWidth="1.2"/><path d="M17 6.5l-7 6 7 5V6.5z" fill="#007ACC" opacity=".65"/></svg>,
+            // Dynamics 365
+            ()=><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3z" fill="#CC4A31" opacity=".18" stroke="#CC4A31" strokeWidth="1.3"/><path d="M12 7a5 5 0 0 1 5 5" stroke="#CC4A31" strokeWidth="2.5" strokeLinecap="round" fill="none"/><circle cx="12" cy="12" r="2.2" fill="#CC4A31"/></svg>,
+          ];
+          // 8 cols × 5 rows = 40 evenly spaced grid positions
+          // cols: every 12.5% starting at 6.25%  → centres of 8 equal columns
+          // rows: every 20% starting at 10%       → centres of 5 equal rows
+          const COLS = 8;
+          const ROWS = 5;
+          const cells = [];
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              cells.push({ c, r, idx: (r * COLS + c) % LOGOS.length });
+            }
+          }
+          return cells.map(({ c, r, idx }) => {
+            const Logo = LOGOS[idx];
+            const left = `${6.25 + c * 12.5}%`;
+            const top  = `${10   + r * 20}%`;
+            return (
+              <div key={`${r}-${c}`} style={{
+                position:"absolute", left, top,
+                transform:"translate(-50%,-50%)",
+                zIndex:2, pointerEvents:"none",
+                width:24, height:24, opacity:0.18,
+              }}>
+                <Logo />
+              </div>
+            );
+          });
+        })()}
+
+        {/* 6. Top accent strip */}
+        <div style={{
+          position:"absolute", top:0, left:0, right:0, height:3, zIndex:5, pointerEvents:"none",
+          background:"linear-gradient(90deg, transparent 0%, #0078D4 20%, #50e6ff 50%, #0078D4 80%, transparent 100%)",
+          opacity:0.7,
+        }}/>
+
+        {/* Subtle vertical column separator */}
+        <div className="hero-sep"/>
 
         {/* ══ TWO-COLUMN CONTENT AREA ══ */}
         <div className="hero-cols" style={{ position: "relative", zIndex: 10 }}>
         {/* ══ LEFT COLUMN ══ */}
         <div className="hero-left">
 
-          {/* Breadcrumb — structural SEO signal */}
-          <nav aria-label="Breadcrumb" style={{ marginBottom: 8 }}>
-            <ol style={{ listStyle: "none", margin: 0, padding: 0, display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-              <li><a href="https://www.koenig-solutions.com" style={{ color: "rgba(255,255,255,0.5)", textDecoration: "none" }}>Koenig Solutions</a></li>
-              <li style={{ opacity: 0.4 }}>›</li>
-              <li style={{ color: "rgba(255,255,255,0.7)", fontWeight: 600 }}>Microsoft Certification Training</li>
-            </ol>
-          </nav>
-
-          {/* Animated border badge */}
           {/* Headline */}
           <h1 className="hero-h1">
             <span className="h1-plain">Microsoft Certification Training</span>
-            <span className="h1-grad">by Koenig Solutions</span>
+            <TextShimmer as="span" duration={2.5} spread={2} style={{display:"block"}}>by Koenig Solutions</TextShimmer>
           </h1>
 
           {/* Subtitle */}
@@ -12049,7 +14060,7 @@ export default function App() {
                 <div className="hero-feat-icon">
                   <svg viewBox="0 0 24 24" fill="none" style={{width:12,height:12}}>{svgPath}</svg>
                 </div>
-                {text}
+                <span className="hero-feat-text">{text}</span>
               </div>
             ))}
           </div>
@@ -12065,8 +14076,9 @@ export default function App() {
             </button>
           </div>
 
-          {/* Social proof */}
-          <div className="hero-proof">
+          {/* Social proof + Microsoft awards */}
+          <div className="hero-proof" style={{ alignItems:"center", gap:16, flexWrap:"wrap" }}>
+            {/* Avatars + stars */}
             <div style={{display:'flex',alignItems:'center',gap:10}}>
               <div className="sp-avatars">
                 {[
@@ -12084,23 +14096,14 @@ export default function App() {
                 <div><TextShimmer as="strong" duration={2.5} spread={2}>500K+</TextShimmer> certified professionals</div>
               </div>
             </div>
-            <div className="hero-proof-divider"/>
-            <div className="proof-partner-badges">
-              <div className="proof-badge-card">
-                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/MS-Partner-of-the-year-2025.svg" alt="Microsoft Partner of the Year 2025 — awarded to Koenig Solutions" loading="lazy" decoding="async"/>
-                <div className="proof-badge-label">Partner of the Year</div>
-              </div>
-              <div className="proof-badge-card">
-                <img className="proof-partner-img" src="https://www.koenig-solutions.com/assets/newimages/awards/NewAwardsImages/award-fy24.webp" alt="Microsoft Excellence Award FY2024 — Koenig Solutions" loading="lazy" decoding="async"/>
-                <div className="proof-badge-label">Microsoft Award FY24</div>
-              </div>
-            </div>
+
           </div>
         </div>
 
         {/* ══ RIGHT COLUMN — hero video ══ */}
         <div className="hero-form-col">
           <div className="hero-form-glow"/>
+
           <div className="hero-video-card">
             <video
               ref={heroVideoRef}
@@ -12118,14 +14121,12 @@ export default function App() {
               aria-label={videoMuted ? "Unmute video" : "Mute video"}
             >
               {videoMuted ? (
-                /* Muted — speaker with X */
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                   <line x1="23" y1="9" x2="17" y2="15"/>
                   <line x1="17" y1="9" x2="23" y2="15"/>
                 </svg>
               ) : (
-                /* Unmuted — speaker with waves */
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
                   <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
@@ -12134,57 +14135,38 @@ export default function App() {
               )}
             </button>
           </div>
-          {/* Quick lead form below video */}
-          <div className="hq-form-card">
-            {/* Individual / Enterprise toggle */}
+
+          {/* Individual / Enterprise quick form */}
+          <div className="hq-form-card" style={{ position:"relative", zIndex:2 }}>
             <div className="hq-toggle-row">
               <div className="hq-toggle-track">
-                <button
-                  type="button"
-                  className={`hq-toggle-btn${hqType === "individual" ? " active" : ""}`}
-                  onClick={() => { setHqType("individual"); setHqEmail(""); }}
-                >
-                  Individual
-                </button>
-                <button
-                  type="button"
-                  className={`hq-toggle-btn${hqType === "enterprise" ? " active" : ""}`}
-                  onClick={() => { setHqType("enterprise"); setHqEmail(""); }}
-                >
-                  Enterprise
-                </button>
-                <span className="hq-toggle-pill" style={{ transform: hqType === "enterprise" ? "translateX(100%)" : "translateX(0)" }} />
+                <button type="button" className={`hq-toggle-btn${hqType==="individual"?" active":""}`} onClick={()=>{setHqType("individual");setHqEmail("");}}>Individual</button>
+                <button type="button" className={`hq-toggle-btn${hqType==="enterprise"?" active":""}`} onClick={()=>{setHqType("enterprise");setHqEmail("");}}>Enterprise</button>
+                <span className="hq-toggle-pill" style={{transform:hqType==="enterprise"?"translateX(100%)":"translateX(0)"}}/>
               </div>
             </div>
-
             {hqDone ? (
               <div className="hq-success">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10d964" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 <span>We'll be in touch shortly!</span>
               </div>
             ) : (
-              <form className="hq-form" onSubmit={e => { e.preventDefault(); if(hqName && hqEmail){ setHqDone(true); } }}>
+              <form className="hq-form" onSubmit={e=>{e.preventDefault();if(hqName&&hqEmail){setHqDone(true);}}}>
                 <div className="hq-row">
-                  <input className="hq-input" type="text" placeholder="Your Name" value={hqName} onChange={e=>setHqName(e.target.value)} required />
-                  <input
-                    className="hq-input"
-                    type="email"
-                    placeholder={hqType === "individual" ? "Personal Email" : "Work Email"}
-                    value={hqEmail}
-                    onChange={e=>setHqEmail(e.target.value)}
-                    required
-                  />
-                  <input className="hq-input" type="tel" placeholder="Phone" value={hqPhone} onChange={e=>setHqPhone(e.target.value)} />
+                  <input className="hq-input" type="text" placeholder="Your Name" value={hqName} onChange={e=>setHqName(e.target.value)} required/>
+                  <input className="hq-input" type="email" placeholder={hqType==="individual"?"Personal Email":"Work Email"} value={hqEmail} onChange={e=>setHqEmail(e.target.value)} required/>
+                  <input className="hq-input" type="tel" placeholder="Phone" value={hqPhone} onChange={e=>setHqPhone(e.target.value)}/>
                 </div>
                 <ShinyButton fullWidth size="lg" type="submit">Request More Information →</ShinyButton>
               </form>
             )}
           </div>
+
         </div>
         </div>{/* end .hero-cols */}
 
         {/* ══ STATS BAR — pinned to hero bottom ══ */}
-        <div className="hero-stats-bar">
+        <div className="hero-stats-bar" ref={statsBarRef}>
           {[
             {n:33,     suf:"+", label:"Years of Excellence",       src:"Since 1993",
               iconBg:"rgba(245,158,11,0.18)",
@@ -12213,22 +14195,53 @@ export default function App() {
           ))}
         </div>
 
+        {/* Mobile-only: quick technology selector */}
+        <div className="hero-tech-menu-wrap">
+          <button
+            className="hero-tech-hamburger"
+            onClick={() => setTechMenuOpen(o => !o)}
+            aria-expanded={techMenuOpen}
+            aria-label="Browse courses by technology"
+          >
+            <span className="hero-tech-ham-label">Browse by Technology</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" style={{marginLeft:'auto',flexShrink:0,transform:techMenuOpen?'rotate(180deg)':'none',transition:'transform 0.2s',color:'rgba(255,255,255,0.5)'}}>
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          {techMenuOpen && (
+            <div className="hero-tech-dropdown">
+              {CERT_TABS.map((tech) => (
+                <button
+                  key={tech}
+                  className="hero-tech-opt"
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent("koenig:selectTech", { detail: tech }));
+                    setTechMenuOpen(false);
+                    const el = document.getElementById("cert") || document.querySelector(".unified-cert-sec");
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                >
+                  <span className="hero-tech-opt-icon">{TECH_LOGOS[tech]?.({ size: 18 })}</span>
+                  <span className="hero-tech-opt-name">{tech}</span>
+                  <span className="hero-tech-opt-arrow">→</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
       </section>
 
       {/* COMPANIES */}
       <CompaniesSection onCTA={() => setModal(true)} />
 
-      {/* KOENIG EDGE */}
-      <EdgeSection onCTA={() => setModal(true)} />
+      {/* UNIFIED CERT EXPLORER — directly below companies */}
+      <UnifiedCertSection onEnroll={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
 
-      {/* WHY GET MICROSOFT CERTIFIED — ROI section */}
-      <WhyCertSection onCTA={() => setModal(true)} />
 
       {/* HOW TO GET MICROSOFT CERTIFIED — CERT PATHS */}
       <CertPathSection onCTA={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
-
-      {/* UNIFIED CERT EXPLORER */}
-      <UnifiedCertSection onEnroll={() => setModal(true)} onBrochure={() => setBrochureModal(true)} />
 
       {false && <section className="certs-sec" id="cert-old">
         <div className="certs-inner">
@@ -12340,6 +14353,15 @@ export default function App() {
                         </button>
                       ))}
                     </div>
+                    <select
+                      className="cert-level-select"
+                      value={certLevel}
+                      onChange={e => setCertLevel(e.target.value)}
+                    >
+                      {levels.map(lv => (
+                        <option key={lv.key} value={lv.key}>{lv.label} ({lv.count})</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
               );
@@ -12412,7 +14434,13 @@ export default function App() {
                             <span className={`cert-badge ${c.level}`}>
                               {c.level === "fund" ? "Fundamentals" : c.level === "assoc" ? "Associate" : "Expert"}
                             </span>
-                            <div className="cert-name">{c.name}</div>
+                            <div className="cert-name-wrap"
+                              onMouseEnter={e=>{const n=e.currentTarget.querySelector('.cert-name');if(n&&n.scrollHeight>n.clientHeight)e.currentTarget.classList.add('show-tip');}}
+                              onMouseLeave={e=>e.currentTarget.classList.remove('show-tip')}
+                            >
+                              <div className="cert-name">{c.name}</div>
+                              <div className="cert-name-tooltip">{c.name}</div>
+                            </div>
                             <div className="cert-code">{c.code}</div>
                             <div className="cert-footer">
                               <div className="cert-price-row">
@@ -12455,6 +14483,12 @@ export default function App() {
       {/* UPCOMING BATCHES */}
       <UpcomingBatchesSection onCTA={() => setModal(true)} />
 
+      {/* KOENIG EDGE */}
+      <EdgeSection onCTA={() => setModal(true)} />
+
+      {/* WHY GET MICROSOFT CERTIFIED — ROI section */}
+      <WhyCertSection onCTA={() => setModal(true)} />
+
       {/* WEBINARS */}
       <WebinarsSection onCTA={() => setModal(true)} />
 
@@ -12481,27 +14515,36 @@ export default function App() {
           </motion.div>
 
           {/* REVIEW STATS INLINE */}
-          <div className="review-stats-grid" style={{ marginTop: 24 }}>
-            {[
+          {(() => {
+            const stats = [
               { icon: <Star strokeWidth={1.8} />, number: "18,400+", label: "Verified Reviews" },
               { icon: <TrendingUp strokeWidth={1.8} />, number: "4.9 / 5", label: "Average Rating" },
               { icon: <ThumbsUp strokeWidth={1.8} />, number: "95%", label: "Would Recommend" },
               { icon: <Users strokeWidth={1.8} />, number: "1M+", label: "Professionals Trained" },
-            ].map((stat, i) => (
-              <motion.div
-                key={i}
-                className="review-stats-item"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              >
+            ];
+            const items = (keyPrefix) => stats.map((stat, i) => (
+              <div key={`${keyPrefix}-${i}`} className="review-stats-item">
                 <div className="review-stats-icon">{stat.icon}</div>
                 <div className="review-stats-number"><TextShimmer as="span" duration={2.5} spread={2}>{stat.number}</TextShimmer></div>
                 <div className="review-stats-label">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+            ));
+            return (
+              <div className="review-stats-grid-wrap" style={{ marginTop: 24 }}>
+                <motion.div
+                  className="review-stats-grid"
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  {items('a')}
+                  {/* Duplicate for seamless mobile loop */}
+                  {items('b')}
+                </motion.div>
+              </div>
+            );
+          })()}
 
           {/* Scrolling columns below */}
           <div className="test-cols-outer" style={{ marginTop: 48 }}>
@@ -12648,6 +14691,16 @@ export default function App() {
           ↑
         </button>
       )}
+
+      {/* DOWNLOAD BROCHURE FAB */}
+      <button className="dl-brochure-fab" onClick={() => setBrochureModal(true)} aria-label="Download Training Brochure">
+        <span className="dl-brochure-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </span>
+        <span className="dl-brochure-text">Download Brochure</span>
+      </button>
 
       {/* ENQUIRY MODAL */}
       {modal && (
