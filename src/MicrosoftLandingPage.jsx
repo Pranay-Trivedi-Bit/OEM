@@ -4562,13 +4562,14 @@ p {
 }
 
 /* ── ROI & CAREER OUTCOMES — mirrored layout of edge-sec ── */
-.roi-sec { background: #f0f4f8; padding: 80px 0 56px; border-top: 1px solid #ebebeb; }
+.roi-sec { background: #f0f4f8; padding: 80px 0 0; border-top: 1px solid #ebebeb; }
 .roi-inner {
-  display: grid; grid-template-columns: 1fr 360px;
+  display: grid; grid-template-columns: 1fr 340px;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
   gap: 80px; align-items: start;
 }
-.roi-left { order: 2; position: sticky; top: calc(50vh - 220px); }
+.roi-left { order: 2; align-self: start; will-change: transform; }
+.roi-right { order: 1; padding-bottom: 80px; }
 .roi-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -4627,8 +4628,9 @@ p {
 }
 @media (max-width: 860px) {
   .roi-inner { grid-template-columns: 1fr; padding: 0 24px; }
-  .roi-left { order: 1; position: static; }
-  .roi-right { order: 2; }
+  .roi-left { order: 1; transform: none !important; will-change: auto; }
+  .roi-right { order: 2; padding-bottom: 0; }
+  .roi-sec { padding-bottom: 56px; }
 }
 @media (max-width: 600px) {
   .roi-inner { padding: 0 16px; }
@@ -4644,14 +4646,15 @@ p {
 
 }
 
-/* ── KOENIG EDGE SECTION (upGrad sticky-left style) ── */
-.edge-sec { background: #f7f7f7; padding: 80px 0 56px; border-top: 1px solid #ebebeb; }
+/* ── KOENIG EDGE SECTION (sticky-left via translateY) ── */
+.edge-sec { background: #f7f7f7; padding: 80px 0 0; border-top: 1px solid #ebebeb; }
 .edge-inner {
-  display: grid; grid-template-columns: 360px 1fr;
+  display: grid; grid-template-columns: 340px 1fr;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
   gap: 80px; align-items: start;
 }
-.edge-left { position: sticky; top: calc(50vh - 200px); }
+.edge-left { align-self: start; will-change: transform; }
+.edge-right { padding-bottom: 80px; }
 .edge-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -4709,7 +4712,9 @@ p {
 .edge-item-desc { font-size: 13.5px; color: #586274; line-height: 1.7; }
 @media (max-width: 960px) {
   .edge-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
-  .edge-left { position: static; }
+  .edge-left { transform: none !important; will-change: auto; }
+  .edge-right { padding-bottom: 0; }
+  .edge-sec { padding-bottom: 56px; }
 }
 @media (max-width: 600px) {
   .edge-sec { padding: 48px 0 36px; }
@@ -8687,13 +8692,27 @@ function FAQChatBot({ onOpenLead }) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   TOP VENDOR SECTION — ported from Koenig-website repo
-   Sticky card-stack that flips as user scrolls
+   TOP VENDOR SECTION — exact port of Bala's VendorStack
 ══════════════════════════════════════════════════════════ */
-const VS_CARD_BG = '#0b1929';
+const VS_CARD_BG  = '#0b1929';
 const VS_IMG_BASE = 'https://koenig-website.vercel.app/images/top-six-vendors';
 
 const VS_VENDORS = [
+  {
+    panelGradient: 'linear-gradient(135deg,#076D9D,#0694D1)',
+    tag: '⭐ Gold Partner · Microsoft',
+    title: 'Microsoft',
+    desc: "From Azure to Microsoft 365 — master the world's most used enterprise platform.",
+    bullets: [
+      'AZ-104: Microsoft Azure Administrator (12,000+ enrolled)',
+      'AI-102: Designing and Implementing a Microsoft Azure AI Solution',
+      'PL-300: Microsoft Power BI Data Analyst',
+      'SC-300: Microsoft Identity and Access Administrator',
+    ],
+    stats: [{ val: '120+', label: 'Courses' }, { val: 'Gold', label: 'Partner Level' }, { val: '1M+', label: 'Certified' }],
+    cta: 'Explore Microsoft Courses →',
+    image: `${VS_IMG_BASE}/Microsoft.png`,
+  },
   {
     panelGradient: 'linear-gradient(135deg,#0694D1,#4DBFEF)',
     tag: '⭐ Premier Partner · Cisco',
@@ -8713,7 +8732,7 @@ const VS_VENDORS = [
     panelGradient: 'linear-gradient(135deg,#04446A,#076D9D)',
     tag: '⭐ Advanced Partner · AWS',
     title: 'Amazon Web Services',
-    desc: 'Build, deploy and scale on the world\'s most comprehensive cloud platform.',
+    desc: "Build, deploy and scale on the world's most comprehensive cloud platform.",
     bullets: [
       'AWS Solutions Architect Associate (5,747 enrolled)',
       'AWS Cloud Practitioner (4,593 enrolled)',
@@ -8757,23 +8776,63 @@ const VS_VENDORS = [
   { isMore: true },
 ];
 
-const VS_MORE_BADGES = ['Google Cloud','CompTIA','Salesforce','PMI','EC-Council','ISACA','ITIL','Red Hat','Tableau','ServiceNow','+ 39 more'];
+const VS_MORE_BADGES = ['Google Cloud','CompTIA','Salesforce','PMI','EC-Council','ISACA','ITIL','Red Hat','Tableau','Python Inst.','ServiceNow','+ 39 more'];
 
-const VS_TABS = [
-  { icon: '🌐', label: 'Cisco' },
-  { icon: '☁️', label: 'AWS' },
-  { icon: '🖥️', label: 'VMware' },
-  { icon: '🔴', label: 'Oracle' },
-  { icon: '∞',  label: 'More Vendors' },
+const VS_SIDEBAR_TABS = [
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 21 21">
+        <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+        <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+        <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+        <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+      </svg>
+    ), label: 'Microsoft' },
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="#1BA0D7" strokeWidth="1.6"/>
+        <path d="M3 12h18" stroke="#1BA0D7" strokeWidth="1.6" strokeLinecap="round"/>
+        <path d="M12 3c-2.5 3-4 5.8-4 9s1.5 6 4 9" stroke="#1BA0D7" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+        <path d="M12 3c2.5 3 4 5.8 4 9s-1.5 6-4 9" stroke="#1BA0D7" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+      </svg>
+    ), label: 'Cisco' },
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M4.5 14.5C2.6 14.5 1 12.9 1 11S2.6 7.5 4.5 7.5c.2 0 .5 0 .7.1C6 5.2 8 3.5 10.5 3.5c1.6 0 3 .7 4 1.8.3-.1.6-.1.9-.1C18.2 5.2 21 8 21 11.5a5 5 0 0 1-5 5H5.5" stroke="#FF9900" strokeWidth="1.6" strokeLinecap="round" fill="none"/>
+        <path d="M12 14v5M9 16l3 3 3-3" stroke="#FF9900" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ), label: 'AWS' },
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0694D1" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="3" width="20" height="13" rx="2"/>
+        <path d="M8 21h8M12 16v5"/>
+      </svg>
+    ), label: 'VMware' },
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <ellipse cx="12" cy="12" rx="10" ry="6.5" stroke="#C74634" strokeWidth="1.6"/>
+        <ellipse cx="12" cy="12" rx="5" ry="6.5" stroke="#C74634" strokeWidth="1.2" opacity="0.5"/>
+        <line x1="2" y1="12" x2="22" y2="12" stroke="#C74634" strokeWidth="1.2" opacity="0.5"/>
+      </svg>
+    ), label: 'Oracle' },
+  { icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12c0-2 1.5-3.5 3-3.5 1 0 2 .6 2.5 1.5.4-.8 1.2-1.5 2.5-1.5 1.5 0 3 1.5 3 3.5s-1.5 3.5-3.5 3.5H8.5C6.5 15.5 5 14 5 12z" stroke="#4DBFEF" strokeWidth="1.5" fill="none"/>
+        <path d="M4 18c2 1.5 4 2 8 2s6-1 8-3M4 6c2-1.5 4-2 8-2s6 1 8 3" stroke="#4DBFEF" strokeWidth="1.3" strokeLinecap="round" opacity="0.5"/>
+      </svg>
+    ), label: 'More Vendors' },
 ];
 
 function VsVendorCard({ v }) {
   return (
-    <div style={{ height:'100%', background:'radial-gradient(ellipse at 60% 40%,rgba(6,148,209,0.18) 0%,rgba(77,191,239,0.08) 35%,transparent 70%),'+ VS_CARD_BG, border:'1px solid rgba(6,148,209,0.18)', position:'relative', display:'flex', flexDirection:'row' }}>
-      {/* Left content */}
+    <div className="vs-card-inner" style={{ height:'100%', background:'radial-gradient(ellipse at 60% 40%,rgba(6,148,209,0.18) 0%,rgba(77,191,239,0.08) 35%,transparent 70%),'+ VS_CARD_BG, border:'1px solid rgba(6,148,209,0.18)', position:'relative', display:'flex', flexDirection:'row' }}>
       <div className="vs-card-content" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
         <div>
-          <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.3)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', marginBottom:12 }}>{v.tag}</span>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:8, marginBottom:12 }}>
+            <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.3)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', flexShrink:1, minWidth:0 }}>{v.tag}</span>
+            <div className="vs-inline-logo" style={{ flexShrink:0, background:'#EAF6FB', borderRadius:8, padding:'6px 10px', display:'flex', alignItems:'center', justifyContent:'center', height:48, minWidth:64 }}>
+              <img src={v.image} alt={v.title} style={{ height:36, width:'auto', maxWidth:72, objectFit:'contain' }}/>
+            </div>
+          </div>
           <h3 className="vs-card-title" style={{ fontWeight:700, color:'white', lineHeight:1.1, marginBottom:8, marginTop:0 }}>{v.title}</h3>
           <p style={{ fontSize:13, color:'#8AAFC0', lineHeight:1.6, marginBottom:16, marginTop:0, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{v.desc}</p>
           <p style={{ fontSize:11, color:'#4DBFEF', letterSpacing:2, fontWeight:700, textTransform:'uppercase', marginBottom:8, marginTop:0 }}>OUR EXPERTISE</p>
@@ -8786,17 +8845,21 @@ function VsVendorCard({ v }) {
             ))}
           </ul>
         </div>
-        <button className="vs-cta-btn" style={{ background:'#0694D1', borderRadius:8, fontSize:14, fontWeight:700, color:'white', border:'none', cursor:'pointer', width:'fit-content', marginTop:16, padding:'10px 22px', boxShadow:'0 4px 16px rgba(6,148,209,0.3)', transition:'background 0.2s, box-shadow 0.2s, transform 0.2s' }}
-          onMouseEnter={e=>{e.currentTarget.style.background='#057ab5';e.currentTarget.style.transform='translateY(-1px)';e.currentTarget.style.boxShadow='0 8px 24px rgba(6,148,209,0.4)';}}
-          onMouseLeave={e=>{e.currentTarget.style.background='#0694D1';e.currentTarget.style.transform='translateY(0)';e.currentTarget.style.boxShadow='0 4px 16px rgba(6,148,209,0.3)';}}>
+        <button className="vs-cta-btn" style={{ background:'#076D9D', borderRadius:28, fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', width:'100%', textAlign:'center' }}
+          onMouseEnter={e => e.currentTarget.style.background='#0694D1'}
+          onMouseLeave={e => e.currentTarget.style.background='#076D9D'}>
           {v.cta}
         </button>
       </div>
-      {/* Right image panel */}
-      <div className="vs-card-panel" style={{ position:'relative', flexShrink:0, overflow:'hidden', background:'#EAF6FB', borderLeft:'1px solid rgba(255,255,255,0.08)' }}>
-        <img src={v.image} alt={v.title} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'contain', objectPosition:'center', padding:24, filter:'drop-shadow(0 4px 12px rgba(0,0,0,0.18))', zIndex:1 }}/>
+      <div className="vs-card-panel" style={{ position:'relative', flexShrink:0, overflow:'hidden', background:'rgba(240,247,252,0.06)', borderLeft:'1px solid rgba(255,255,255,0.07)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:'0 16px' }}>
+        <div style={{ background:'white', borderRadius:14, padding:'18px 16px 12px', boxShadow:'0 8px 32px rgba(0,0,0,0.35)', width:'100%', display:'flex', flexDirection:'column', alignItems:'center', gap:0 }}>
+          <img src={v.image} alt={v.title} style={{ width:'100%', height:'auto', maxHeight:72, objectFit:'contain', marginBottom:10, filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.12))' }}/>
+          <div style={{ background:'#0b1929', borderRadius:8, padding:'7px 10px', width:'100%', textAlign:'center' }}>
+            <div style={{ fontSize:10, color:'rgba(255,255,255,0.8)', fontWeight:600, lineHeight:1.4 }}>Microsoft Cloud</div>
+            <div style={{ fontSize:10, color:'rgba(255,255,255,0.55)', fontWeight:400, lineHeight:1.4 }}>Training Services</div>
+          </div>
+        </div>
       </div>
-      {/* Bottom stats bar */}
       <div className="vs-stats-bar" style={{ position:'absolute', bottom:0, left:0, right:0, height:56, background:'rgba(0,0,0,0.25)', borderTop:'1px solid rgba(255,255,255,0.06)', display:'flex', alignItems:'center' }}>
         {v.stats.map((s, idx) => (
           <div key={idx} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center' }}>
@@ -8814,13 +8877,18 @@ function VsMoreCard() {
     <div style={{ height:'100%', background:'radial-gradient(ellipse at 60% 40%,rgba(6,148,209,0.18) 0%,rgba(77,191,239,0.08) 35%,transparent 70%),'+ VS_CARD_BG, border:'1px solid rgba(6,148,209,0.18)', position:'relative', display:'flex', flexDirection:'row' }}>
       <div className="vs-more-content" style={{ flex:1, display:'flex', flexDirection:'column', justifyContent:'space-between', minWidth:0 }}>
         <div>
-          <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.35)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', marginBottom:12 }}>∞&nbsp;&nbsp;50+ Global Vendors</span>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:8, marginBottom:12 }}>
+            <span style={{ display:'inline-flex', borderRadius:9999, border:'1px solid rgba(77,191,239,0.35)', padding:'4px 12px', fontSize:12, color:'#4DBFEF', flexShrink:1, minWidth:0 }}>∞&nbsp;&nbsp;50+ Global Vendors</span>
+            <div className="vs-inline-logo" style={{ flexShrink:0, background:'#EAF6FB', borderRadius:8, padding:'6px 10px', display:'flex', alignItems:'center', justifyContent:'center', height:48, minWidth:48 }}>
+              <span style={{ fontSize:28, fontWeight:900, color:'#0694D1', lineHeight:1 }}>∞</span>
+            </div>
+          </div>
           <h3 className="vs-more-title" style={{ fontWeight:700, lineHeight:1.1, margin:0 }}>
             <span style={{ color:'white' }}>Explore All</span><br/>
             <span style={{ color:'#4DBFEF' }}>Vendor Partners</span>
           </h3>
           <p style={{ fontSize:13, color:'#8AAFC0', marginTop:10, marginBottom:16, lineHeight:1.5 }}>
-            Beyond our top picks — Koenig is authorized by 50+ global technology vendors across cloud, networking, security, data and more.
+            Beyond our top picks — Koenig is authorized by 50+ global technology vendors. From VMware, Google Cloud, Salesforce and Oracle to niche certifications across cybersecurity, cloud, networking and project management.
           </p>
           <div style={{ display:'flex', gap:24, marginBottom:16 }}>
             {[{val:'50+',label:'VENDORS'},{val:'3,000+',label:'COURSES'},{val:'500K+',label:'TRAINED'}].map((s,idx) => (
@@ -8831,15 +8899,12 @@ function VsMoreCard() {
             ))}
           </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:10, flexWrap:'wrap' }}>
-          <button style={{ background:'#076D9D', borderRadius:28, padding:'9px 18px', fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', whiteSpace:'nowrap' }}
-            onMouseEnter={e=>e.currentTarget.style.background='#0694D1'}
-            onMouseLeave={e=>e.currentTarget.style.background='#076D9D'}>
-            Explore All Courses →
-          </button>
-        </div>
+        <button className="vs-cta-btn" style={{ background:'#076D9D', borderRadius:28, padding:'9px 18px', fontSize:13, fontWeight:400, color:'white', border:'none', cursor:'pointer', whiteSpace:'nowrap', width:'100%', textAlign:'center' }}
+          onMouseEnter={e => e.currentTarget.style.background='#0694D1'}
+          onMouseLeave={e => e.currentTarget.style.background='#076D9D'}>
+          Explore All Courses →
+        </button>
       </div>
-      {/* Right badges panel */}
       <div className="vs-more-panel" style={{ position:'relative', overflow:'hidden', flexShrink:0, background:'linear-gradient(135deg,#076D9D,#0694D1)' }}>
         <div style={{ position:'absolute', left:0, top:0, bottom:0, width:'40%', background:`linear-gradient(to right,${VS_CARD_BG},transparent)`, zIndex:1 }}/>
         <div style={{ position:'absolute', inset:0, display:'flex', flexWrap:'wrap', alignContent:'center', justifyContent:'center', gap:8, padding:20, zIndex:2 }}>
@@ -8854,60 +8919,74 @@ function VsMoreCard() {
 
 function VendorStack() {
   const [activeTab, setActiveTab] = useState(0);
-  const [vsMenuOpen, setVsMenuOpen] = useState(false);
-  const applyRef = useRef(null);
-
-  const switchTo = (i) => {
-    setActiveTab(i);
-    if (applyRef.current) applyRef.current(i);
-  };
 
   useEffect(() => {
-    const SHIFT = 22, SCALE = 0.03, FADE = 0.12, MAX_BG = 4;
-    const allCards = Array.from(document.querySelectorAll('[data-vs-index]'));
-    const triggers = Array.from(document.querySelectorAll('.vs-trigger'));
+    const SHIFT     = 22;
+    const SCALE     = 0.03;
+    const FADE      = 0.12;
+    const MAX_BG    = 4;
+    const NAV_H     = 64;   // our fixed nav height
+    const TITLE_GAP = 20;
+
+    const allCards = Array.from(document.querySelectorAll('[data-index]'));
+    let lastActive    = -1;
+    let scrollCleanup = null;
 
     function applyCards(active) {
       allCards.forEach((el, i) => {
         const pos = active - i;
         if (pos < 0) {
-          el.style.transform = 'translateY(110%)'; el.style.opacity = '0'; el.style.zIndex = String(i);
+          el.style.transform = 'translateY(110%)'; el.style.opacity = '0'; el.style.zIndex = String(i); el.style.boxShadow = 'none';
         } else if (pos === 0) {
-          el.style.transform = 'translateY(0) scale(1)'; el.style.opacity = '1'; el.style.zIndex = '100';
+          el.style.transform = 'translateY(0) scale(1)'; el.style.opacity = '1'; el.style.zIndex = '100'; el.style.boxShadow = 'none';
         } else if (pos > MAX_BG) {
           el.style.transform = `translateY(-${MAX_BG * SHIFT + 30}px) scale(${Math.max(1 - MAX_BG * SCALE, 0.78)})`; el.style.opacity = '0'; el.style.zIndex = String(100 - pos);
         } else {
-          el.style.transform = `translateY(-${pos * SHIFT}px) scale(${Math.max(1 - pos * SCALE, 0.78)})`; el.style.opacity = String(Math.max(1 - pos * FADE, 0.2)); el.style.zIndex = String(100 - pos);
+          el.style.transform = `translateY(-${pos * SHIFT}px) scale(${Math.max(1 - pos * SCALE, 0.78)})`; el.style.opacity = String(Math.max(1 - pos * FADE, 0.2)); el.style.zIndex = String(100 - pos); el.style.boxShadow = 'none';
         }
       });
     }
 
-    applyRef.current = applyCards;
-
-    // Mobile: direct tab control, no scroll triggers
-    if (window.innerWidth <= 767) {
-      applyCards(0);
-      return;
-    }
-
-    let lastActive = -1;
     const rafId = requestAnimationFrame(() => {
-      if (!triggers.length) return;
-      const triggerTops = triggers.map(t => t.getBoundingClientRect().top + window.scrollY);
-      const stickyEl = document.querySelector('.vs-section');
-      const stickyH = 56 + (stickyEl ? stickyEl.offsetHeight : 0);
+      const stickyEl    = document.querySelector('.vs-section');
+      const wrapperEl   = document.querySelector('.vs-wrapper');
+      const titleAnchor = document.querySelector('.vs-title-anchor');
+      const triggers    = Array.from(document.querySelectorAll('.vs-trigger'));
+      if (!stickyEl || !wrapperEl || !titleAnchor) return;
+
+      const sectionRect          = stickyEl.getBoundingClientRect();
+      const titleRect            = titleAnchor.getBoundingClientRect();
+      const titleOffsetInSection = titleRect.top - sectionRect.top;
+      const stickyTop            = NAV_H + TITLE_GAP - titleOffsetInSection;
+      stickyEl.style.top         = `${stickyTop}px`;
+
+      const vendorBottomInVP = stickyTop + stickyEl.offsetHeight;
+      const bottomPad = document.querySelector('.vs-bottom-pad');
+      if (bottomPad) bottomPad.style.height = `${Math.max(0, window.innerHeight - vendorBottomInVP)}px`;
+
+      const triggerTops  = triggers.map(t => t.getBoundingClientRect().top + window.scrollY);
+      const stickyBottom = (NAV_H + TITLE_GAP) + stickyEl.offsetHeight;
 
       const onScroll = () => {
-        const viewLine = window.scrollY + stickyH + 40;
+        const viewLine = window.scrollY + stickyBottom + 40;
         let active = 0;
         for (let i = 0; i < triggerTops.length; i++) { if (triggerTops[i] <= viewLine) active = i; else break; }
-        if (active !== lastActive) { lastActive = active; applyCards(active); setActiveTab(active); }
+        if (active !== lastActive) {
+          lastActive = active;
+          applyCards(active);
+          setActiveTab(active);
+          const tabsEl    = document.querySelector('.vs-mobile-tabs');
+          const activeBtn = document.querySelector(`.vs-mobile-tabs [data-tab="${active}"]`);
+          if (tabsEl && activeBtn) tabsEl.scrollTo({ left: activeBtn.offsetLeft - 16, behavior:'smooth' });
+        }
       };
-      window.addEventListener('scroll', onScroll, { passive: true });
+
+      window.addEventListener('scroll', onScroll, { passive:true });
       onScroll();
-      return () => window.removeEventListener('scroll', onScroll);
+      scrollCleanup = () => window.removeEventListener('scroll', onScroll);
     });
-    return () => cancelAnimationFrame(rafId);
+
+    return () => { cancelAnimationFrame(rafId); scrollCleanup && scrollCleanup(); };
   }, []);
 
   const scrollToTrigger = (i) => {
@@ -8915,40 +8994,34 @@ function VendorStack() {
   };
 
   return (
-    <div style={{ position:'relative', background:'linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%)' }}>
-      {/* Sticky section */}
-      <section className="vs-section" style={{ position:'sticky', top:56, zIndex:20, background:'linear-gradient(135deg,#020d18 0%,#061e30 25%,#0a2e4a 50%,#061e30 75%,#020d18 100%)' }}>
+    <div className="vs-wrapper" style={{ position:'relative' }}>
+
+      <section className="vs-section" style={{ position:'sticky', top:20, zIndex:20, background:'linear-gradient(135deg,#020d18 0%,#061e30 25%,#0a2e4a 50%,#061e30 75%,#020d18 100%)' }}>
+
         {/* Header */}
         <div className="vs-header" style={{ textAlign:'center', padding:'0 16px' }}>
           <span style={{ display:'inline-block', borderRadius:9999, background:'rgba(6,148,209,0.18)', padding:'6px 16px', fontSize:11, fontWeight:700, letterSpacing:'0.1em', textTransform:'uppercase', color:'#4DBFEF', marginBottom:12 }}>Top Vendor Partners</span>
-          <h2 style={{ marginTop:0, fontSize:'24px', fontWeight:800, color:'white', lineHeight:1.4 }}>
-            Train with{' '}
-            <TextShimmer as="span" duration={2.5} spread={2}>Industry Leaders</TextShimmer>
+          <div className="vs-title-anchor" style={{ height:0, pointerEvents:'none' }}/>
+          <h2 style={{ marginTop:0, fontSize:'clamp(20px,3vw,36px)', fontWeight:700, color:'white', marginBottom:12 }}>
+            Train with <span style={{ background:'linear-gradient(90deg,#0694D1,#4DBFEF)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>Industry Leaders</span>
           </h2>
           <p style={{ margin:'0 auto', maxWidth:520, fontSize:15, color:'rgba(255,255,255,0.55)', lineHeight:1.7 }}>
             Koenig is an authorized training partner for the world's leading technology vendors, delivering globally recognized certifications.
           </p>
         </div>
 
-        {/* Mobile hamburger tab selector */}
-        <div className="vs-mobile-hamburger-wrap">
-          <button className="vs-hamburger-btn" onClick={() => setVsMenuOpen(o => !o)}>
-            <span style={{ fontSize:16 }}>{VS_TABS[activeTab].icon}</span>
-            <span className="vs-hamburger-label">{VS_TABS[activeTab].label}</span>
-            <svg className={`vs-hamburger-chevron${vsMenuOpen ? ' open' : ''}`} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          {vsMenuOpen && (
-            <div className="vs-hamburger-dropdown">
-              {VS_TABS.map((tab, i) => (
-                <button key={i} className={`vs-hamburger-item${activeTab === i ? ' active' : ''}`}
-                  onClick={() => { switchTo(i); setVsMenuOpen(false); }}>
-                  <span style={{ fontSize:16 }}>{tab.icon}</span>
-                  <span>{tab.label}</span>
-                  {activeTab === i && <svg style={{ marginLeft:'auto' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0694D1" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>}
-                </button>
-              ))}
-            </div>
-          )}
+        {/* Mobile horizontal tab bar */}
+        <div className="vs-mobile-tabs" style={{ overflowX:'auto', WebkitOverflowScrolling:'touch', scrollbarWidth:'none' }}>
+          <div style={{ display:'flex', gap:8, padding:'0 16px', width:'max-content' }}>
+            {VS_SIDEBAR_TABS.map((tab, i) => (
+              <button key={i} data-tab={i} data-active={activeTab===i?'true':'false'}
+                onClick={() => scrollToTrigger(i)}
+                style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:9999, border:`1px solid ${activeTab===i?'#0694D1':'rgba(6,148,209,0.3)'}`, background: activeTab===i?'rgba(6,148,209,0.25)':'transparent', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, fontFamily:'inherit', transition:'background 0.2s, border-color 0.2s' }}>
+                <span style={{ display:'flex', alignItems:'center', justifyContent:'center', width:18, height:18, flexShrink:0 }}>{tab.icon}</span>
+                <span style={{ fontSize:13, color: activeTab===i?'white':'rgba(255,255,255,0.7)', fontWeight: activeTab===i?600:400 }}>{tab.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Main layout: sidebar + deck */}
@@ -8956,9 +9029,11 @@ function VendorStack() {
           {/* Sidebar */}
           <div className="vs-sidebar" style={{ flexShrink:0, marginTop:30, background:VS_CARD_BG, borderRadius:16, border:'1px solid rgba(6,148,209,0.18)', overflow:'hidden' }}>
             <div style={{ background:'linear-gradient(135deg,#076D9D,#0694D1)', color:'white', padding:'12px 16px', fontWeight:700, fontSize:13, letterSpacing:'0.12em', textTransform:'uppercase' }}>🏆 Top Vendors</div>
-            {VS_TABS.map((tab, i) => (
-              <button key={i} onClick={() => scrollToTrigger(i)} style={{ display:'flex', flexDirection:'row', alignItems:'center', gap:10, padding:'10px 14px', width:'100%', border:'none', borderLeft:`3px solid ${activeTab===i?'#0694D1':'transparent'}`, background: activeTab===i?'linear-gradient(90deg,rgba(6,148,209,0.35) 0%,rgba(77,191,239,0.12) 100%)':'transparent', cursor:'pointer', textAlign:'left', transition:'background 0.2s', fontFamily:'inherit' }}>
-                <span style={{ width:32, height:32, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, flexShrink:0, background: activeTab===i?'linear-gradient(135deg,#076D9D,#0694D1)':'transparent', color: activeTab===i?'white':'rgba(255,255,255,0.5)', transition:'background 0.2s' }}>{tab.icon}</span>
+            {VS_SIDEBAR_TABS.map((tab, i) => (
+              <button key={i} data-tab={i} data-active={activeTab===i?'true':'false'}
+                onClick={() => scrollToTrigger(i)}
+                style={{ display:'flex', flexDirection:'row', alignItems:'center', gap:10, padding:'10px 14px', width:'100%', border:'none', borderLeft:`3px solid ${activeTab===i?'#0694D1':'transparent'}`, background: activeTab===i?'linear-gradient(90deg,rgba(6,148,209,0.35) 0%,rgba(77,191,239,0.12) 100%)':'transparent', cursor:'pointer', textAlign:'left', fontFamily:'inherit', transition:'background 0.2s, border-color 0.2s' }}>
+                <span style={{ width:32, height:32, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, background: activeTab===i?'linear-gradient(135deg,#076D9D,#0694D1)':'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', transition:'background 0.2s' }}>{tab.icon}</span>
                 <span className="vs-tab-label" style={{ fontSize:14, color: activeTab===i?'white':'rgba(255,255,255,0.55)', fontWeight: activeTab===i?600:400, whiteSpace:'nowrap' }}>{tab.label}</span>
               </button>
             ))}
@@ -8968,116 +9043,114 @@ function VendorStack() {
           <div className="vs-deck-col" style={{ flex:1, position:'relative', overflow:'hidden', minWidth:0 }}>
             <div className="vs-viewport" style={{ position:'relative', overflow:'visible', zIndex:10 }}>
               {VS_VENDORS.map((vendor, i) => (
-                <div key={i} data-vs-index={i} className="vs-card-wrapper" style={{ position:'absolute', top:0, left:0, right:0, borderRadius:18, overflow:'hidden', transform: i===0?'translateY(0) scale(1)':'translateY(110%)', opacity: i===0?1:0, zIndex: i===0?100:i, transition:'transform 0.65s cubic-bezier(0.4,0,0.2,1),opacity 0.5s ease' }}>
+                <div key={i} data-index={i} className="vs-card-wrapper"
+                  style={{ position:'absolute', top:0, left:0, right:0, borderRadius:18, overflow:'hidden', transform: i===0?'translateY(0) scale(1)':'translateY(110%)', opacity: i===0?1:0, zIndex: i===0?100:i, boxShadow:'none', transition:'transform 0.65s cubic-bezier(0.4,0,0.2,1),opacity 0.5s ease' }}>
                   {vendor.isMore ? <VsMoreCard /> : <VsVendorCard v={vendor} />}
                 </div>
               ))}
-            </div>
-            {/* Mobile prev/next navigation */}
-            <div className="vs-mobile-nav" style={{ display:'none', alignItems:'center', justifyContent:'space-between', marginTop:14, gap:10 }}>
-              <button
-                onClick={() => switchTo(Math.max(0, activeTab - 1))}
-                disabled={activeTab === 0}
-                style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 0', borderRadius:10, border:'1.5px solid rgba(6,148,209,0.35)', background:'transparent', color: activeTab===0?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.75)', fontSize:13, fontWeight:600, cursor: activeTab===0?'not-allowed':'pointer', fontFamily:'inherit', transition:'all 0.2s' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                Prev
-              </button>
-              <span style={{ fontSize:12, color:'rgba(255,255,255,0.4)', fontWeight:600 }}>{activeTab + 1} / {VS_VENDORS.length}</span>
-              <button
-                onClick={() => switchTo(Math.min(VS_VENDORS.length - 1, activeTab + 1))}
-                disabled={activeTab === VS_VENDORS.length - 1}
-                style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 0', borderRadius:10, border:'1.5px solid rgba(6,148,209,0.35)', background:'transparent', color: activeTab===VS_VENDORS.length-1?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.75)', fontSize:13, fontWeight:600, cursor: activeTab===VS_VENDORS.length-1?'not-allowed':'pointer', fontFamily:'inherit', transition:'all 0.2s' }}>
-                Next
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-              </button>
             </div>
           </div>
         </div>
 
         <style>{`
-          .vs-mobile-hamburger-wrap { display: none; position: relative; margin: 8px 16px 14px; }
-          .vs-hamburger-btn {
-            width: 100%; display: flex; align-items: center; gap: 10px;
-            padding: 11px 16px; border-radius: 12px;
-            border: 1.5px solid rgba(6,148,209,0.4);
-            background: rgba(6,148,209,0.12);
-            cursor: pointer; font-family: inherit; color: #fff;
-          }
-          .vs-hamburger-label { flex: 1; text-align: left; font-size: 14px; font-weight: 600; color: #fff; }
-          .vs-hamburger-chevron { transition: transform 0.2s; flex-shrink: 0; color: rgba(255,255,255,0.6); }
-          .vs-hamburger-chevron.open { transform: rotate(180deg); }
-          .vs-hamburger-dropdown {
-            position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 50;
-            background: #071e30; border: 1.5px solid rgba(6,148,209,0.3);
-            border-radius: 12px; overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-          }
-          .vs-hamburger-item {
-            width: 100%; display: flex; align-items: center; gap: 10px;
-            padding: 12px 16px; border: none; background: transparent;
-            cursor: pointer; font-family: inherit; font-size: 14px;
-            color: rgba(255,255,255,0.7); transition: background 0.15s;
-          }
-          .vs-hamburger-item:hover { background: rgba(6,148,209,0.12); }
-          .vs-hamburger-item.active { color: #fff; font-weight: 600; background: rgba(6,148,209,0.18); }
-          .vs-hamburger-item + .vs-hamburger-item { border-top: 1px solid rgba(6,148,209,0.1); }
-          @media (max-width: 767px) {
-            /* Hide scroll triggers — tabs control cards directly on mobile */
-            .vs-trigger { display: none !important; }
-            /* Section is no longer sticky on mobile — just normal flow */
-            .vs-section { position: relative !important; top: 0 !important; padding: 28px 0 20px; }
-            .vs-header { margin-bottom: 16px; }
-            .vs-header h2 { font-size: 20px !important; }
-            .vs-header p { font-size: 13px !important; }
-            .vs-mobile-hamburger-wrap { display: block; }
-            .vs-layout { flex-direction: column; gap: 0; padding: 0 14px; }
+          /* ── Responsive layout ── */
+          @media (max-width: 359px) {
+            .vs-section { padding: 18px 0; }
+            .vs-header { margin-bottom: 10px; }
+            .vs-mobile-tabs { display: flex; margin: 8px 0 10px; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 16px; }
             .vs-sidebar { display: none !important; }
-            .vs-deck-col { padding-top: 0; }
-            /* Card container — auto height, not fixed */
-            .vs-viewport { position: relative; height: auto !important; min-height: 340px; }
-            .vs-card-wrapper {
-              position: relative !important;
-              height: auto !important;
-              border-radius: 16px !important;
-              transform: none !important;
-              opacity: 1 !important;
-              margin-bottom: 0;
-            }
-            /* Only show the active card — hidden ones get opacity:0 pointer-events:none */
-            .vs-card-wrapper[style*="translateY(110%)"],
-            .vs-card-wrapper[style*="opacity: 0"],
-            .vs-card-wrapper[style*="opacity:0"] { display: none !important; }
-            .vs-card-content { padding: 18px 16px 72px !important; }
-            .vs-card-title { font-size: 22px !important; }
+            .vs-deck-col { padding-top: 4px; width: 100%; }
+            .vs-viewport { height: 470px; }
+            .vs-card-wrapper { height: 470px; }
+            .vs-card-content { padding: 12px 10px 58px !important; }
+            .vs-card-title { font-size: 18px !important; }
             .vs-card-panel { display: none !important; }
-            .vs-stats-bar { padding-right: 0 !important; height: 52px !important; border-radius: 0 0 16px 16px; }
-            .vs-stats-bar span:first-child { font-size: 14px !important; }
-            .vs-stats-bar span:last-child { font-size: 9px !important; }
-            .vs-cta-btn { padding: 10px 18px !important; font-size: 13px !important; width: 100% !important; text-align: center; }
-            .vs-more-content { padding: 18px 16px !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 8px 10px !important; font-size: 11px !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; }
+            .vs-more-content { padding: 12px 10px !important; }
+            .vs-more-title { font-size: 20px !important; }
+            .vs-more-panel { display: none !important; }
+          }
+          @media (min-width: 360px) and (max-width: 374px) {
+            .vs-section { padding: 20px 0; }
+            .vs-header { margin-bottom: 12px; }
+            .vs-mobile-tabs { display: flex; margin: 10px 0 12px; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 16px; }
+            .vs-sidebar { display: none !important; }
+            .vs-deck-col { padding-top: 4px; width: 100%; }
+            .vs-viewport { height: 460px; }
+            .vs-card-wrapper { height: 460px; }
+            .vs-card-content { padding: 14px 12px 60px !important; }
+            .vs-card-title { font-size: 20px !important; }
+            .vs-card-panel { display: none !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 8px 14px !important; font-size: 11px !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; }
+            .vs-more-content { padding: 14px 12px !important; }
             .vs-more-title { font-size: 22px !important; }
             .vs-more-panel { display: none !important; }
-            /* Nav dots — next/prev hint */
-            .vs-mobile-nav { display: flex !important; }
           }
-          @media (max-width: 480px) {
-            .vs-header h2 { font-size: 18px !important; }
-            .vs-header p { font-size: 12px !important; max-width: 92% !important; }
-            .vs-layout { padding: 0 12px; }
-            .vs-card-content { padding: 16px 14px 68px !important; }
-            .vs-card-title { font-size: 18px !important; }
-            .vs-stats-bar { height: 48px !important; }
+          @media (min-width: 375px) and (max-width: 479px) {
+            .vs-section { padding: 24px 0; }
+            .vs-header { margin-bottom: 14px; }
+            .vs-mobile-tabs { display: flex; margin: 10px 0 14px; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 16px; }
+            .vs-sidebar { display: none !important; }
+            .vs-deck-col { padding-top: 6px; width: 100%; }
+            .vs-viewport { height: 450px; }
+            .vs-card-wrapper { height: 450px; }
+            .vs-card-content { padding: 16px 14px 62px !important; }
+            .vs-card-title { font-size: 22px !important; }
+            .vs-card-panel { display: none !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 9px 14px !important; font-size: 12px !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; }
+            .vs-more-content { padding: 16px 14px !important; }
+            .vs-more-title { font-size: 24px !important; }
+            .vs-more-panel { display: none !important; }
           }
-          @media (max-width: 360px) {
-            .vs-header h2 { font-size: 16px !important; }
-            .vs-card-content { padding: 14px 12px 64px !important; }
-            .vs-card-title { font-size: 16px !important; }
+          @media (min-width: 480px) and (max-width: 639px) {
+            .vs-section { padding: 28px 0; }
+            .vs-header { margin-bottom: 16px; }
+            .vs-mobile-tabs { display: flex; margin: 12px 0 16px; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 16px; }
+            .vs-sidebar { display: none !important; }
+            .vs-deck-col { padding-top: 6px; width: 100%; }
+            .vs-viewport { height: 440px; }
+            .vs-card-wrapper { height: 440px; }
+            .vs-card-content { padding: 18px 16px 64px !important; }
+            .vs-card-title { font-size: 24px !important; }
+            .vs-card-panel { display: none !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 9px 16px !important; font-size: 12px !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; }
+            .vs-more-content { padding: 18px 16px !important; }
+            .vs-more-title { font-size: 26px !important; }
+            .vs-more-panel { display: none !important; }
+          }
+          @media (min-width: 640px) and (max-width: 767px) {
+            .vs-section { padding: 32px 0; }
+            .vs-header { margin-bottom: 20px; }
+            .vs-mobile-tabs { display: flex; margin: 12px 0 16px; }
+            .vs-layout { flex-direction: column; gap: 0; padding: 0 16px; }
+            .vs-sidebar { display: none !important; }
+            .vs-deck-col { padding-top: 8px; width: 100%; }
+            .vs-viewport { height: 430px; }
+            .vs-card-wrapper { height: 430px; }
+            .vs-card-content { padding: 20px 20px 66px !important; }
+            .vs-card-title { font-size: 26px !important; }
+            .vs-card-panel { display: none !important; }
+            .vs-stats-bar { padding-right: 0 !important; }
+            .vs-cta-btn { padding: 9px 18px !important; font-size: 13px !important; width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; }
+            .vs-more-content { padding: 20px 20px !important; }
+            .vs-more-title { font-size: 28px !important; }
+            .vs-more-panel { display: none !important; }
           }
           @media (min-width: 768px) and (max-width: 1023px) {
             .vs-section { padding: 40px 0; }
             .vs-header { margin-bottom: 28px; }
+            .vs-mobile-tabs { display: none; }
             .vs-layout { gap: 20px; padding: 0 16px; }
             .vs-sidebar { width: 170px; }
+            .vs-tab-label { font-size: 13px !important; }
             .vs-deck-col { padding-top: 30px; }
             .vs-viewport { height: 420px; }
             .vs-card-wrapper { height: 420px; }
@@ -9090,9 +9163,28 @@ function VendorStack() {
             .vs-more-title { font-size: 28px !important; }
             .vs-more-panel { display: block !important; width: 220px !important; }
           }
-          @media (min-width: 1024px) {
+          @media (min-width: 1024px) and (max-width: 1279px) {
             .vs-section { padding: 52px 0; }
-            .vs-header { margin-bottom: 40px; }
+            .vs-header { margin-bottom: 36px; }
+            .vs-mobile-tabs { display: none; }
+            .vs-layout { gap: 24px; padding: 0 16px; }
+            .vs-sidebar { width: 200px; }
+            .vs-deck-col { padding-top: 30px; }
+            .vs-viewport { height: 420px; }
+            .vs-card-wrapper { height: 420px; }
+            .vs-card-content { padding: 30px 24px 72px !important; }
+            .vs-card-title { font-size: 28px !important; }
+            .vs-card-panel { display: block !important; width: 190px !important; }
+            .vs-stats-bar { padding-right: 190px !important; }
+            .vs-cta-btn { padding: 10px 18px !important; }
+            .vs-more-content { padding: 28px 28px !important; }
+            .vs-more-title { font-size: 30px !important; }
+            .vs-more-panel { display: block !important; width: 280px !important; }
+          }
+          @media (min-width: 1280px) {
+            .vs-section { padding: 60px 0; }
+            .vs-header { margin-bottom: 48px; }
+            .vs-mobile-tabs { display: none; }
             .vs-layout { gap: 32px; padding: 0 24px; }
             .vs-sidebar { width: 220px; }
             .vs-deck-col { padding-top: 30px; }
@@ -9107,13 +9199,29 @@ function VendorStack() {
             .vs-more-title { font-size: 34px !important; }
             .vs-more-panel { display: block !important; width: 340px !important; }
           }
+          .vs-header { margin-bottom: 0 !important; }
+          [data-tab] { border-left: 3px solid transparent; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+          [data-tab]:hover { background: rgba(6,148,209,0.1); }
+          [data-tab][data-active="true"] {
+            background: linear-gradient(90deg,rgba(6,148,209,0.35) 0%,rgba(77,191,239,0.12) 100%) !important;
+            border-left: 3px solid #0694D1 !important;
+            box-shadow: inset 0 0 0 1px rgba(6,148,209,0.3);
+          }
+          [data-tab][data-active="true"] > span:first-child { background: linear-gradient(135deg,#076D9D,#0694D1) !important; color: white !important; }
+          [data-tab][data-active="true"] > span:last-child { color: white !important; font-weight: 600 !important; }
+          .vs-mobile-tabs [data-active="true"] { background: rgba(6,148,209,0.25) !important; border-color: #0694D1 !important; }
+          .vs-mobile-tabs [data-active="true"] span:last-child { color: white !important; }
+          .vs-mobile-tabs::-webkit-scrollbar { display: none; }
+          .vs-inline-logo { display: block; }
+          @media (min-width: 768px) { .vs-inline-logo { display: none !important; } }
+          @media (max-width: 767px) { .vs-cta-btn { width: 100% !important; text-align: center !important; box-sizing: border-box !important; margin-bottom: 20px !important; } }
         `}</style>
       </section>
 
-      {/* Scroll triggers — one per vendor, each 60vh tall */}
       {VS_VENDORS.map((_, i) => (
-        <div key={i} data-n={i} className="vs-trigger" style={{ height:'60vh' }}/>
+        <div key={i} data-n={i} className="vs-trigger" style={{ height:'clamp(350px,60vh,600px)' }}/>
       ))}
+      <div className="vs-bottom-pad"/>
     </div>
   );
 }
@@ -11507,12 +11615,51 @@ const ROI_ITEMS = [
 ];
 
 function WhyCertSection({ onCTA }) {
+  const sectionRef = useRef(null);
+  const rightRef   = useRef(null); // the RIGHT panel (heading/stats) that stays fixed
+
+  useEffect(() => {
+    if (window.innerWidth <= 860) return;
+    const section = sectionRef.current;
+    const right   = rightRef.current;
+    if (!section || !right) return;
+
+    const NAV = 90;
+    let ticking = false;
+
+    const update = () => {
+      const sr       = section.getBoundingClientRect();
+      const rightH   = right.offsetHeight;
+      const maxShift = section.offsetHeight - rightH - 80;
+
+      if (sr.top < NAV) {
+        const shift = Math.min(NAV - sr.top, maxShift);
+        right.style.transform = `translateY(${Math.max(0, shift)}px)`;
+      } else {
+        right.style.transform = "";
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
   return (
-    <section className="roi-sec">
+    <section className="roi-sec" ref={sectionRef}>
       <div className="roi-inner">
 
-        {/* Left — sticky heading (mirrors edge-left) */}
-        <div className="roi-left">
+        {/* RIGHT panel — translateY keeps it in view while left items scroll */}
+        <div className="roi-left" ref={rightRef}>
           <div className="roi-eyebrow">ROI &amp; Career Outcomes</div>
           <h2 className="roi-left-heading">
             A Microsoft Cert <em>Pays for Itself.</em><br />Fast.
@@ -11544,7 +11691,7 @@ function WhyCertSection({ onCTA }) {
         {/* Left (order:1 via CSS) — scrolling items */}
         <div className="roi-right">
           {ROI_ITEMS.map((item) => (
-            <div key={item.num} className="roi-item reveal">
+            <div key={item.num} className="roi-item">
               <div className="roi-item-icon-wrap"><item.icon /></div>
               <div className="roi-item-body">
                 <div className="roi-item-num">{item.num}</div>
@@ -11701,13 +11848,51 @@ const WC_TABS_UNUSED = [
 ];
 
 function EdgeSection({ onCTA }) {
+  const sectionRef = useRef(null);
+  const leftRef    = useRef(null);
+
+  useEffect(() => {
+    if (window.innerWidth <= 960) return;
+    const section = sectionRef.current;
+    const left    = leftRef.current;
+    if (!section || !left) return;
+
+    const NAV = 90; // offset below nav bar
+    let ticking = false;
+
+    const update = () => {
+      const sr       = section.getBoundingClientRect();
+      const leftH    = left.offsetHeight;
+      const maxShift = section.offsetHeight - leftH - 80;
+
+      if (sr.top < NAV) {
+        const shift = Math.min(NAV - sr.top, maxShift);
+        left.style.transform = `translateY(${Math.max(0, shift)}px)`;
+      } else {
+        left.style.transform = "";
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    update();
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
 
   return (
-    <section className="edge-sec">
+    <section className="edge-sec" ref={sectionRef}>
       <div className="edge-inner">
 
-        {/* Left — sticky heading */}
-        <div className="edge-left">
+        {/* Left — stays in flow, translateY makes it appear fixed */}
+        <div className="edge-left" ref={leftRef}>
           <div className="edge-eyebrow">Why Choose Koenig</div>
           <h2 className="edge-left-heading">
             What You Get With Koenig<br /><em>That You Won’t Find Elsewhere</em>
@@ -11734,10 +11919,10 @@ function EdgeSection({ onCTA }) {
           </div>
         </div>
 
-        {/* Right — items reveal on scroll */}
+        {/* Right — scrolling items */}
         <div className="edge-right">
           {EDGE_ITEMS.map((item) => (
-            <div key={item.num} className="edge-item reveal">
+            <div key={item.num} className="edge-item">
               <div className="edge-item-icon-wrap"><item.icon /></div>
               <div className="edge-item-body">
                 <div className="edge-item-num">{item.num}</div>
@@ -14515,36 +14700,28 @@ export default function App() {
           </motion.div>
 
           {/* REVIEW STATS INLINE */}
-          {(() => {
-            const stats = [
-              { icon: <Star strokeWidth={1.8} />, number: "18,400+", label: "Verified Reviews" },
-              { icon: <TrendingUp strokeWidth={1.8} />, number: "4.9 / 5", label: "Average Rating" },
-              { icon: <ThumbsUp strokeWidth={1.8} />, number: "95%", label: "Would Recommend" },
-              { icon: <Users strokeWidth={1.8} />, number: "1M+", label: "Professionals Trained" },
-            ];
-            const items = (keyPrefix) => stats.map((stat, i) => (
-              <div key={`${keyPrefix}-${i}`} className="review-stats-item">
-                <div className="review-stats-icon">{stat.icon}</div>
-                <div className="review-stats-number"><TextShimmer as="span" duration={2.5} spread={2}>{stat.number}</TextShimmer></div>
-                <div className="review-stats-label">{stat.label}</div>
-              </div>
-            ));
-            return (
-              <div className="review-stats-grid-wrap" style={{ marginTop: 24 }}>
-                <motion.div
-                  className="review-stats-grid"
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  {items('a')}
-                  {/* Duplicate for seamless mobile loop */}
-                  {items('b')}
-                </motion.div>
-              </div>
-            );
-          })()}
+          <div className="review-stats-grid-wrap" style={{ marginTop: 24 }}>
+            <motion.div
+              className="review-stats-grid"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {[
+                { icon: <Star strokeWidth={1.8} />, number: "18,400+", label: "Verified Reviews" },
+                { icon: <TrendingUp strokeWidth={1.8} />, number: "4.9 / 5", label: "Average Rating" },
+                { icon: <ThumbsUp strokeWidth={1.8} />, number: "95%", label: "Would Recommend" },
+                { icon: <Users strokeWidth={1.8} />, number: "1M+", label: "Professionals Trained" },
+              ].map((stat, i) => (
+                <div key={i} className="review-stats-item">
+                  <div className="review-stats-icon">{stat.icon}</div>
+                  <div className="review-stats-number"><TextShimmer as="span" duration={2.5} spread={2}>{stat.number}</TextShimmer></div>
+                  <div className="review-stats-label">{stat.label}</div>
+                </div>
+              ))}
+            </motion.div>
+          </div>
 
           {/* Scrolling columns below */}
           <div className="test-cols-outer" style={{ marginTop: 48 }}>
@@ -14691,16 +14868,6 @@ export default function App() {
           ↑
         </button>
       )}
-
-      {/* DOWNLOAD BROCHURE FAB */}
-      <button className="dl-brochure-fab" onClick={() => setBrochureModal(true)} aria-label="Download Training Brochure">
-        <span className="dl-brochure-icon">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </span>
-        <span className="dl-brochure-text">Download Brochure</span>
-      </button>
 
       {/* ENQUIRY MODAL */}
       {modal && (
