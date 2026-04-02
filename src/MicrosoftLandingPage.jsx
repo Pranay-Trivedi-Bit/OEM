@@ -9,6 +9,7 @@ import { Award, Shield, Cloud, Sparkles, TrendingUp, Download, CheckCircle, Book
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import NumberFlow from "@number-flow/react";
 import confetti from "canvas-confetti";
+import { prepare, layout as pretextLayout } from "@chenglou/pretext";
 
 /* ── Lazy-mount wrapper: defers rendering until section nears viewport ── */
 function LazySection({ children, minHeight = 400, rootMargin = "300px 0px" }) {
@@ -89,12 +90,11 @@ const CSS = `
    sm  14px / 400  (1.5 lh)         — secondary body
    xs  12px / 500  (0.04em ls)      — captions, pills
 ══════════════════════════════════════════════════════ */
-html { scroll-behavior: smooth; }
-html { overflow-x: hidden; }
+html { overflow-x: clip; }
 body {
   font-family: var(--body);
   font-size: 16px; font-weight: 400; line-height: 1.75;
-  background: #ffffff; color: var(--light-text); overflow-x: hidden;
+  background: #ffffff; color: var(--light-text); overflow-x: clip;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
   font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
   text-rendering: optimizeLegibility;
@@ -3275,34 +3275,27 @@ p {
   .review-stats-grid .review-stats-item:nth-child(n+5) { display: none; }
 }
 @media (max-width: 600px) {
-  /* Wrap grid in a sliding marquee on mobile */
   .review-stats-grid {
-    display: flex;
-    flex-wrap: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    max-width: 100%;
-    overflow: visible;
-    animation: reviewSlide 12s linear infinite;
-    width: max-content;
+    width: 100%;
+    animation: none;
   }
   .review-stats-grid-wrap {
-    overflow: hidden;
-    width: 100%;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    overflow: visible;
+    -webkit-mask-image: none;
+    mask-image: none;
   }
   .review-stats-item {
-    flex: 0 0 140px;
-    min-width: 140px;
+    flex: unset;
+    min-width: unset;
     padding: 14px 10px;
     border-radius: 12px;
     transform: none !important;
   }
+  .review-stats-grid .review-stats-item:nth-child(n+5) { display: none; }
   .review-stats-item:hover { transform: none; }
-  @keyframes reviewSlide {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
 }
 
 /* ── ANIMATED TESTIMONIALS ── */
@@ -4564,12 +4557,12 @@ p {
 /* ── ROI & CAREER OUTCOMES — mirrored layout of edge-sec ── */
 .roi-sec { background: #f0f4f8; padding: 80px 0 0; border-top: 1px solid #ebebeb; }
 .roi-inner {
-  display: grid; grid-template-columns: 1fr 340px;
+  display: flex; flex-direction: row-reverse; align-items: flex-start;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
-  gap: 80px; align-items: start;
+  gap: 80px;
 }
-.roi-left { order: 2; align-self: start; will-change: transform; }
-.roi-right { order: 1; padding-bottom: 80px; }
+.roi-left { position: sticky; top: 90px; width: 340px; flex-shrink: 0; }
+.roi-right { flex: 1; padding-bottom: 80px; display: flex; flex-direction: column; gap: 0; }
 .roi-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -4590,7 +4583,6 @@ p {
 }
 .roi-left-cta:hover { background: #057ab5; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(6,148,209,0.4); }
 /* Right — stat strip + scrolling items */
-.roi-right { order: 1; display: flex; flex-direction: column; gap: 0; }
 .roi-stat-strip {
   margin-top: 36px; padding-top: 24px; border-top: 1px solid #ebebeb;
   display: flex; gap: 0; align-items: stretch;
@@ -4607,11 +4599,13 @@ p {
 .roi-item {
   display: flex; gap: 20px; align-items: flex-start;
   padding: 24px; border-radius: 10px; border: 1px solid transparent;
-  background: transparent;
-  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1),
-              background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  background: transparent; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .roi-item:hover { background: #fff; border-color: #ebebeb; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.roi-item.open { background: #fff; border-color: rgba(6,148,209,0.2); box-shadow: 0 4px 16px rgba(6,148,209,0.08); }
+.roi-item-desc-wrap { overflow: hidden; transition: height 0.4s cubic-bezier(0.22,1,0.36,1); }
+.roi-item-toggle { font-size: 11px; font-weight: 700; color: var(--blue); margin-top: 6px; letter-spacing: 0.04em; opacity: 0.8; user-select: none; }
 .roi-item-icon-wrap {
   flex-shrink: 0; width: 48px; height: 48px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -4624,12 +4618,13 @@ p {
 .roi-item-title { font-size: 16px; font-weight: 700; color: #212835; margin-bottom: 6px; line-height: 1.3; }
 .roi-item-desc { font-size: 14px; color: #586274; line-height: 1.7; }
 @media (max-width: 1024px) {
-  .roi-inner { grid-template-columns: 1fr 300px; gap: 48px; padding: 0 32px; }
+  .roi-inner { gap: 48px; padding: 0 32px; }
+  .roi-left { width: 300px; }
 }
 @media (max-width: 860px) {
-  .roi-inner { grid-template-columns: 1fr; padding: 0 24px; }
-  .roi-left { order: 1; transform: none !important; will-change: auto; }
-  .roi-right { order: 2; padding-bottom: 0; }
+  .roi-inner { flex-direction: column; padding: 0 24px; }
+  .roi-left { position: static; width: 100%; }
+  .roi-right { padding-bottom: 0; }
   .roi-sec { padding-bottom: 56px; }
 }
 @media (max-width: 600px) {
@@ -4646,15 +4641,15 @@ p {
 
 }
 
-/* ── KOENIG EDGE SECTION (sticky-left via translateY) ── */
+/* ── KOENIG EDGE SECTION ── */
 .edge-sec { background: #f7f7f7; padding: 80px 0 0; border-top: 1px solid #ebebeb; }
 .edge-inner {
-  display: grid; grid-template-columns: 340px 1fr;
+  display: flex; align-items: flex-start;
   max-width: 1200px; margin: 0 auto; padding: 0 64px;
-  gap: 80px; align-items: start;
+  gap: 80px;
 }
-.edge-left { align-self: start; will-change: transform; }
-.edge-right { padding-bottom: 80px; }
+.edge-left { position: sticky; top: 90px; width: 340px; flex-shrink: 0; }
+.edge-right { flex: 1; padding-bottom: 80px; display: flex; flex-direction: column; gap: 0; }
 .edge-eyebrow {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -4690,15 +4685,16 @@ p {
 .edge-count-num span { color: var(--blue); }
 .edge-count-label { font-size: 11px; color: #586274; font-weight: 500; letter-spacing: 0.03em; }
 /* Right — scrolling items */
-.edge-right { display: flex; flex-direction: column; gap: 0; }
 .edge-item {
   display: flex; gap: 20px; align-items: flex-start;
   padding: 24px; border-radius: 10px; border: 1px solid transparent;
-  background: transparent;
-  transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1),
-              background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  background: transparent; cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 .edge-item:hover { background: #fff; border-color: #ebebeb; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.edge-item.open { background: #fff; border-color: rgba(6,148,209,0.2); box-shadow: 0 4px 16px rgba(6,148,209,0.08); }
+.edge-item-desc-wrap { overflow: hidden; transition: height 0.4s cubic-bezier(0.22,1,0.36,1); }
+.edge-item-toggle { font-size: 11px; font-weight: 700; color: var(--blue); margin-top: 6px; letter-spacing: 0.04em; opacity: 0.8; user-select: none; }
 .edge-item-icon-wrap {
   flex-shrink: 0; width: 48px; height: 48px; border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
@@ -4711,8 +4707,8 @@ p {
 .edge-item-title { font-size: 16px; font-weight: 700; color: #212835; margin-bottom: 6px; line-height: 1.3; }
 .edge-item-desc { font-size: 13.5px; color: #586274; line-height: 1.7; }
 @media (max-width: 960px) {
-  .edge-inner { grid-template-columns: 1fr; padding: 0 24px; gap: 40px; }
-  .edge-left { transform: none !important; will-change: auto; }
+  .edge-inner { flex-direction: column; padding: 0 24px; gap: 40px; }
+  .edge-left { position: static; width: 100%; }
   .edge-right { padding-bottom: 0; }
   .edge-sec { padding-bottom: 56px; }
 }
@@ -6300,9 +6296,9 @@ const FeatureIcons = {
 };
 
 const FEATURES = [
-  { icon: FeatureIcons.alp,        title: "You Train on Microsoft’s Own Curriculum",  desc: "As a Microsoft Authorized Learning Partner, Koenig delivers the exact courseware Microsoft uses to train its own engineers — not a third-party interpretation. What you study maps directly to what the exam tests.", stat: "Only 3% of global training providers hold ALP status" },
+  { icon: FeatureIcons.alp,        title: "You Train on Microsoft's Own Curriculum",  desc: "As a Microsoft Authorized Learning Partner, Koenig delivers the exact courseware Microsoft uses to train its own engineers — not a third-party interpretation. What you study maps directly to what the exam tests.", stat: "Only 3% of global training providers hold ALP status" },
   { icon: FeatureIcons.mct,        title: "Every Trainer Holds the MCT Credential",   desc: "No freelancers. No subcontractors. Every session is led by an active Microsoft Certified Trainer with hands-on enterprise experience — the credential Microsoft requires to teach its own courses.", stat: "Avg. trainer experience: 14+ years in Microsoft technologies" },
-  { icon: FeatureIcons.oneOnOne,   title: "Train 1-on-1 — No Class Schedule, No Waiting",     desc: "Your dedicated MCT focuses entirely on you — your pace, your gaps, your exam date. No cohort to sync with, no one else’s questions eating your time. Available in 50+ countries, starting any day.", stat: "Available in 50+ countries — 24/7 scheduling" },
+  { icon: FeatureIcons.oneOnOne,   title: "Train 1-on-1 — No Class Schedule, No Waiting",     desc: "Your dedicated MCT focuses entirely on you — your pace, your gaps, your exam date. No cohort to sync with, no one else's questions eating your time. Available in 50+ countries, starting any day.", stat: "Available in 50+ countries — 24/7 scheduling" },
   { icon: FeatureIcons.flyTrainer, title: "We Send a Certified Trainer to Your Office",    desc: "Need to upskill your entire Azure or Security team without disrupting operations? Koenig flies an MCT directly to your location. Minimal travel overhead. Maximum impact — deployed in 40+ countries.", stat: "On-site Microsoft training deployed in 40+ countries" },
   { icon: FeatureIcons.esi,        title: "Use Your Microsoft EA Credits to Train", desc: "If your organisation has a Microsoft Enterprise Agreement, you may already have TSPv credits for training. Koenig is an official Microsoft ESI partner — meaning you can certify your entire team at zero additional net cost.", stat: "Accepts Microsoft Enterprise Agreements & EA credits" },
   { icon: FeatureIcons.passRate,   title: "95% of Koenig Students Pass on the First Attempt",       desc: "The industry average pass rate is 60–70%. Ours is 95%. That gap is built on MCT-led exam prep, hands-on Azure lab access, and practice tests that mirror the real exam format — not just watching videos.", stat: "vs. 60–70% industry average — verified on AZ-104, AI-102, SC-300" },
@@ -7269,7 +7265,7 @@ const CERTS = {
   ],
   "Data & Analytics": [
     { name: "20776A : Performing Big Data Engineering on Microsoft Cloud Services", code: "20776A : Perfor", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/dp-203-certification" },
-    { name: "A Beginner’s Guide to Power BI", code: "A Beginner’s Gu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-certification-course" },
+    { name: "A Beginner's Guide to Power BI", code: "A Beginner's Gu", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/power-bi-certification-course" },
     { name: "AI Transformation on Azure Cloud", code: "AI Transformati", dur: "2 days", level: "assoc", url: "https://www.koenig-solutions.com/azure-ai-engineer-associate" },
     { name: "Develop Generative AI Solutions with Azure OpenAI Service", code: "AI-050T00", dur: "1 day", level: "assoc", url: "https://www.koenig-solutions.com/develop-generative-ai-solutions-azure-openai-service-course-ai-050" },
     { name: "Develop AI Solutions in Azure", code: "AI-102T00", dur: "5 days", level: "assoc", url: "https://www.koenig-solutions.com/ai-102-exam-prep-training-course" },
@@ -7916,7 +7912,7 @@ function LeadForm({ onClose, mode }) {
           Request Received
         </div>
         <div className="lf-success-title" style={{fontSize:20,lineHeight:1.25,marginBottom:8}}>
-          {isEnterpriseContact ? <>Your team’s training plan<br/>starts here, {firstName}.</> : <>Your certification journey<br/>starts now, {firstName}.</>}
+          {isEnterpriseContact ? <>Your team's training plan<br/>starts here, {firstName}.</> : <>Your certification journey<br/>starts now, {firstName}.</>}
         </div>
         <div className="lf-success-msg" style={{marginBottom:16}}>
           {isEnterpriseContact
@@ -7926,7 +7922,7 @@ function LeadForm({ onClose, mode }) {
         <div className="lf-success-steps">
           {[
             {n:1,title:"Confirmation email sent",sub:`Check your inbox at ${data.email || "your email"} — usually within 2 minutes`},
-            {n:2,title:`${advisorLabel} calls you`,sub:isEnterpriseContact ? "We’ll map a training programme, cover ESI/EA credits, and confirm delivery format." : `We’ll confirm the right ${courseLabel} cert path, scheduling, and answer exam questions.`},
+            {n:2,title:`${advisorLabel} calls you`,sub:isEnterpriseContact ? "We'll map a training programme, cover ESI/EA credits, and confirm delivery format." : `We'll confirm the right ${courseLabel} cert path, scheduling, and answer exam questions.`},
             {n:3,title:isEnterpriseContact ? "Custom team plan delivered" : "Personalised study plan & pricing",sub:isEnterpriseContact ? "Receive a scoped proposal with per-seat pricing and MCT trainer profiles." : "Get your cert roadmap, flexi schedule options, and pricing — same day."},
           ].map(({n,title,sub}) => (
             <div key={n} className="lf-success-step">
@@ -8199,9 +8195,19 @@ const COMPANY_LIST = [
       </svg>
     )
   },
-  { name: "IBM",        slug: "ibm",        color: "#1F70C1" },
+  { name: "IBM", jsx: (
+      <svg viewBox="0 0 72 28" height="26" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="22" fontFamily="'Arial Black',Arial,sans-serif" fontSize="24" fontWeight="900" fill="#1F70C1" letterSpacing="2">IBM</text>
+      </svg>
+    )
+  },
   { name: "Accenture",  slug: "accenture",  color: "#A100FF" },
-  { name: "Deloitte",   slug: "deloitte",   color: "#76C143" },
+  { name: "Deloitte", jsx: (
+      <svg viewBox="0 0 100 28" height="26" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="21" fontFamily="Arial,sans-serif" fontSize="17" fontWeight="700" fill="#86BC25">Deloitte.</text>
+      </svg>
+    )
+  },
   { name: "Cisco",      slug: "cisco",      color: "#1BA0D7" },
   { name: "Oracle",     slug: "oracle",     color: "#F80000" },
   { name: "SAP",        slug: "sap",        color: "#0070B9" },
@@ -8209,11 +8215,27 @@ const COMPANY_LIST = [
   { name: "Wipro",      slug: "wipro",      color: "#341C71" },
   { name: "Cognizant",  slug: "cognizant",  color: "#0033A0" },
   { name: "Dell",       slug: "dell",       color: "#007DB8" },
-  { name: "ServiceNow", slug: "servicenow", color: "#62D84E" },
+  { name: "ServiceNow", jsx: (
+      <svg viewBox="0 0 128 28" height="26" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="21" fontFamily="Arial,sans-serif" fontSize="15" fontWeight="700" fill="#293E40">Service</text>
+        <text x="58" y="21" fontFamily="Arial,sans-serif" fontSize="15" fontWeight="700" fill="#62D84E">Now</text>
+      </svg>
+    )
+  },
   { name: "Salesforce", slug: "salesforce", color: "#00A1E0" },
   { name: "Adobe",      slug: "adobe",      color: "#FF0000" },
-  { name: "PwC",        slug: "pwc",        color: "#D04A02" },
-  { name: "Capgemini",  slug: "capgemini",  color: "#0070AD" },
+  { name: "PwC", jsx: (
+      <svg viewBox="0 0 56 28" height="26" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="22" fontFamily="'Arial Black',Arial,sans-serif" fontSize="21" fontWeight="900" fill="#D04A02">PwC</text>
+      </svg>
+    )
+  },
+  { name: "Capgemini", jsx: (
+      <svg viewBox="0 0 112 28" height="26" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="21" fontFamily="Arial,sans-serif" fontSize="15" fontWeight="700" fill="#0070AD">Capgemini</text>
+      </svg>
+    )
+  },
   { name: "Siemens",    slug: "siemens",    color: "#009999" },
   { name: "HCL Tech",   slug: "hcl",        color: "#E3001B" },
 ];
@@ -8226,7 +8248,7 @@ function BrandLogo({ name, slug, color, jsx }) {
   const [err, setErr] = React.useState(false);
   React.useEffect(() => {
     let cancelled = false;
-    fetch(`https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`)
+    fetch(`https://cdn.jsdelivr.net/npm/simple-icons@13/icons/${slug}.svg`)
       .then(r => { if (!r.ok) throw new Error(); return r.text(); })
       .then(text => {
         if (cancelled) return;
@@ -8919,6 +8941,17 @@ function VsMoreCard() {
 
 function VendorStack() {
   const [activeTab, setActiveTab] = useState(0);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const applyCardsRef = useRef(null);
+  const lockedRef = useRef(false);
+  const lockTimerRef = useRef(null);
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const close = (e) => { if (!e.target.closest('.vs-mobile-tabs')) setDropdownOpen(false); };
+    document.addEventListener('click', close, true);
+    return () => document.removeEventListener('click', close, true);
+  }, [dropdownOpen]);
 
   useEffect(() => {
     const SHIFT     = 22;
@@ -8946,6 +8979,7 @@ function VendorStack() {
         }
       });
     }
+    applyCardsRef.current = applyCards;
 
     const rafId = requestAnimationFrame(() => {
       const stickyEl    = document.querySelector('.vs-section');
@@ -8968,6 +9002,7 @@ function VendorStack() {
       const stickyBottom = (NAV_H + TITLE_GAP) + stickyEl.offsetHeight;
 
       const onScroll = () => {
+        if (lockedRef.current) return;
         const viewLine = window.scrollY + stickyBottom + 40;
         let active = 0;
         for (let i = 0; i < triggerTops.length; i++) { if (triggerTops[i] <= viewLine) active = i; else break; }
@@ -8986,7 +9021,7 @@ function VendorStack() {
       scrollCleanup = () => window.removeEventListener('scroll', onScroll);
     });
 
-    return () => { cancelAnimationFrame(rafId); scrollCleanup && scrollCleanup(); };
+    return () => { cancelAnimationFrame(rafId); scrollCleanup && scrollCleanup(); clearTimeout(lockTimerRef.current); };
   }, []);
 
   const scrollToTrigger = (i) => {
@@ -9010,18 +9045,58 @@ function VendorStack() {
           </p>
         </div>
 
-        {/* Mobile horizontal tab bar */}
-        <div className="vs-mobile-tabs" style={{ overflowX:'auto', WebkitOverflowScrolling:'touch', scrollbarWidth:'none' }}>
-          <div style={{ display:'flex', gap:8, padding:'0 16px', width:'max-content' }}>
-            {VS_SIDEBAR_TABS.map((tab, i) => (
-              <button key={i} data-tab={i} data-active={activeTab===i?'true':'false'}
-                onClick={() => scrollToTrigger(i)}
-                style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:9999, border:`1px solid ${activeTab===i?'#0694D1':'rgba(6,148,209,0.3)'}`, background: activeTab===i?'rgba(6,148,209,0.25)':'transparent', cursor:'pointer', whiteSpace:'nowrap', flexShrink:0, fontFamily:'inherit', transition:'background 0.2s, border-color 0.2s' }}>
-                <span style={{ display:'flex', alignItems:'center', justifyContent:'center', width:18, height:18, flexShrink:0 }}>{tab.icon}</span>
-                <span style={{ fontSize:13, color: activeTab===i?'white':'rgba(255,255,255,0.7)', fontWeight: activeTab===i?600:400 }}>{tab.label}</span>
-              </button>
-            ))}
-          </div>
+        {/* Mobile dropdown (replaces horizontal tab bar) */}
+        <div className="vs-mobile-tabs" style={{ position:'relative', padding:'0 16px' }}>
+          {/* Trigger button */}
+          <button
+            type="button"
+            onClick={() => setDropdownOpen(o => !o)}
+            style={{ display:'flex', alignItems:'center', gap:10, width:'100%', padding:'10px 14px', borderRadius:12, border:'1px solid rgba(6,148,209,0.35)', background:'rgba(6,148,209,0.1)', cursor:'pointer', fontFamily:'inherit', transition:'background 0.2s, border-color 0.2s' }}
+          >
+            <span style={{ display:'flex', alignItems:'center', justifyContent:'center', width:26, height:26, borderRadius:7, background:'linear-gradient(135deg,#076D9D,#0694D1)', flexShrink:0 }}>
+              {VS_SIDEBAR_TABS[activeTab]?.icon}
+            </span>
+            <span style={{ flex:1, fontSize:13, fontWeight:600, color:'white', textAlign:'left' }}>
+              {VS_SIDEBAR_TABS[activeTab]?.label}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.5" strokeLinecap="round" style={{ flexShrink:0, transform: dropdownOpen?'rotate(180deg)':'rotate(0deg)', transition:'transform 0.2s' }}>
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+
+          {/* Dropdown panel */}
+          {dropdownOpen && (
+            <div style={{ position:'absolute', top:'calc(100% + 6px)', left:16, right:16, zIndex:60, background:'#0b1929', border:'1px solid rgba(6,148,209,0.25)', borderRadius:12, overflow:'hidden', boxShadow:'0 12px 40px rgba(0,0,0,0.5)' }}>
+              <div style={{ padding:'8px 12px 6px', fontSize:10, fontWeight:700, letterSpacing:'0.12em', textTransform:'uppercase', color:'rgba(77,191,239,0.7)', borderBottom:'1px solid rgba(6,148,209,0.12)' }}>
+                Select Vendor
+              </div>
+              {VS_SIDEBAR_TABS.map((tab, i) => (
+                <button type="button" key={i} data-tab={i} data-active={activeTab===i?'true':'false'}
+                  onClick={() => {
+                    applyCardsRef.current?.(i);
+                    setActiveTab(i);
+                    setDropdownOpen(false);
+                    clearTimeout(lockTimerRef.current);
+                    lockedRef.current = true;
+                    lockTimerRef.current = setTimeout(() => { lockedRef.current = false; }, 2500);
+                  }}
+                  style={{ display:'flex', alignItems:'center', gap:10, width:'100%', padding:'10px 14px', border:'none', borderLeft:`3px solid ${activeTab===i?'#0694D1':'transparent'}`, background: activeTab===i?'rgba(6,148,209,0.15)':'transparent', cursor:'pointer', fontFamily:'inherit', transition:'background 0.15s', borderBottom:'1px solid rgba(6,148,209,0.07)' }}
+                >
+                  <span style={{ display:'flex', alignItems:'center', justifyContent:'center', width:26, height:26, borderRadius:7, flexShrink:0, background: activeTab===i?'linear-gradient(135deg,#076D9D,#0694D1)':'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.08)' }}>
+                    {tab.icon}
+                  </span>
+                  <span style={{ flex:1, fontSize:13, fontWeight: activeTab===i?700:400, color: activeTab===i?'#4DBFEF':'rgba(255,255,255,0.75)', textAlign:'left' }}>
+                    {tab.label}
+                  </span>
+                  {activeTab===i && (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0694D1" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink:0 }}>
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Main layout: sidebar + deck */}
@@ -11614,58 +11689,54 @@ const ROI_ITEMS = [
   { icon: RoiIcons.enterprise, num: "08", title: "3–5× ROI on Enterprise Microsoft Training Investment", desc: "Enterprises report 3–5× return on Microsoft certification training within 12 months — driven by 20% average reduction in Azure cloud spend, fewer outages, and faster feature delivery. As a Microsoft ESI partner, Koenig accepts Enterprise Agreement and TSPv credits, letting teams train at zero net cost." },
 ];
 
-function WhyCertSection({ onCTA }) {
-  const sectionRef = useRef(null);
-  const rightRef   = useRef(null); // the RIGHT panel (heading/stats) that stays fixed
+function RoiItem({ item }) {
+  const [open, setOpen] = React.useState(false);
+  const bodyRef = React.useRef(null);
+  const [expandedH, setExpandedH] = React.useState(0);
 
-  useEffect(() => {
-    if (window.innerWidth <= 860) return;
-    const section = sectionRef.current;
-    const right   = rightRef.current;
-    if (!section || !right) return;
-
-    const NAV = 90;
-    let ticking = false;
-
-    const update = () => {
-      const sr       = section.getBoundingClientRect();
-      const rightH   = right.offsetHeight;
-      const maxShift = section.offsetHeight - rightH - 80;
-
-      if (sr.top < NAV) {
-        const shift = Math.min(NAV - sr.top, maxShift);
-        right.style.transform = `translateY(${Math.max(0, shift)}px)`;
-      } else {
-        right.style.transform = "";
-      }
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    update();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
+  React.useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const w = el.offsetWidth || 580;
+    const font = '500 14px "Plus Jakarta Sans",sans-serif';
+    const lh = 23.8;
+    try {
+      const prepared = prepare(item.desc, font);
+      const { height } = pretextLayout(prepared, w, lh);
+      setExpandedH(Math.ceil(height) + 6);
+    } catch {
+      setExpandedH(120);
+    }
+  }, [item.desc]);
 
   return (
-    <section className="roi-sec" ref={sectionRef}>
+    <div className={`roi-item${open ? ' open' : ''}`} onClick={() => setOpen(o => !o)}>
+      <div className="roi-item-icon-wrap"><item.icon /></div>
+      <div className="roi-item-body" ref={bodyRef}>
+        <div className="roi-item-num">{item.num}</div>
+        <h3 className="roi-item-title">{item.title}</h3>
+        <div className="roi-item-desc-wrap" style={{ height: open && expandedH ? expandedH : 0 }}>
+          <p className="roi-item-desc">{item.desc}</p>
+        </div>
+        <div className="roi-item-toggle">{open ? '↑ Show less' : '↓ Read more'}</div>
+      </div>
+    </div>
+  );
+}
+
+function WhyCertSection({ onCTA }) {
+  return (
+    <section className="roi-sec">
       <div className="roi-inner">
 
-        {/* RIGHT panel — translateY keeps it in view while left items scroll */}
-        <div className="roi-left" ref={rightRef}>
+        {/* RIGHT panel — CSS sticky keeps it in view while left items scroll */}
+        <div className="roi-left">
           <div className="roi-eyebrow">ROI &amp; Career Outcomes</div>
           <h2 className="roi-left-heading">
             A Microsoft Cert <em>Pays for Itself.</em><br />Fast.
           </h2>
           <p className="roi-left-sub">
-            26% average salary boost. 91% of hiring managers favour certified candidates. Here’s what the data shows across every Microsoft role track.
+            26% average salary boost. 91% of hiring managers favour certified candidates. Here's what the data shows across every Microsoft role track.
           </p>
           <button className="roi-left-cta" onClick={onCTA}>
             Explore Courses →
@@ -11691,14 +11762,7 @@ function WhyCertSection({ onCTA }) {
         {/* Left (order:1 via CSS) — scrolling items */}
         <div className="roi-right">
           {ROI_ITEMS.map((item) => (
-            <div key={item.num} className="roi-item">
-              <div className="roi-item-icon-wrap"><item.icon /></div>
-              <div className="roi-item-body">
-                <div className="roi-item-num">{item.num}</div>
-                <h3 className="roi-item-title">{item.title}</h3>
-                <p className="roi-item-desc">{item.desc}</p>
-              </div>
-            </div>
+            <RoiItem key={item.num} item={item} />
           ))}
         </div>
 
@@ -11847,55 +11911,51 @@ const WC_TABS_UNUSED = [
   },
 ];
 
-function EdgeSection({ onCTA }) {
-  const sectionRef = useRef(null);
-  const leftRef    = useRef(null);
+function EdgeItem({ item }) {
+  const [open, setOpen] = React.useState(false);
+  const bodyRef = React.useRef(null);
+  const [expandedH, setExpandedH] = React.useState(0);
 
-  useEffect(() => {
-    if (window.innerWidth <= 960) return;
-    const section = sectionRef.current;
-    const left    = leftRef.current;
-    if (!section || !left) return;
-
-    const NAV = 90; // offset below nav bar
-    let ticking = false;
-
-    const update = () => {
-      const sr       = section.getBoundingClientRect();
-      const leftH    = left.offsetHeight;
-      const maxShift = section.offsetHeight - leftH - 80;
-
-      if (sr.top < NAV) {
-        const shift = Math.min(NAV - sr.top, maxShift);
-        left.style.transform = `translateY(${Math.max(0, shift)}px)`;
-      } else {
-        left.style.transform = "";
-      }
-      ticking = false;
-    };
-
-    const onScroll = () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    };
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    update();
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
+  React.useEffect(() => {
+    const el = bodyRef.current;
+    if (!el) return;
+    const w = el.offsetWidth || 580;
+    const font = '500 13.5px "Plus Jakarta Sans",sans-serif';
+    const lh = 23;
+    try {
+      const prepared = prepare(item.desc, font);
+      const { height } = pretextLayout(prepared, w, lh);
+      setExpandedH(Math.ceil(height) + 6);
+    } catch {
+      setExpandedH(120);
+    }
+  }, [item.desc]);
 
   return (
-    <section className="edge-sec" ref={sectionRef}>
+    <div className={`edge-item${open ? ' open' : ''}`} onClick={() => setOpen(o => !o)}>
+      <div className="edge-item-icon-wrap"><item.icon /></div>
+      <div className="edge-item-body" ref={bodyRef}>
+        <div className="edge-item-num">{item.num}</div>
+        <h3 className="edge-item-title">{item.title}</h3>
+        <div className="edge-item-desc-wrap" style={{ height: open && expandedH ? expandedH : 0 }}>
+          <p className="edge-item-desc">{item.desc}</p>
+        </div>
+        <div className="edge-item-toggle">{open ? '↑ Show less' : '↓ Read more'}</div>
+      </div>
+    </div>
+  );
+}
+
+function EdgeSection({ onCTA }) {
+  return (
+    <section className="edge-sec">
       <div className="edge-inner">
 
-        {/* Left — stays in flow, translateY makes it appear fixed */}
-        <div className="edge-left" ref={leftRef}>
+        {/* Left — CSS sticky keeps it in view as right items scroll */}
+        <div className="edge-left">
           <div className="edge-eyebrow">Why Choose Koenig</div>
           <h2 className="edge-left-heading">
-            What You Get With Koenig<br /><em>That You Won’t Find Elsewhere</em>
+            What You Get With Koenig<br /><em>That You Won't Find Elsewhere</em>
           </h2>
           <p className="edge-left-sub">
             33 years of Microsoft training. 500,000+ professionals certified. Eight specific reasons our pass rate, flexibility, and delivery model beat every alternative.
@@ -11922,14 +11982,7 @@ function EdgeSection({ onCTA }) {
         {/* Right — scrolling items */}
         <div className="edge-right">
           {EDGE_ITEMS.map((item) => (
-            <div key={item.num} className="edge-item">
-              <div className="edge-item-icon-wrap"><item.icon /></div>
-              <div className="edge-item-body">
-                <div className="edge-item-num">{item.num}</div>
-                <h3 className="edge-item-title">{item.title}</h3>
-                <p className="edge-item-desc">{item.desc}</p>
-              </div>
-            </div>
+            <EdgeItem key={item.num} item={item} />
           ))}
         </div>
 
@@ -12860,53 +12913,7 @@ const LF_FORMATS = [
     panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
     desc: "Traditional, instructor-led learning in popular global destinations.",
     bullets: ["Hands-on lab sessions", "Face-to-face with expert instructors", "Global training centers"],
-    illustration: (
-      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
-        {/* Room background */}
-        <rect width="260" height="176" fill="url(#cls-bg)"/>
-        <defs>
-          <linearGradient id="cls-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0a2e48"/><stop offset="1" stopColor="#072540"/>
-          </linearGradient>
-        </defs>
-        {/* Subtle grid floor */}
-        <line x1="0" y1="130" x2="260" y2="130" stroke="rgba(6,148,209,0.12)" strokeWidth="1"/>
-        <line x1="0" y1="155" x2="260" y2="155" stroke="rgba(6,148,209,0.08)" strokeWidth="1"/>
-        {/* Whiteboard */}
-        <rect x="30" y="18" width="200" height="80" rx="4" fill="rgba(255,255,255,0.06)" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5"/>
-        <rect x="40" y="28" width="180" height="60" rx="2" fill="rgba(6,148,209,0.05)"/>
-        {/* Board content - code lines */}
-        <rect x="50" y="35" width="80" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
-        <rect x="50" y="44" width="110" height="3" rx="1.5" fill="rgba(255,255,255,0.2)"/>
-        <rect x="60" y="53" width="90" height="3" rx="1.5" fill="rgba(255,255,255,0.15)"/>
-        <rect x="60" y="62" width="70" height="3" rx="1.5" fill="rgba(255,255,255,0.1)"/>
-        <rect x="50" y="71" width="50" height="3" rx="1.5" fill="rgba(6,148,209,0.4)"/>
-        {/* Presenter */}
-        <circle cx="215" cy="55" r="10" fill="rgba(6,148,209,0.25)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
-        <path d="M207 75c0-4.4 3.6-8 8-8h0c4.4 0 8 3.6 8 8" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        {/* Desk row */}
-        <rect x="20" y="128" width="220" height="6" rx="2" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
-        {/* Seated students */}
-        {[50,110,170].map(x => (
-          <g key={x}>
-            <circle cx={x} cy="118" r="8" fill="rgba(6,148,209,0.3)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
-            <rect x={x-12} y="128" width="24" height="4" rx="1" fill="rgba(6,148,209,0.1)"/>
-          </g>
-        ))}
-        {/* Laptop screens on desk */}
-        {[50,110,170].map(x => (
-          <rect key={`lap-${x}`} x={x-8} y="110" width="16" height="10" rx="1" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        ))}
-        {/* Ceiling lights */}
-        <ellipse cx="130" cy="4" rx="40" ry="6" fill="rgba(6,148,209,0.08)"/>
-        <line x1="130" y1="4" x2="130" y2="18" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
-        <rect x="110" y="8" width="40" height="5" rx="2" fill="rgba(255,255,255,0.06)" stroke="rgba(6,148,209,0.2)" strokeWidth="0.8"/>
-        {/* Certificate icon bottom-right */}
-        <rect x="218" y="140" width="28" height="22" rx="3" fill="rgba(6,148,209,0.15)" stroke="rgba(6,148,209,0.4)" strokeWidth="1"/>
-        <path d="M223 152l2.5 2.5 5-5" stroke="#0694d1" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
-        <circle cx="237" cy="150" r="3" fill="rgba(6,148,209,0.3)"/>
-      </svg>
-    ),
+    img: "https://koenig-website.vercel.app/images/home-banner/classroom-training.png",
     icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>),
   },
   {
@@ -12915,46 +12922,7 @@ const LF_FORMATS = [
     panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
     desc: "Flexible virtual learning with expert instructors from the comfort of your own space.",
     bullets: ["Live instructor-led sessions", "Interactive Q&A & labs", "Train from anywhere"],
-    illustration: (
-      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
-        <defs>
-          <linearGradient id="loc-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0a3d5c"/><stop offset="1" stopColor="#072d44"/>
-          </linearGradient>
-        </defs>
-        <rect width="260" height="176" fill="url(#loc-bg)"/>
-        {/* Laptop body */}
-        <rect x="45" y="30" width="170" height="105" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(6,148,209,0.35)" strokeWidth="1.5"/>
-        {/* Screen */}
-        <rect x="55" y="40" width="150" height="85" rx="4" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.25)" strokeWidth="1"/>
-        {/* Video grid 2x2 */}
-        <rect x="60" y="45" width="68" height="36" rx="3" fill="rgba(6,148,209,0.18)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        <rect x="132" y="45" width="68" height="36" rx="3" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        <rect x="60" y="85" width="68" height="36" rx="3" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        <rect x="132" y="85" width="68" height="36" rx="3" fill="rgba(6,148,209,0.18)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        {/* Avatars in video tiles */}
-        {[[94,63],[166,63],[94,103],[166,103]].map(([cx,cy],i) => (
-          <g key={i}>
-            <circle cx={cx} cy={cy-4} r="7" fill={i===0||i===3 ? "rgba(6,148,209,0.5)" : "rgba(255,255,255,0.15)"} stroke="rgba(6,148,209,0.4)" strokeWidth="0.8"/>
-            <path d={`M${cx-8} ${cy+10}c0-4.4 3.6-8 8-8s8 3.6 8 8`} stroke="rgba(6,148,209,0.35)" strokeWidth="1" fill="none"/>
-          </g>
-        ))}
-        {/* Live badge on top-right tile */}
-        <rect x="170" y="49" width="24" height="10" rx="5" fill="#ef4444"/>
-        <text x="182" y="57" textAnchor="middle" fontSize="6" fill="white" fontFamily="sans-serif">LIVE</text>
-        {/* Mic icon bottom */}
-        <rect x="110" y="132" width="40" height="5" rx="2" fill="rgba(6,148,209,0.2)" stroke="rgba(6,148,209,0.3)" strokeWidth="0.8"/>
-        {/* Keyboard */}
-        <rect x="30" y="140" width="200" height="28" rx="6" fill="rgba(255,255,255,0.04)" stroke="rgba(6,148,209,0.2)" strokeWidth="1"/>
-        {[40,60,80,100,120,140,160,180,200].map(x => (
-          <rect key={x} x={x} y="148" width="12" height="8" rx="1.5" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.12)" strokeWidth="0.5"/>
-        ))}
-        {/* WiFi signal */}
-        <path d="M228 25c-5-5-12-8-20-8s-15 3-20 8" stroke="rgba(6,148,209,0.6)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        <path d="M223 30c-3.5-3.5-8-5.5-15-5.5s-11.5 2-15 5.5" stroke="rgba(6,148,209,0.4)" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-        <circle cx="208" cy="35" r="2.5" fill="#0694d1"/>
-      </svg>
-    ),
+    img: "https://koenig-website.vercel.app/images/home-banner/Live-Online-Classes.png",
     icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="13" rx="2"/><polyline points="8 21 12 17 16 21"/><line x1="2" y1="16" x2="22" y2="16"/></svg>),
   },
   {
@@ -12963,39 +12931,7 @@ const LF_FORMATS = [
     panelBg: "linear-gradient(145deg,#0c4a72,#093148)",
     desc: "Flexible on-site learning for larger groups. Fly an expert to your location anywhere in the world.",
     bullets: ["Expert trainer at your site", "Custom schedule & pace", "Any location worldwide"],
-    illustration: (
-      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
-        <defs>
-          <linearGradient id="fmat-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0c4a72"/><stop offset="1" stopColor="#093148"/>
-          </linearGradient>
-        </defs>
-        <rect width="260" height="176" fill="url(#fmat-bg)"/>
-        {/* Globe */}
-        <circle cx="130" cy="95" r="55" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.3)" strokeWidth="1.5"/>
-        <ellipse cx="130" cy="95" rx="30" ry="55" fill="none" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
-        <ellipse cx="130" cy="95" rx="55" ry="18" fill="none" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
-        <ellipse cx="130" cy="95" rx="55" ry="36" fill="none" stroke="rgba(6,148,209,0.1)" strokeWidth="0.8"/>
-        <line x1="75" y1="95" x2="185" y2="95" stroke="rgba(6,148,209,0.18)" strokeWidth="1"/>
-        {/* Continents (simplified) */}
-        <ellipse cx="110" cy="82" rx="14" ry="10" fill="rgba(6,148,209,0.25)" opacity="0.7"/>
-        <ellipse cx="148" cy="100" rx="12" ry="9" fill="rgba(6,148,209,0.2)" opacity="0.7"/>
-        <ellipse cx="118" cy="108" rx="8" ry="6" fill="rgba(6,148,209,0.18)" opacity="0.7"/>
-        {/* Flight path */}
-        <path d="M75 120 Q130 30 185 70" stroke="#0694d1" strokeWidth="1.5" strokeDasharray="5 3" fill="none" opacity="0.7"/>
-        {/* Plane */}
-        <g transform="translate(155,58) rotate(-35)">
-          <path d="M0 0L-12 5L-10 0L-12 -5Z" fill="#0694d1" opacity="0.9"/>
-          <path d="M-8 -2L-14 -8L-16 -6L-10 0Z" fill="rgba(6,148,209,0.6)"/>
-          <path d="M-8 2L-14 8L-16 6L-10 0Z" fill="rgba(6,148,209,0.6)"/>
-        </g>
-        {/* Location pins */}
-        <path d="M82 118c0-5.5 4.5-10 10-10s10 4.5 10 10c0 7-10 15-10 15s-10-8-10-15z" fill="rgba(6,148,209,0.3)" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
-        <circle cx="92" cy="118" r="3" fill="#0694d1"/>
-        <path d="M168 62c0-4 3-7 7-7s7 3 7 7c0 5-7 11-7 11s-7-6-7-11z" fill="#0694d1" opacity="0.7" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
-        <circle cx="175" cy="62" r="2" fill="#fff" opacity="0.8"/>
-      </svg>
-    ),
+    img: "https://koenig-website.vercel.app/images/home-banner/FMAT.png",
     icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4 19-7z"/></svg>),
   },
   {
@@ -13004,48 +12940,7 @@ const LF_FORMATS = [
     panelBg: "linear-gradient(145deg,#0a3d5c,#072d44)",
     desc: "Self-paced learning with edited lectures, courseware, hands-on labs, and optional doubt clearing sessions.",
     bullets: ["Edited video lectures", "Hands-on labs & courseware", "Optional doubt clearing sessions"],
-    illustration: (
-      <svg width="260" height="176" viewBox="0 0 260 176" fill="none" style={{position:"absolute",inset:0,width:"100%",height:"100%"}}>
-        <defs>
-          <linearGradient id="flexi-bg" x1="0" y1="0" x2="260" y2="176" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#0a3d5c"/><stop offset="1" stopColor="#072d44"/>
-          </linearGradient>
-        </defs>
-        <rect width="260" height="176" fill="url(#flexi-bg)"/>
-        {/* Central clock */}
-        <circle cx="130" cy="85" r="50" fill="rgba(6,148,209,0.08)" stroke="rgba(6,148,209,0.3)" strokeWidth="1.5"/>
-        <circle cx="130" cy="85" r="42" fill="none" stroke="rgba(6,148,209,0.12)" strokeWidth="1"/>
-        {/* Clock ticks */}
-        {[0,30,60,90,120,150,180,210,240,270,300,330].map(deg => {
-          const r1 = 36, r2 = 42;
-          const rad = (deg - 90) * Math.PI / 180;
-          const long = deg % 90 === 0;
-          return <line key={deg} x1={130+r1*Math.cos(rad)} y1={85+r1*Math.sin(rad)} x2={130+r2*Math.cos(rad)} y2={85+r2*Math.sin(rad)} stroke="rgba(6,148,209,0.4)" strokeWidth={long?1.5:0.8} strokeLinecap="round"/>;
-        })}
-        {/* Clock hands */}
-        <line x1="130" y1="85" x2="130" y2="60" stroke="#0694d1" strokeWidth="2.5" strokeLinecap="round"/>
-        <line x1="130" y1="85" x2="148" y2="90" stroke="rgba(6,148,209,0.7)" strokeWidth="2" strokeLinecap="round"/>
-        <circle cx="130" cy="85" r="3.5" fill="#0694d1"/>
-        {/* Progress arc */}
-        <path d="M130 43a42 42 0 0 1 36.4 21" stroke="#0694d1" strokeWidth="2.5" strokeLinecap="round" fill="none" opacity="0.7"/>
-        {/* Floating cards left */}
-        <rect x="18" y="40" width="70" height="42" rx="6" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="1"/>
-        <rect x="26" y="50" width="40" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
-        <rect x="26" y="58" width="54" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
-        <rect x="26" y="64" width="44" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
-        <rect x="26" y="72" width="24" height="4" rx="2" fill="rgba(6,148,209,0.3)"/>
-        {/* Floating cards right */}
-        <rect x="172" y="100" width="70" height="42" rx="6" fill="rgba(6,148,209,0.12)" stroke="rgba(6,148,209,0.3)" strokeWidth="1"/>
-        <rect x="180" y="110" width="40" height="3" rx="1.5" fill="rgba(6,148,209,0.5)"/>
-        <rect x="180" y="118" width="54" height="2" rx="1" fill="rgba(255,255,255,0.15)"/>
-        <rect x="180" y="124" width="44" height="2" rx="1" fill="rgba(255,255,255,0.1)"/>
-        <path d="M180 132l2.5 2.5 5-5" stroke="#0694d1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        {/* Stars */}
-        {[[45,155],[90,165],[145,165],[200,155]].map(([x,y],i) => (
-          <text key={i} x={x} y={y} fontSize="12" fill="rgba(6,148,209,0.5)" textAnchor="middle">★</text>
-        ))}
-      </svg>
-    ),
+    img: "https://koenig-website.vercel.app/images/home-banner/Flexi.png",
     icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>),
   },
 ];
@@ -13054,10 +12949,22 @@ const LF_FORMATS = [
 const HEX_PATTERN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50V17L28 1L56 17V50L28 66Z' stroke='%230694d1' stroke-opacity='0.10' stroke-width='1' fill='none'/%3E%3Cpath d='M28 100L0 84V50L28 66L56 50V84L28 100Z' stroke='%230694d1' stroke-opacity='0.10' stroke-width='1' fill='none'/%3E%3C/svg%3E\")";
 
 function LearningFormatsSection({ onCTA }) {
+  const [activeIdx, setActiveIdx] = React.useState(0);
+  const touchStartX = React.useRef(null);
+
+  const handleTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (dx < -40 && activeIdx < LF_FORMATS.length - 1) setActiveIdx(i => i + 1);
+    else if (dx > 40 && activeIdx > 0) setActiveIdx(i => i - 1);
+  };
+
   return (
     <section className="lfr-sec-outer" style={{ position:"relative", overflow:"hidden", background:"linear-gradient(135deg,#061e30 0%,#093148 50%,#062240 100%)" }}>
 
-      {/* Inline styles for flip mechanism — isolated class names to avoid conflicts */}
+      {/* Inline styles for flip mechanism */}
       <style>{`
         .lfr-sec-outer { padding: clamp(40px,7vw,60px) clamp(16px,4vw,50px); }
         .lfr-inner { transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.4,0.2,0.2,1); }
@@ -13069,9 +12976,14 @@ function LearningFormatsSection({ onCTA }) {
         .lfr-ring.d1{animation-delay:0s} .lfr-ring.d2{animation-delay:1.6s} .lfr-ring.d3{animation-delay:3.2s}
         @keyframes lfrBtnGlow { 0%,100%{box-shadow:0 0 0 0 rgba(6,148,209,0),0 4px 14px rgba(6,148,209,0.3)} 50%{box-shadow:0 0 22px 7px rgba(6,148,209,0.5),0 4px 14px rgba(6,148,209,0.3)} }
         .lfr-btn-glow { animation:lfrBtnGlow 2.8s ease-in-out infinite; }
-        @media(max-width:1024px){ .lfr-grid{grid-template-columns:repeat(2,1fr)!important} }
-        @media(max-width:640px){ .lfr-grid{grid-template-columns:1fr!important} .lfr-wrap{height:380px!important} }
-        @media(max-width:480px){ .lfr-wrap{height:340px!important} }
+        .lfr-img { width:100%; height:100%; object-fit:cover; display:block; }
+        .lfr-mobile { display:none; }
+        .lfr-grid-desktop { display:grid; }
+        @media(max-width:1024px){ .lfr-grid{ grid-template-columns:repeat(2,1fr)!important; } }
+        @media(max-width:640px){
+          .lfr-grid-desktop { display:none!important; }
+          .lfr-mobile { display:block!important; }
+        }
       `}</style>
 
       {/* Glow orbs */}
@@ -13100,13 +13012,13 @@ function LearningFormatsSection({ onCTA }) {
           </p>
         </motion.div>
 
-        {/* 4-column flip card grid */}
-        <div className="lfr-grid" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:20 }}>
+        {/* ── DESKTOP: 4-column flip card grid ── */}
+        <div className="lfr-grid-desktop lfr-grid" style={{ gridTemplateColumns:"repeat(4,1fr)", gap:20 }}>
           {LF_FORMATS.map((f, i) => (
             <motion.div
               key={i}
               className="lfr-wrap"
-              style={{ perspective:"1000px", height:400, cursor:"pointer" }}
+              style={{ perspective:"1000px", height:420, cursor:"pointer" }}
               initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:0.1}} transition={{duration:0.55,delay:i*0.1}}
             >
               <div className="lfr-inner" style={{ position:"relative", width:"100%", height:"100%" }}>
@@ -13116,18 +13028,16 @@ function LearningFormatsSection({ onCTA }) {
                   className="lfr-face"
                   style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", overflow:"hidden", borderRadius:16, background:f.panelBg, border:"1px solid rgba(6,148,209,0.22)" }}
                 >
-                  {/* Illustrated image panel */}
-                  <div style={{ position:"relative", height:176, width:"100%", flexShrink:0, overflow:"hidden" }}>
-                    {f.illustration}
-                    <span style={{ position:"absolute", left:12, top:12, zIndex:2, fontSize:11, fontWeight:400, padding:"4px 12px", borderRadius:20, background:"rgba(9,49,72,0.55)", backdropFilter:"blur(6px)", color:"#fff" }}>
+                  <div style={{ position:"relative", height:190, width:"100%", flexShrink:0, overflow:"hidden", borderRadius:"16px 16px 0 0" }}>
+                    <img src={f.img} alt={f.name} className="lfr-img" />
+                    <span style={{ position:"absolute", left:12, top:12, zIndex:2, fontSize:11, fontWeight:600, padding:"4px 12px", borderRadius:20, background:"rgba(9,49,72,0.65)", backdropFilter:"blur(6px)", color:"#fff", letterSpacing:"0.04em" }}>
                       {f.badge}
                     </span>
                   </div>
-                  {/* Front text + CTA */}
                   <div style={{ flex:1, display:"flex", flexDirection:"column", padding:"16px 20px 0" }}>
-                    <h3 style={{ fontSize:15, fontWeight:500, color:"#fff", marginBottom:8, lineHeight:1.3 }}>{f.name}</h3>
+                    <h3 style={{ fontSize:15, fontWeight:600, color:"#fff", marginBottom:8, lineHeight:1.3 }}>{f.name}</h3>
                     <p style={{ fontSize:12.5, color:"rgba(255,255,255,0.6)", lineHeight:1.65, flex:1, fontWeight:300 }}>{f.desc}</p>
-                    <div style={{ padding:"20px 0" }}>
+                    <div style={{ padding:"16px 0" }}>
                       <button
                         className="lfr-btn-glow"
                         onClick={onCTA}
@@ -13144,16 +13054,13 @@ function LearningFormatsSection({ onCTA }) {
                   className="lfr-face lfr-back"
                   style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", borderRadius:16, padding:20, background:f.panelBg, border:"1px solid rgba(6,148,209,0.35)" }}
                 >
-                  {/* Icon + title row */}
                   <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
                     <div style={{ width:40, height:40, borderRadius:12, background:"rgba(6,148,209,0.18)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                       {f.icon}
                     </div>
                     <h3 style={{ fontSize:14, fontWeight:700, color:"#fff", lineHeight:1.3 }}>{f.name}</h3>
                   </div>
-                  {/* Divider */}
                   <div style={{ height:1, background:"rgba(6,148,209,0.25)", marginBottom:16 }} />
-                  {/* Bullet list */}
                   <ul style={{ listStyle:"none", padding:0, margin:"0 0 auto", display:"flex", flexDirection:"column", gap:10 }}>
                     {f.bullets.map(b => (
                       <li key={b} style={{ display:"flex", alignItems:"center", gap:10, fontSize:13, color:"rgba(255,255,255,0.78)", lineHeight:1.4 }}>
@@ -13165,7 +13072,6 @@ function LearningFormatsSection({ onCTA }) {
                       </li>
                     ))}
                   </ul>
-                  {/* Back CTA */}
                   <button
                     className="lfr-btn-glow"
                     onClick={onCTA}
@@ -13179,6 +13085,65 @@ function LearningFormatsSection({ onCTA }) {
             </motion.div>
           ))}
         </div>
+
+        {/* ── MOBILE: single card carousel with dots ── */}
+        <div className="lfr-mobile">
+          <div
+            style={{ touchAction:"pan-y" }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {LF_FORMATS.map((f, i) => (
+              <div key={i} style={{ display: i === activeIdx ? "block" : "none" }}>
+                <div style={{ borderRadius:16, overflow:"hidden", background:f.panelBg, border:"1px solid rgba(6,148,209,0.25)" }}>
+                  {/* Image */}
+                  <div style={{ position:"relative", height:220, overflow:"hidden" }}>
+                    <img src={f.img} alt={f.name} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }} />
+                    <span style={{ position:"absolute", left:14, top:14, fontSize:11, fontWeight:600, padding:"4px 14px", borderRadius:20, background:"rgba(9,49,72,0.7)", backdropFilter:"blur(6px)", color:"#fff", letterSpacing:"0.04em" }}>
+                      {f.badge}
+                    </span>
+                  </div>
+                  {/* Content */}
+                  <div style={{ padding:"20px 20px 0" }}>
+                    <h3 style={{ fontSize:16, fontWeight:700, color:"#fff", marginBottom:8, lineHeight:1.3 }}>{f.name}</h3>
+                    <p style={{ fontSize:13, color:"rgba(255,255,255,0.6)", lineHeight:1.65, marginBottom:16 }}>{f.desc}</p>
+                    <div style={{ height:1, background:"rgba(6,148,209,0.2)", marginBottom:14 }} />
+                    <ul style={{ listStyle:"none", padding:0, margin:"0 0 20px", display:"flex", flexDirection:"column", gap:10 }}>
+                      {f.bullets.map(b => (
+                        <li key={b} style={{ display:"flex", alignItems:"center", gap:10, fontSize:13, color:"rgba(255,255,255,0.78)", lineHeight:1.4 }}>
+                          <svg width="17" height="17" viewBox="0 0 17 17" fill="none" style={{ flexShrink:0 }}>
+                            <circle cx="8.5" cy="8.5" r="8" stroke="rgba(6,148,209,0.5)" strokeWidth="1"/>
+                            <path d="M5.5 8.5l2 2 4-4" stroke="#0694d1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          {b}
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      className="lfr-btn-glow"
+                      onClick={onCTA}
+                      style={{ display:"block", width:"100%", padding:12, borderRadius:12, border:"none", background:"linear-gradient(135deg,#0694d1,#076d9d)", color:"#fff", fontSize:14, fontWeight:700, cursor:"pointer", textAlign:"center", fontFamily:"inherit", marginBottom:20 }}
+                    >
+                      Learn More →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Dot pagination */}
+          <div style={{ display:"flex", justifyContent:"center", gap:8, marginTop:20 }}>
+            {LF_FORMATS.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveIdx(i)}
+                style={{ width: i === activeIdx ? 24 : 8, height:8, borderRadius:9999, border:"none", cursor:"pointer", padding:0, transition:"all 0.3s", background: i === activeIdx ? "#0694d1" : "rgba(255,255,255,0.25)" }}
+              />
+            ))}
+          </div>
+        </div>
+
       </div>
     </section>
   );
@@ -13886,10 +13851,9 @@ export default function App() {
     return () => obs.disconnect();
   }, []);
 
-  // Scroll to top on mount
+  // Prevent browser from restoring scroll on reload
   useEffect(() => {
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
   }, []);
 
   // Typewriter state
@@ -14039,18 +14003,6 @@ export default function App() {
     };
   }, []);
 
-  // Countdown
-  const [time, setTime] = useState({ h: 11, m: 47, s: 23 });
-  useEffect(() => {
-    const t = setInterval(() => {
-      setTime(p => {
-        let { h, m, s } = p;
-        s--; if (s < 0) { s = 59; m--; } if (m < 0) { m = 59; h--; } if (h < 0) { h = 23; m = 59; s = 59; }
-        return { h, m, s };
-      });
-    }, 1000);
-    return () => clearInterval(t);
-  }, []);
   const pad = n => String(n).padStart(2, "0");
 
   return (
@@ -14299,6 +14251,7 @@ export default function App() {
               loop
               playsInline
               preload="none"
+              onError={e => { e.target.style.display = 'none'; e.target.parentElement.style.background = 'linear-gradient(135deg,#071e2e 0%,#093148 100%)'; }}
             />
             <button
               className="hero-video-mute"
@@ -14847,27 +14800,27 @@ export default function App() {
       </button>
 
       {/* ── BACK TO TOP ── */}
-      {showBackTop && (
-        <button
-          onClick={() => window.scrollTo({ top:0, behavior:"smooth" })}
-          aria-label="Back to top"
-          className="back-to-top-btn"
-          style={{
-            position:"fixed", bottom:"1.25rem", right:"4.75rem", zIndex:501,
-            width:44, height:44, borderRadius:"50%",
-            background:"#fff", border:"1.5px solid #d1d5db",
-            color:"#093148", fontSize:18, fontWeight:700,
-            display:"flex", alignItems:"center", justifyContent:"center",
-            cursor:"pointer",
-            boxShadow:"0 4px 16px rgba(0,0,0,0.12)",
-            transition:"background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background="#0694D1"; e.currentTarget.style.color="#fff"; e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow="0 8px 24px rgba(6,148,209,0.4)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.color="#093148"; e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,0.12)"; }}
-        >
-          ↑
-        </button>
-      )}
+      <button
+        onClick={() => window.scrollTo({ top:0, behavior:"smooth" })}
+        aria-label="Back to top"
+        className="back-to-top-btn"
+        style={{
+          position:"fixed", bottom:"1.25rem", right:"4.75rem", zIndex:501,
+          width:44, height:44, borderRadius:"50%",
+          background:"#fff", border:"1.5px solid #d1d5db",
+          color:"#093148", fontSize:18, fontWeight:700,
+          display:"flex", alignItems:"center", justifyContent:"center",
+          cursor:"pointer",
+          boxShadow:"0 4px 16px rgba(0,0,0,0.12)",
+          transition:"background 0.2s, color 0.2s, transform 0.2s, box-shadow 0.2s, opacity 0.3s",
+          opacity: showBackTop ? 1 : 0,
+          pointerEvents: showBackTop ? "auto" : "none",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background="#0694D1"; e.currentTarget.style.color="#fff"; e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.boxShadow="0 8px 24px rgba(6,148,209,0.4)"; }}
+        onMouseLeave={e => { e.currentTarget.style.background="#fff"; e.currentTarget.style.color="#093148"; e.currentTarget.style.transform="translateY(0)"; e.currentTarget.style.boxShadow="0 4px 16px rgba(0,0,0,0.12)"; }}
+      >
+        ↑
+      </button>
 
       {/* ENQUIRY MODAL */}
       {modal && (
